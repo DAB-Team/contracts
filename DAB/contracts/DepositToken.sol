@@ -11,7 +11,6 @@ import './Owned.sol';
     Smart Token v0.2
 
     'Owned' is specified here for readability reasons
-
 */
 contract DepositToken is ISmartToken, ERC20Token, Owned, TokenHolder {
     string public version = '0.2';

@@ -28,9 +28,9 @@ module.exports =  async (deployer) =>{
   deployer.deploy(CreditToken, "Credit Token", "CDT", 8);
   deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 8);
   deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 8);
-  // deployer.deploy(SmartTokenController, DepositToken.address, CreditToken.address, SubCreditToken.address, DiscreditToken.address);
-  // deployer.deploy(OperationController, DepositToken.address, CreditToken.address, SubCreditToken.address, DiscreditToken.address, 1499650380, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
-  // deployer.deploy(DAB, EasyDABFormula.address, DepositToken.address, CreditToken.address, SubCreditToken.address, DiscreditToken.address, 1499650380, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
+  deployer.deploy(SmartTokenController, DepositToken.address, CreditToken.address, SubCreditToken.address, DiscreditToken.address);
+  deployer.deploy(OperationController, DepositToken.address, CreditToken.address, SubCreditToken.address, DiscreditToken.address, 1499650380, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
+  deployer.deploy(DAB, EasyDABFormula.address, DepositToken.address, CreditToken.address, SubCreditToken.address, DiscreditToken.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1499650380);
 
   //
   // deployer.deploy(ConvertLib);
