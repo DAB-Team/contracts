@@ -6,10 +6,6 @@ import './Math.sol';
 import './SafeMath.sol';
 import './ISmartToken.sol';
 import './IDABFormula.sol';
-import './DepositToken.sol';
-import './CreditToken.sol';
-import './SubCreditToken.sol';
-import './DiscreditToken.sol';
 
 
 /*
