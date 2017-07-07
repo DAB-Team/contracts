@@ -5,7 +5,6 @@ import './OperationController.sol';
 import './Math.sol';
 import './SafeMath.sol';
 import './ISmartToken.sol';
-import './IPlan.sol';
 import './IDABFormula.sol';
 import './DepositToken.sol';
 import './CreditToken.sol';
