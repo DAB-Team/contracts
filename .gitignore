@@ -1,2 +1,5 @@
 .idea
 node_modules
+.xml
+_mac
+inspection
