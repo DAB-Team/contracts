@@ -618,11 +618,11 @@ erc20 = ERC20()
 # start deposit
 erc20.start_deposit()
 # random DPT action after activation of DPT contract, simulate 2 weeks afer activation of DPT contract
-run = 50000
+run = 500000
 # steps of random CDT action after activation of CDT contract
 run_test = 15000
 # set log switch
-erc20.log = erc20.log_cdt
+erc20.log = erc20.log_dpt_cdt
 
 
 def test_cdt(e, a):
@@ -654,19 +654,13 @@ for i in range(0, 3000000):
         # activate CDT if not being activated
         if not erc20.is_cdt_active:
             erc20.activate_cdt()
-        # has remaining test step for CDT contract
-        if run_test > 0:
-            test_cdt(erc20, random.random())
-            # time.sleep(2)
-            run_test -= 1
-        else:
-            break
+        plot_dpt(erc20)
+        break
 
     else:
         # random initial issue process and 2 weeks after activation of DPT contract
         random_dpt(erc20, random.random(), 1 / 3)
-        # log DPT and CDT
-        # log_dpt(erc20)
-        # log_cdt(erc20)
+        log_dpt(erc20)
+        log_cdt(erc20)
         run -= 1
 
