@@ -45,7 +45,7 @@ contract('EasyDABFormula', function(accounts){
         }).catch(expectedThrow);
     });
 
-
+    
 
   
 });
