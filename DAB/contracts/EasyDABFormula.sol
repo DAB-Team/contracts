@@ -111,8 +111,8 @@ uint256: 343431799   0.079
     function getInterestRate(uint256 _highRate, uint256 _lowRate, uint256 _supply, uint256 _circulation)
     public
     returns (uint256){
-        _highRate = EtherToFloat(_highRate);
-        _lowRate = EtherToFloat(_lowRate);
+        _highRate = DecimalToFloat(_highRate);
+        _lowRate = DecimalToFloat(_lowRate);
         _supply = EtherToFloat(_supply);
         _circulation = EtherToFloat(_circulation);
 
@@ -121,7 +121,7 @@ uint256: 343431799   0.079
         require(0 <= _supply);
         require(0 <= _circulation && _circulation <= _supply);
 
-        return sigmoid(FloatToEther(sub(_highRate, _lowRate)), FloatToEther(_lowRate), FloatToEther(_supply / 2), FloatToEther(_supply / 8), FloatToEther(_circulation));
+        return FloatToDecimal(sigmoid(sub(_highRate, _lowRate), _lowRate, _supply / 2, _supply / 8, _circulation));
     }
 
 
@@ -202,16 +202,13 @@ DPT/CDT B 405318.73717745143 297483.03981682844 CDTS 148741.51990841422 CDT CRR 
         if (sub(_dptSupply, _dptCirculation) >= token) {
             fcrr = getCRR(add(_dptCirculation, token));
             dptPrice = div(maxBalance, mul(add(_dptCirculation, token), fcrr));
-            return (FloatToEther(token), 0, FloatToEther(fcrr), FloatToDecimal(dptPrice));
+            return (FloatToEther(token), 0, FloatToDecimal(fcrr), FloatToDecimal(dptPrice));
         }
         else {
             token = sub(_dptSupply, _dptCirculation);
             fcrr = getCRR(add(_dptCirculation, token));
-        // max_price = max_balance / ((self.DPTS - self.DPTSI) * min_crr)
             dptPrice = div(maxBalance, mul(_dptCirculation, fcrr));
-            _dptCirculation = _dptSupply;
             return (FloatToEther(token), FloatToEther(sub(_ethAmount, mul(token, dptPrice))), FloatToDecimal(fcrr), FloatToDecimal(dptPrice));
-        // return depositAndIssue(dptCirculation, sub(ethAmount, mul(token, dptPrice)), token, dptPrice);
 
         }
     }
@@ -301,7 +298,7 @@ Output:
     public
     returns (uint256 ethAmount, uint256 issueCDTAmount, uint256 sctAmount){
         _cdtAmount = EtherToFloat(_cdtAmount);
-        _interestRate = EtherToFloat(_interestRate);
+        _interestRate = DecimalToFloat(_interestRate);
 
     // ether = cdt * self.CDTL
         ethAmount = mul(_cdtAmount, cdtLoanRate);
