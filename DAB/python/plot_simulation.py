@@ -622,7 +622,7 @@ run = 500000
 # steps of random CDT action after activation of CDT contract
 run_test = 15000
 # set log switch
-erc20.log = erc20.log_dpt_cdt
+erc20.log = 0
 
 
 def test_cdt(e, a):
@@ -660,7 +660,7 @@ for i in range(0, 3000000):
     else:
         # random initial issue process and 2 weeks after activation of DPT contract
         random_dpt(erc20, random.random(), 1 / 3)
-        log_dpt(erc20)
-        log_cdt(erc20)
+        # log_dpt(erc20)
+        # log_cdt(erc20)
         run -= 1
 
