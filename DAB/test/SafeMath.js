@@ -1,8 +1,9 @@
 /* global artifacts, contract, it, assert, web3 */
 /* eslint-disable prefer-reflect */
 
-const TestSafeMath = artifacts.require('TestSafeMath.sol');
+const TestSafeMath = artifacts.require('./helpers/TestSafeMath.sol');
 const utils = require('./helpers/Utils');
+
 
 contract('SafeMath', () => {
     it('verifies successful addition', async () => {
@@ -70,4 +71,27 @@ contract('SafeMath', () => {
             return utils.ensureException(error);
         }
     });
+
+    it('verifies successful division', async () => {
+        let math = await TestSafeMath.new();
+        let x = 295743254;
+        let y = 1740;
+        let z = await math.testSafeDiv.call(x, y);
+        assert.equal(z, (x - (x%y)) / y);
+    });
+
+     it('should throw on division overflow', async () => {
+        let math = await TestSafeMath.new();
+        let x = web3.toBigNumber('15792089237316195423570985008687907853269984665640564039457584007913129639935');
+        let y = 0;
+
+        try {
+            await math.testSafeDiv.call(x, y);
+            assert(false, "didn't throw");
+        }
+        catch (error) {
+            return utils.ensureException(error);
+        }
+    });
+
 });

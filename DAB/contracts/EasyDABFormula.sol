@@ -10,7 +10,7 @@ Simple Implement of CRR Formula
 contain a,b,l,d and formula
 1 / (1 + cmath.exp((x - l) / d)) * a + b
 uint256 exp = fixedExp(div(sub(x, l), d))
-uint256 CRR = add(mul(a, div(FIXED_ONE, add(FIXED_ONE, exp))), b)
+uint256 CRR = add(mul(a, div(FLOAT_ONE, add(FLOAT_ONE, exp))), b)
 
 0<b<a<1,
 
@@ -28,7 +28,7 @@ contract EasyDABFormula is IDABFormula, Math {
     uint256 private cdt_ip = ip * 2;                      //ip=0.001  initial price
     uint256 private cdt_crr = Float(3);                      //ip=0.001  initial price
     uint256 private F = DecimalToFloat(35000000);                      //ip=0.001  initial price
-    uint256 private U = sub(FIXED_ONE, F);                      //ip=0.001  initial price
+    uint256 private U = sub(FLOAT_ONE, F);                      //ip=0.001  initial price
     uint256 private cashFeeRate = DecimalToFloat(10000000);
 
     uint256 private cdtLoanRate = cdt_ip / 2;
@@ -66,8 +66,8 @@ contract EasyDABFormula is IDABFormula, Math {
             rate = div(safeSub(_x, _l), _d);
             if (rate < 0x2800000000) {
                 exp = fixedExp(rate);
-                addexp = add(FIXED_ONE, exp);
-                divexp = div(FIXED_ONE, addexp);
+                addexp = add(FLOAT_ONE, exp);
+                divexp = div(FLOAT_ONE, addexp);
                 mulexp = mul(_a, divexp);
                 y = add(mulexp, _b);
             }
@@ -80,8 +80,8 @@ contract EasyDABFormula is IDABFormula, Math {
             rate = div(safeSub(_l, _x), _d);
             if (rate < 0x2800000000) {
                 exp = fixedExp(rate);
-                addexp = add(FIXED_ONE, exp);
-                divexp = div(FIXED_ONE, addexp);
+                addexp = add(FLOAT_ONE, exp);
+                divexp = div(FLOAT_ONE, addexp);
                 mulexp = mul(_a, divexp);
                 y = sub(add(_a, _b * 2), add(mulexp, _b));
             }
@@ -111,17 +111,17 @@ uint256: 343431799   0.079
     function getInterestRate(uint256 _highRate, uint256 _lowRate, uint256 _supply, uint256 _circulation)
     public
     returns (uint256){
-        _highRate = WeiToFloat(_highRate);
-        _lowRate = WeiToFloat(_lowRate);
-        _supply = WeiToFloat(_supply);
-        _circulation = WeiToFloat(_circulation);
+        _highRate = DecimalToFloat(_highRate);
+        _lowRate = DecimalToFloat(_lowRate);
+        _supply = EtherToFloat(_supply);
+        _circulation = EtherToFloat(_circulation);
 
         require(0 < _lowRate && _lowRate < (DecimalToFloat(15000000)));
         require(_highRate < (DecimalToFloat(50000000)) && _lowRate < _highRate);
         require(0 <= _supply);
         require(0 <= _circulation && _circulation <= _supply);
 
-        return sigmoid(FloatToWei(sub(_highRate, _lowRate)), FloatToWei(_lowRate), FloatToWei(_supply / 2), FloatToWei(_supply / 8), FloatToWei(_circulation));
+        return FloatToDecimal(sigmoid(sub(_highRate, _lowRate), _lowRate, _supply / 2, _supply / 8, _circulation));
     }
 
 
@@ -146,18 +146,18 @@ Output:
     public
     validIssue(_ethAmount)
     returns (uint256, uint256, uint256, uint256, uint256){
-        _circulation = WeiToFloat(_circulation);
-        _ethAmount = WeiToFloat(_ethAmount);
+        _circulation = EtherToFloat(_circulation);
+        _ethAmount = EtherToFloat(_ethAmount);
 
         uint256 fcrr = getCRR(_circulation);
     // dpt = ether / issue_price
         uint256 fdpt = mul(div(_ethAmount, ip), fcrr);
     //cdt = (1 - self.DPT_CRR) * ether / self.CDTIP
-        uint256 fcdt = div(mul(sub(FIXED_ONE, fcrr), _ethAmount), cdt_ip);
+        uint256 fcdt = div(mul(sub(FLOAT_ONE, fcrr), _ethAmount), cdt_ip);
         _circulation = add(_circulation, fdpt);
         fcrr = getCRR(_circulation);
     // assert(mul(fdpt, U)>=0 && mul(fcdt, U)>=0 && mul(fdpt, F)>=0 && mul(fcdt, F)>=0);
-        return (FloatToWei(mul(fdpt, U)), FloatToWei(mul(fcdt, U)), FloatToWei(mul(fdpt, F)), FloatToWei(mul(fcdt, F)), FloatToDecimal(fcrr));
+        return (FloatToEther(mul(fdpt, U)), FloatToEther(mul(fcdt, U)), FloatToEther(mul(fdpt, F)), FloatToEther(mul(fcdt, F)), FloatToDecimal(fcrr));
     }
 
 /*
@@ -179,10 +179,10 @@ DPT/CDT B 405318.73717745143 297483.03981682844 CDTS 148741.51990841422 CDT CRR 
     function deposit(uint256 _dptBalance, uint256 _dptSupply, uint256 _dptCirculation, uint256 _ethAmount)
     public
     returns (uint256 token, uint256 remainEther, uint256 fcrr, uint256 dptPrice){
-        _dptBalance = WeiToFloat(_dptBalance);
-        _dptSupply = WeiToFloat(_dptSupply);
-        _dptCirculation = WeiToFloat(_dptCirculation);
-        _ethAmount = WeiToFloat(_ethAmount);
+        _dptBalance = EtherToFloat(_dptBalance);
+        _dptSupply = EtherToFloat(_dptSupply);
+        _dptCirculation = EtherToFloat(_dptCirculation);
+        _ethAmount = EtherToFloat(_ethAmount);
 
         fcrr = getCRR(_dptCirculation);
     // self.DPTP = self.DPTB / ((self.DPTS - self.DPTSI) * self.DPT_CRR)
@@ -202,16 +202,13 @@ DPT/CDT B 405318.73717745143 297483.03981682844 CDTS 148741.51990841422 CDT CRR 
         if (sub(_dptSupply, _dptCirculation) >= token) {
             fcrr = getCRR(add(_dptCirculation, token));
             dptPrice = div(maxBalance, mul(add(_dptCirculation, token), fcrr));
-            return (FloatToWei(token), 0, FloatToWei(fcrr), FloatToDecimal(dptPrice));
+            return (FloatToEther(token), 0, FloatToDecimal(fcrr), FloatToDecimal(dptPrice));
         }
         else {
             token = sub(_dptSupply, _dptCirculation);
             fcrr = getCRR(add(_dptCirculation, token));
-        // max_price = max_balance / ((self.DPTS - self.DPTSI) * min_crr)
             dptPrice = div(maxBalance, mul(_dptCirculation, fcrr));
-            _dptCirculation = _dptSupply;
-            return (FloatToWei(token), FloatToWei(sub(_ethAmount, mul(token, dptPrice))), FloatToDecimal(fcrr), FloatToDecimal(dptPrice));
-        // return depositAndIssue(dptCirculation, sub(ethAmount, mul(token, dptPrice)), token, dptPrice);
+            return (FloatToEther(token), FloatToEther(sub(_ethAmount, mul(token, dptPrice))), FloatToDecimal(fcrr), FloatToDecimal(dptPrice));
 
         }
     }
@@ -236,9 +233,9 @@ Output:
     returns (uint256 ethAmount, uint256 sctAmount, uint256 CRR, uint256 tokenPrice){
     // self.DPT_CRR = sigmoid(self.l, self.d, self.a, self.b, self.DPTS - self.DPTSI)
     // self.DPTP = self.DPTB / ((self.DPTS - self.DPTSI) * self.DPT_CRR)
-        _dptBalance = WeiToFloat(_dptBalance);
-        _dptCirculation = WeiToFloat(_dptCirculation);
-        _dptAmount = WeiToFloat(_dptAmount);
+        _dptBalance = EtherToFloat(_dptBalance);
+        _dptCirculation = EtherToFloat(_dptCirculation);
+        _dptAmount = EtherToFloat(_dptAmount);
 
         tokenPrice = div(_dptBalance, mul(_dptCirculation, getCRR(_dptCirculation)));
     // max_ether = dpt * self.DPTP
@@ -254,7 +251,7 @@ Output:
         uint256 actualEther = mul(_dptAmount, tokenPrice);
     //  self.DPT_CRR = sigmoid(self.l, self.d, self.a, self.b, self.DPTS - self.DPTSI)
     // return actual_ether.real
-        return (FloatToWei(actualEther), FloatToWei(_dptAmount), FloatToDecimal(maxcrr), FloatToDecimal(tokenPrice));
+        return (FloatToEther(actualEther), FloatToEther(_dptAmount), FloatToDecimal(maxcrr), FloatToDecimal(tokenPrice));
     }
 
 /*
@@ -263,9 +260,9 @@ Output:
     function cash(uint256 _cdtBalance, uint256 _cdtSupply, uint256 _cdtAmount)
     public
     returns (uint256 ethAmount, uint256 cdtPrice){
-        _cdtBalance = WeiToFloat(_cdtBalance);
-        _cdtSupply = WeiToFloat(_cdtSupply);
-        _cdtAmount = WeiToFloat(_cdtAmount);
+        _cdtBalance = EtherToFloat(_cdtBalance);
+        _cdtSupply = EtherToFloat(_cdtSupply);
+        _cdtAmount = EtherToFloat(_cdtAmount);
 
     // self.CDTP = self.CDTB / (self.CDTS * self.CDT_CRR)
         cdtPrice = div(_cdtBalance, mul(_cdtSupply, cdt_crr));
@@ -278,7 +275,7 @@ Output:
     // self.CDTP = self.CDTB / (self.CDTS * self.CDT_CRR)
         cdtPrice = div(_cdtBalance, mul(_cdtSupply, cdt_crr));
     //
-        return (FloatToWei(ethAmount), FloatToDecimal(cdtPrice));
+        return (FloatToEther(ethAmount), FloatToDecimal(cdtPrice));
     }
 
 /*
@@ -300,8 +297,8 @@ Output:
     function loan(uint256 _cdtAmount, uint256 _interestRate)
     public
     returns (uint256 ethAmount, uint256 issueCDTAmount, uint256 sctAmount){
-        _cdtAmount = WeiToFloat(_cdtAmount);
-        _interestRate = WeiToFloat(_interestRate);
+        _cdtAmount = EtherToFloat(_cdtAmount);
+        _interestRate = DecimalToFloat(_interestRate);
 
     // ether = cdt * self.CDTL
         ethAmount = mul(_cdtAmount, cdtLoanRate);
@@ -311,7 +308,7 @@ Output:
         issueCDTAmount = div(div(mul(earn, cdtReserveRate), Float(2)), cdt_ip);
         ethAmount = sub(ethAmount, earn);
         sctAmount = _cdtAmount;
-        return (FloatToWei(ethAmount), FloatToWei(issueCDTAmount), FloatToWei(sctAmount));
+        return (FloatToEther(ethAmount), FloatToEther(issueCDTAmount), FloatToEther(sctAmount));
     }
 
 /*
@@ -327,8 +324,8 @@ repay:  328 SCT + 328 ETH => 328 CDT
     function repay(uint256 _repayETHAmount, uint256 _sctAmount)
     public
     returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundSCTAmount){
-        _repayETHAmount = WeiToFloat(_repayETHAmount);
-        _sctAmount = WeiToFloat(_sctAmount);
+        _repayETHAmount = EtherToFloat(_repayETHAmount);
+        _sctAmount = EtherToFloat(_sctAmount);
     // ether = sct * self.CDTL
         uint256 ethAmount = mul(_sctAmount, cdtLoanRate);
         if (_repayETHAmount < ethAmount) {
@@ -340,7 +337,7 @@ repay:  328 SCT + 328 ETH => 328 CDT
         else {
             cdtAmount = div(ethAmount, cdtLoanRate);
             refundETHAmount = sub(_repayETHAmount, ethAmount);
-            return (FloatToWei(refundETHAmount), FloatToWei(cdtAmount), 0);
+            return (FloatToEther(refundETHAmount), FloatToEther(cdtAmount), 0);
         }
     }
 
@@ -357,8 +354,8 @@ toCreditToken:  328 SCT + 328 ETH => 328 CDT
     function toCreditToken(uint256 _repayETHAmount, uint256 _dctAmount)
     public
     returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundDCTAmount){
-        _repayETHAmount = WeiToFloat(_repayETHAmount);
-        _dctAmount = WeiToFloat(_dctAmount);
+        _repayETHAmount = EtherToFloat(_repayETHAmount);
+        _dctAmount = EtherToFloat(_dctAmount);
 
         uint256 ethAmount = mul(_dctAmount, cdtLoanRate);
         if (_repayETHAmount < ethAmount) {
@@ -370,7 +367,7 @@ toCreditToken:  328 SCT + 328 ETH => 328 CDT
         else {
             cdtAmount = div(ethAmount, cdtLoanRate);
             refundETHAmount = sub(_repayETHAmount, ethAmount);
-            return (FloatToWei(refundETHAmount), FloatToWei(cdtAmount), 0);
+            return (FloatToEther(refundETHAmount), FloatToEther(cdtAmount), 0);
         }
     }
 
@@ -386,13 +383,13 @@ toDiscreditToken:  328 SCT => 311.599 CDT
     function toDiscreditToken(uint256 _cdtBalance, uint256 _supply, uint256 _sctAmount)
     public
     returns (uint256 dctAmount, uint256 cdtPrice){
-        _cdtBalance = WeiToFloat(_cdtBalance);
-        _supply = WeiToFloat(_supply);
-        _sctAmount = WeiToFloat(_sctAmount);
+        _cdtBalance = EtherToFloat(_cdtBalance);
+        _supply = EtherToFloat(_supply);
+        _sctAmount = EtherToFloat(_sctAmount);
 
         cdtPrice = div(_cdtBalance, mul(_supply, cdt_crr));
     // destroy 10% sct
-        return (FloatToWei(mul(_sctAmount, sctToDCTRate)), FloatToDecimal(cdtPrice));
+        return (FloatToEther(mul(_sctAmount, sctToDCTRate)), FloatToDecimal(cdtPrice));
     }
 
 

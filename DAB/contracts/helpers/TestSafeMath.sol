@@ -19,4 +19,8 @@ contract TestSafeMath is SafeMath {
     function testSafeMul(uint256 _x, uint256 _y) public constant returns (uint256) {
         return super.safeMul(_x, _y);
     }
+
+    function testSafeDiv(uint256 _x, uint256 _y) public constant returns (uint256) {
+        return super.safeDiv(_x, _y);
+    }
 }
