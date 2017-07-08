@@ -147,95 +147,42 @@ class EasyDABFormula(object):
         sctamount = cdtamount
         return ethamount * self.ether, issuecdtamount * self.ether, sctamount * self.ether
 
-"""
-    TO DO ...
-"""
+    def repay(self, repayethamount, sctamount):
+        # change unit
+        repayethamount /= self.ether
+        sctamount /= self.ether
+        ethamount = sctamount * self.CDTL
+        if repayethamount < ethamount:
+            ethamount = repayethamount
+            cdtamount = ethamount / self.CDTL
+            refundsctamount = sctamount - cdtamount
+            return 0, cdtamount * self.ether, refundsctamount * self.ether
+        else:
+            cdtamount = ethamount / self.CDTL
+            refundethamount = repayethamount - ethamount
+            return refundethamount * self.ether, cdtamount * self.ether, 0
+
+    def to_credit_token(self,repayethamount, dctamount):
+        repayethamount /= self.ether
+        dctamount /= self.ether
+        ethamount = dctamount * self.CDTL
+        if repayethamount < ethamount:
+            ethamount = repayethamount
+            cdtamount = ethamount / self.CDTL
+            refunddctamount = dctamount - cdtamount
+            return 0, cdtamount * self.ether, refunddctamount * self.ether
+        else:
+            cdtamount = ethamount / self.CDTL
+            refundethamount = repayethamount -ethamount
+            return refundethamount * self.ether, cdtamount * self.ether, 0
+
+    def to_discredit(self, cdtbalance, supply, sctamount):
+        # change unit
+        cdtbalance /= self.ether
+        supply /= self.ether
+        sctamount /= self.ether
+        cdtprice = cdtbalance /(supply * self.CDT_CRR)
+        return (sctamount * 0.95) * self.ether, cdtprice * self.decimal
 
 
-    def to_discredit(self, sct):
-        """
-        used only after the activation of CDT contract
-        convert SCT to DCT
-        :param sct: amount of SCT to be converted
-        :return: dct
-        """
-        # used only after the activation of CDT contract
-        if not self.is_cdt_active:
-            return
-        # convert SCT to DCT minus 0.05 fee
-        dct = sct * 0.95
-        # calculate the cash price of CDT
-        self.CDTP = self.CDTB / (self.CDTS * self.CDT_CRR)
-        # log CDT contract according to switch
-        if self.log == self.log_cdt or self.log == self.log_dpt_cdt:
-            print('discredit:', sct, 'SCT','=>', dct, 'DCT')
-        return dct
-
-    def repay(self, sct):
-        """
-        used only after the activation of CDT contract
-        repay the loan, which converts SCT to DCt
-        :param sct: amount of SCT need to be repaid
-        :return: cdt
-        """
-        # used only after the activation of CDT contract
-        if not self.is_cdt_active:
-            return
-        # repay rate is the same as loan rate
-        ether = sct * self.CDTL
-        # update the CDT balance
-        self.CDTB += ether
-        # convert SCT to CDT
-        cdt = sct
-        # calculate the cash price of CDT
-        self.CDTP = self.CDTB / (self.CDTS * self.CDT_CRR)
-        # log CDT contract according to switch
-        if self.log == self.log_cdt or self.log == self.log_dpt_cdt:
-            print('repay: ', sct, 'SCT', '+', ether, 'ETH', '=>', cdt, 'CDT')
-        return cdt
-
-    def to_credit(self, dct):
-        """
-        used only after the activation of CDT contract
-        convert DCT to CDT, those who pay the loan gets the CDT.
-        market for DCT
-        :param dct:
-        :return: cdt
-        """
-        # used only after the activation of CDT contract
-        if not self.is_cdt_active:
-            return
-        #  repay rate is the same as loan rate
-        ether = dct * self.CDTL
-        # update the CDT balance
-        self.CDTB += ether
-        # convert DCT to CDT
-        cdt = dct
-        # calculate the cash price of CDT
-        self.CDTP = self.CDTB / (self.CDTS * self.CDT_CRR)
-        # log CDT contract according to switch
-        if self.log == self.log_cdt or self.log == self.log_dpt_cdt:
-            print('to credit: ', dct, 'DCT', '+', ether, 'ETH', '=>', cdt, 'CDT')
-        return cdt
-
-
-def log_dpt(e):
-    """
-    print the log information of DPT contract of the erc20 token instance
-    :param e: instance of ERC20 Token
-    :return:
-    """
-    print('DPT/CDT B', e.DPTB.real, e.CDTB.real, 'DPTS', e.DPTS.real, 'DPTCRR', e.DPT_CRR.real,
-          'DPTP', e.DPTP.real, 'DPTC', (e.DPTS - erc20.DPTSI).real, 'DPTSI',
-          e.DPTSI.real)
-
-
-def log_cdt(e):
-    """
-    print the log information of CDT contract of the erc20 token instance
-    :param e: instance of ERC20 Token
-    :return:
-    """
-    print('DPT/CDT B', e.DPTB.real, e.CDTB.real, 'CDTS', e.CDTS.real, 'CDT CRR', e.CDT_CRR.real,
-          'CDTP', e.CDTP.real, 'CDT Burn', e.CDTSI.real)
 
