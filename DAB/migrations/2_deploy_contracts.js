@@ -1,6 +1,7 @@
 
 const SafeMath = artifacts.require('SafeMath.sol');
 const Math = artifacts.require('Math.sol');
+const TestMath = artifacts.require('./helpers/TestMath.sol');
 const EasyDABFormula = artifacts.require("EasyDABFormula.sol");
 const Owned = artifacts.require('Owned.sol');
 const TokenHolder = artifacts.require('TokenHolder.sol');
@@ -20,6 +21,7 @@ module.exports =  async (deployer) =>{
 
   deployer.deploy(SafeMath);
   deployer.deploy(Math);
+  deployer.deploy(TestMath);
   deployer.deploy(EasyDABFormula);
   deployer.deploy(Owned);
   deployer.deploy(TokenHolder);

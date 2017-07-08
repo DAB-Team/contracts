@@ -13,22 +13,28 @@ import './SafeMath.sol';
 contract Math is SafeMath {
 
     uint256 constant PRECISION = 32;  // fractional bits
+    uint256 constant DECIMAL = 8;
     uint256 constant DECIMAL_ONE = uint256(100000000);
-// uint256 constant ETH_DECIMAL = uint256(10000000000);
-    uint256 constant DECIMAL_WEI = uint256(10000000000);
+    uint256 constant ETHER_ONE = uint256(1000000000000000000);
+    uint256 constant FLOAT_ONE = uint256(1) << PRECISION;
+    uint256 constant ETHER_DECIMAL = ETHER_ONE/DECIMAL_ONE;
+    uint256 constant ETHER_FLOAT = ETHER_ONE/FLOAT_ONE;
+    uint256 constant FLOAT_DECIMAL = FLOAT_ONE/DECIMAL_ONE;
 
-    uint256 constant ETHER_WEI = uint256(1000000000000000000);
+    // MAX_D > MAX_F > MAX_E; accuracy(D)<accuracy(F)<accuracy(E)
+    // conversion MAX < min(MAX)*min(accuracy)
+    // mul max < (1<<127)
+    uint256 constant MAX_F = uint256(1) << (255 - PRECISION); // 0x0000000000000000100000000000000000000000000000000000000000000000
+    uint256 constant MAX_D = (uint256(1) << 255)/DECIMAL_ONE;
+    uint256 constant MAX_E = (uint256(1) << 255)/ETHER_ONE;
+    uint256 constant MAX_DF = MAX_F*DECIMAL_ONE;
+    uint256 constant MAX_DE = MAX_E*DECIMAL_ONE;
+    uint256 constant MAX_FE = MAX_E*FLOAT_ONE;
 
-    uint256 constant decimal = uint256(8);
-
-    uint256 constant FIXED_ONE = uint256(1) << PRECISION; // 0x100000000
-    uint256 constant FIXED_TWO = uint256(2) << PRECISION; // 0x200000000
-    uint256 constant MAX_VAL = uint256(1) << 127; // 0x0000000000000000100000000000000000000000000000000000000000000000
     string public version = '0.1';
 
     function Math() {
     }
-
 
 /**
     @dev new Float
@@ -36,7 +42,8 @@ contract Math is SafeMath {
     @return number of tokens
 */
     function Float(uint256 _int) internal constant returns (uint256) {
-        return uint256(_int) << PRECISION;
+        assert(_int <= MAX_F);
+        return _int << PRECISION;
     }
 
 /**
@@ -45,6 +52,7 @@ contract Math is SafeMath {
     @return number of tokens
 */
     function Decimal(uint256 _int) internal constant returns (uint256) {
+        assert(_int <= MAX_D);
         return safeMul(_int, DECIMAL_ONE);
     }
 
@@ -55,6 +63,7 @@ contract Math is SafeMath {
     @return number of tokens
 */
     function FloatToDecimal(uint256 _int) internal constant returns (uint256) {
+        assert(_int <= MAX_DF);
         return (safeMul(_int, DECIMAL_ONE)) >> PRECISION;
     }
 
@@ -64,6 +73,7 @@ contract Math is SafeMath {
     @return number of tokens
 */
     function DecimalToFloat(uint256 _int) internal constant returns (uint256) {
+        assert(_int <= MAX_DF);
         return safeDiv((_int << PRECISION), DECIMAL_ONE);
     }
 
@@ -72,8 +82,9 @@ contract Math is SafeMath {
 
     @return number of tokens
 */
-    function WeiToDecimal(uint256 _int) public constant returns (uint256) {
-        return safeDiv(_int, DECIMAL_WEI);
+    function EtherToDecimal(uint256 _int) public constant returns (uint256) {
+        assert(_int <= MAX_DE);
+        return safeDiv(_int, ETHER_DECIMAL);
     }
 
 /**
@@ -81,8 +92,9 @@ contract Math is SafeMath {
 
     @return number of tokens
 */
-    function DecimalToWei(uint256 _int) public constant returns (uint256) {
-        return safeMul(_int, DECIMAL_WEI);
+    function DecimalToEther(uint256 _int) public constant returns (uint256) {
+        assert(_int <= MAX_DE);
+        return safeMul(_int, ETHER_DECIMAL);
     }
 
 /**
@@ -90,8 +102,9 @@ contract Math is SafeMath {
 
     @return number of tokens
 */
-    function FloatToWei(uint256 _int) internal constant returns (uint256) {
-        return (safeMul(_int, ETHER_WEI)) >> PRECISION;
+    function FloatToEther(uint256 _int) internal constant returns (uint256) {
+        assert(_int <= MAX_FE);
+        return (safeMul(_int, ETHER_ONE)) >> PRECISION;
     }
 
 /**
@@ -99,17 +112,9 @@ contract Math is SafeMath {
 
     @return number of tokens
 */
-    function WeiToFloat(uint256 _int) internal constant returns (uint256) {
-        return safeDiv((_int << PRECISION), ETHER_WEI);
-    }
-
-
-    function max256(uint256 a, uint256 b) internal constant returns (uint256) {
-        return a >= b ? a : b;
-    }
-
-    function min256(uint256 a, uint256 b) internal constant returns (uint256) {
-        return a < b ? a : b;
+    function EtherToFloat(uint256 _int) internal constant returns (uint256) {
+        assert(_int <= MAX_FE);
+        return safeDiv((_int << PRECISION), ETHER_ONE);
     }
 
 /**
@@ -123,7 +128,7 @@ contract Math is SafeMath {
     function add(uint256 _x, uint256 _y)
     internal constant
     returns (uint256) {
-
+        assert(_x <= MAX_F/2 && _y <= MAX_F/2);
         uint256 z = _x + _y;
         assert(z >= _x);
         return z;
@@ -140,7 +145,7 @@ contract Math is SafeMath {
     function sub(uint256 _x, uint256 _y)
     internal constant
     returns (uint256) {
-
+        assert(_x <= MAX_F && _y <= MAX_F);
         assert(_x >= _y);
         return _x - _y;
     }
@@ -156,7 +161,7 @@ contract Math is SafeMath {
     function mul(uint256 _x, uint256 _y)
     internal constant
     returns (uint256) {
-
+        assert(_x <= 1<<128 && _y <= 1<<128);
         uint256 z = _x * _y;
         assert(_x == 0 || z / _x == _y);
         z = z >> PRECISION;
@@ -167,7 +172,7 @@ contract Math is SafeMath {
     function div(uint256 _x, uint256 _y)
     internal constant
     returns (uint256) {
-
+        assert(_x <= MAX_F && _y <= MAX_F);
         assert(_y > 0);
     // Solidity automatically throws when dividing by 0
         _x = _x << PRECISION;
@@ -183,7 +188,7 @@ contract Math is SafeMath {
 
     This method is overflow-safe
 */
-    function power(uint256 _baseN, uint256 _baseD, uint32 _expN, uint32 _expD) internal returns (uint256 resN) {
+    function power(uint256 _baseN, uint256 _baseD, uint32 _expN, uint32 _expD) returns (uint256 resN) {
         uint256 logbase = ln(_baseN, _baseD);
     // Not using safeDiv here, since safeDiv protects against
     // precision loss. It's unavoidable, however
@@ -202,7 +207,7 @@ contract Math is SafeMath {
     This method asserts outside of bounds
 
 */
-    function ln(uint256 _numerator, uint256 _denominator) internal constant returns (uint256) {
+    function ln(uint256 _numerator, uint256 _denominator) constant returns (uint256) {
     // denominator > numerator: less than one yields negative values. Unsupported
         assert(_denominator <= _numerator);
 
@@ -210,10 +215,10 @@ contract Math is SafeMath {
         assert(_denominator != 0 && _numerator != 0);
 
     // Upper 32 bits are scaled off by PRECISION
-        assert(_numerator < MAX_VAL);
-        assert(_denominator < MAX_VAL);
+        assert(_numerator < MAX_F);
+        assert(_denominator < MAX_F);
 
-        return fixedLoge((_numerator * FIXED_ONE) / _denominator);
+        return fixedLoge((_numerator * FLOAT_ONE) / _denominator);
     }
 
 /**
@@ -225,7 +230,7 @@ contract Math is SafeMath {
     This method asserts outside of bounds
 
 */
-    function fixedLoge(uint256 _x) internal constant returns (uint256 logE) {
+    function fixedLoge(uint256 _x) constant returns (uint256 logE) {
     /*
     Since `fixedLog2_min` output range is max `0xdfffffffff`
     (40 bits, or 5 bytes), we can use a very large approximation
@@ -236,7 +241,7 @@ contract Math is SafeMath {
 
     */
     //Cannot represent negative numbers (below 1)
-        assert(_x >= FIXED_ONE);
+        assert(_x >= FLOAT_ONE);
 
         uint256 log2 = fixedLog2(_x);
         logE = (log2 * 0xb17217f7d1cf78) >> 56;
@@ -258,19 +263,19 @@ contract Math is SafeMath {
     This method asserts outside of bounds
 
 */
-    function fixedLog2(uint256 _x) internal constant returns (uint256) {
+    function fixedLog2(uint256 _x) constant returns (uint256) {
     // Numbers below 1 are negative.
-        assert(_x >= FIXED_ONE);
+        assert(_x >= FLOAT_ONE);
 
         uint256 hi = 0;
-        while (_x >= FIXED_TWO) {
+        while (_x >= FLOAT_ONE * 2) {
             _x >>= 1;
-            hi += FIXED_ONE;
+            hi += FLOAT_ONE;
         }
 
         for (uint8 i = 0; i < PRECISION; ++i) {
-            _x = (_x * _x) / FIXED_ONE;
-            if (_x >= FIXED_TWO) {
+            _x = (_x * _x) / FLOAT_ONE;
+            if (_x >= FLOAT_ONE * 2) {
                 _x >>= 1;
                 hi += uint256(1) << (PRECISION - 1 - i);
             }
@@ -283,7 +288,7 @@ contract Math is SafeMath {
     fixedExp is a 'protected' version of `fixedExpUnsafe`, which
     asserts instead of overflows
 */
-    function fixedExp(uint256 _x) internal constant returns (uint256) {
+    function fixedExp(uint256 _x) constant returns (uint256) {
         assert(_x <= 0x386bfdba29);
         return fixedExpUnsafe(_x);
     }
@@ -315,9 +320,9 @@ contract Math is SafeMath {
         print( "\n        ".join(["xi = (xi * _x) >> PRECISION;\n        res += xi * %s;" % hex(int(x)) for x in ni]))
 
 */
-    function fixedExpUnsafe(uint256 _x) internal constant returns (uint256) {
+    function fixedExpUnsafe(uint256 _x) constant returns (uint256) {
 
-        uint256 xi = FIXED_ONE;
+        uint256 xi = FLOAT_ONE;
         uint256 res = 0xde1bc4d19efcac82445da75b00000000 * xi;
 
         xi = (xi * _x) >> PRECISION;
