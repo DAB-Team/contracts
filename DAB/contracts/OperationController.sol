@@ -19,7 +19,7 @@ uint256 public constant CDT_ACTIVATION_LAG = 14 days;         // credit token ac
 uint256 public constant TOKEN_PRICE_N = 1;                  // initial price in wei (numerator)
 uint256 public constant TOKEN_PRICE_D = 10;                // initial price in wei (denominator)
 uint256 public constant BASE_LINE = 50000 ether;       // minimum ether contribution
-uint256 public constant MAX_GAS_PRICE = 50000000000 wei;    // maximum gas price for contribution transactions
+uint256 public constant MAX_GAS_PRICE = 100000000000 wei;    // maximum gas price for contribution transactions
 
 string public version = '0.1';
 
@@ -61,7 +61,7 @@ require(_amount > 0);
 _;
 }
 
-// verifies that the gas price is lower than 50 gwei
+// verifies that the gas price is lower than 100 gwei
 modifier validGasPrice() {
 assert(tx.gasprice <= MAX_GAS_PRICE);
 _;
@@ -86,32 +86,16 @@ _;
 }
 
 
-// ensures that we didn't reach the ether cap
+// ensures that deposit contract activated
 modifier activeDPT() {
 assert(now < dptActivationTime);
 _;
 }
 
-// ensures that we didn't reach the ether cap
+// ensures that credit contract activated
 modifier activeCDT() {
 assert(now < cdtActivationTime);
 _;
 }
-
-// /**
-//     @dev ETH contribution
-//     can only be called during the crowdsale
-
-//     @return tokens issued in return
-// */
-// function contribute()
-// public
-// payable
-// between(startTime, endTime)
-// returns (uint256 amount)
-// {
-// return processContribution();
-// }
-
 
 }

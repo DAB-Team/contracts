@@ -43,7 +43,11 @@ contract Math is SafeMath {
 */
     function Float(uint256 _int) internal constant returns (uint256) {
         assert(_int <= MAX_F);
-        return _int << PRECISION;
+        if (_int == 0){
+            return 0;
+        }else{
+            return _int << PRECISION;
+        }
     }
 
 /**
@@ -53,7 +57,11 @@ contract Math is SafeMath {
 */
     function Decimal(uint256 _int) internal constant returns (uint256) {
         assert(_int <= MAX_D);
-        return safeMul(_int, DECIMAL_ONE);
+        if(_int == 0){
+            return 0;
+        }else{
+            return safeMul(_int, DECIMAL_ONE);
+        }
     }
 
 
