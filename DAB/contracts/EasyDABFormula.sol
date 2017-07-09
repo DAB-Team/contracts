@@ -22,13 +22,13 @@ contract EasyDABFormula is IDABFormula, Math {
 
     uint256 private a = DecimalToFloat(60000000);                        //a=0.6
     uint256 private b = DecimalToFloat(20000000);                        //b=0.2
-    uint256 private l = Float(300000);                    //l=50000000
+    uint256 private l = Float(30000000);                    //l=30000000
     uint256 private d = l / 4;                                //d=l/4
-    uint256 private ip = Float(1);                      //ip=0.001  initial price
-    uint256 private cdt_ip = ip * 2;                      //ip=0.001  initial price
-    uint256 private cdt_crr = Float(3);                      //ip=0.001  initial price
-    uint256 private F = DecimalToFloat(35000000);                      //ip=0.001  initial price
-    uint256 private U = sub(FLOAT_ONE, F);                      //ip=0.001  initial price
+    uint256 private ip = DecimalToFloat(1000000);                      //ip=0.01  initial price of deposit token
+    uint256 private cdt_ip = ip * 2;                      //ip=0.02  initial price of credit token
+    uint256 private cdt_crr = Float(3);                      //cdt_crr=3
+    uint256 private F = DecimalToFloat(35000000);                      //F=0.35 support founders
+    uint256 private U = sub(FLOAT_ONE, F);                      //ip=0.65  for user
     uint256 private cashFeeRate = DecimalToFloat(10000000);
 
     uint256 private cdtLoanRate = cdt_ip / 2;
@@ -64,7 +64,7 @@ contract EasyDABFormula is IDABFormula, Math {
         uint256 mulexp;
         if (_x > _l) {
             rate = div(safeSub(_x, _l), _d);
-            if (rate < 0x2800000000) {
+            if (rate < 0x1e00000000) {
                 exp = fixedExp(rate);
                 addexp = add(FLOAT_ONE, exp);
                 divexp = div(FLOAT_ONE, addexp);
@@ -78,7 +78,7 @@ contract EasyDABFormula is IDABFormula, Math {
         }
         else if (_x < _l && _x >= 0) {
             rate = div(safeSub(_l, _x), _d);
-            if (rate < 0x2800000000) {
+            if (rate < 0x1e00000000) {
                 exp = fixedExp(rate);
                 addexp = add(FLOAT_ONE, exp);
                 divexp = div(FLOAT_ONE, addexp);
@@ -90,7 +90,7 @@ contract EasyDABFormula is IDABFormula, Math {
             }
         }
         else {
-            y = div(add(_a, _b), Float(2));
+            y = div(add(_a, _b * 2), Float(2));
         }
         return y;
     }

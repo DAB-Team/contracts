@@ -856,3 +856,1697 @@
       at test/EasyDABFormula.js:262:21
       at <anonymous>
       at process._tickCallback (internal/process/next_tick.js:169:7)
+
+
+
+ 1) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.077159e+19 should be ==4.077160e+19. [circulation, ethamount] 919523999999999982174208,582000000000000000000
+      at test/EasyDABFormula.js:254:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+ 2) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 5.3e+7 should be ==5.4e+7. [circulation, ethamount] 282389999999999990038528,379000000000000000000
+      at test/EasyDABFormula.js:368:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+
+
+150) Contract: EasyDABFormula Should get correct expect issue crr:
+     AssertionError: AssertionError: crr return 23999024 should be ==24010031. [circulation, ethamount] 497727999999999983222784,920000000000000000000
+      at test/EasyDABFormula.js:338:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  151) Contract: EasyDABFormula Should get correct expect issue crr:
+     AssertionError: AssertionError: crr return 32134844 should be ==32152409. [circulation, ethamount] 402787000000000005505024,423000000000000000000
+      at test/EasyDABFormula.js:338:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  152) Contract: EasyDABFormula Should get correct expect issue crr:
+     AssertionError: AssertionError: crr return 76234461 should be ==76250432. [circulation, ethamount] 96886999999999991873536,446000000000000000000
+      at test/EasyDABFormula.js:338:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  153) Contract: EasyDABFormula Should get correct expect issue crr:
+     AssertionError: AssertionError: crr return 20003875 should be ==20003883. [circulation, ethamount] 1023388000000000051380224,853000000000000000000
+      at test/EasyDABFormula.js:338:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  154) Contract: EasyDABFormula Should get correct expect issue crr:
+     AssertionError: AssertionError: crr return 20206737 should be ==20207273. [circulation, ethamount] 724844999999999973523456,965000000000000000000
+      at test/EasyDABFormula.js:338:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  155) Contract: EasyDABFormula Should get correct expect issue crr:
+     AssertionError: AssertionError: crr return 24344726 should be ==24354788. [circulation, ethamount] 491078999999999987679232,768000000000000000000
+      at test/EasyDABFormula.js:338:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  156) Contract: EasyDABFormula Should get correct expect issue crr:
+     AssertionError: AssertionError: crr return 20369125 should be ==20369553. [circulation, ethamount] 681271999999999968542720,429000000000000000000
+      at test/EasyDABFormula.js:338:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+
+
+1) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.64840949e+19 should be ==3.64840948e+19. [circulation, ethamount] 82024000000000006291456,73000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  2) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.53566890e+20 should be ==3.53566889e+20. [circulation, ethamount] 186234000000000005767168,786000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  3) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 2.00148295e+19 should be ==2.00148296e+19. [circulation, ethamount] 654307999999999982174208,150000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  4) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 1.24254208e+20 should be ==1.24254207e+20. [circulation, ethamount] 46492000000000001048576,245000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  5) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 8.27224598e+19 should be ==8.27224599e+19. [circulation, ethamount] 950446000000000034078720,636000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  6) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.58984702e+19 should be ==3.58984703e+19. [circulation, ethamount] 950265999999999938658304,276000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  7) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 4.95477557e+19 should be ==4.95477558e+19. [circulation, ethamount] 444596999999999971426304,276000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  8) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 1.19307396e+20 should be ==1.19307395e+20. [circulation, ethamount] 278326999999999991873536,338000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  9) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.32920701e+19 should be ==7.32920702e+19. [circulation, ethamount] 780177999999999949144064,561000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  10) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 5.21859686e+19 should be ==5.21859687e+19. [circulation, ethamount] 690825000000000058458112,395000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  11) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 5.62815133e+19 should be ==5.62815134e+19. [circulation, ethamount] 842536999999999949406208,432000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  12) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.82646645e+19 should be ==3.82646646e+19. [circulation, ethamount] 523340999999999981912064,257000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  13) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 8.14527806e+19 should be ==8.14527807e+19. [circulation, ethamount] 618143000000000014942208,601000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  14) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.24309465e+19 should be ==7.24309466e+19. [circulation, ethamount] 993497999999999947046912,557000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  15) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.54082722e+19 should be ==9.54082724e+19. [circulation, ethamount] 731356999999999977717760,727000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  16) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.21901759e+19 should be ==7.21901760e+19. [circulation, ethamount] 696048000000000037748736,547000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  17) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.12102176e+19 should be ==7.12102177e+19. [circulation, ethamount] 535296000000000000000000,487000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  18) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 8.48386704e+19 should be ==8.48386705e+19. [circulation, ethamount] 906046000000000029884416,652000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  19) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 4.34518888e+19 should be ==4.34518889e+19. [circulation, ethamount] 594826000000000001572864,316000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  20) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.42970994e+19 should be ==9.42970995e+19. [circulation, ethamount] 366043000000000024379392,386000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  21) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 1.29118858e+20 should be ==1.29118859e+20. [circulation, ethamount] 775474000000000041418752,988000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  22) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 8.19095621e+19 should be ==8.19095622e+19. [circulation, ethamount] 810808999999999978766336,628000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  23) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.94520828e+19 should be ==7.94520829e+19. [circulation, ethamount] 996476000000000059768832,611000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  24) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.46607872e+18 should be ==7.46607873e+18. [circulation, ethamount] 549167000000000010747904,52000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  25) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 8.96412666e+19 should be ==8.96412667e+19. [circulation, ethamount] 802074000000000064487424,687000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  26) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 1.85979371e+19 should be ==1.85979372e+19. [circulation, ethamount] 964297000000000041680896,143000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  27) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.93583838e+18 should be ==9.93583839e+18. [circulation, ethamount] 466074000000000030932992,59000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  28) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 8.16998316e+19 should be ==8.16998317e+19. [circulation, ethamount] 615635000000000009699328,602000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  29) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.75820403e+19 should be ==3.75820404e+19. [circulation, ethamount] 985815000000000050593792,289000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  30) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 8.79934876e+19 should be ==8.79934875e+19. [circulation, ethamount] 370288000000000004194304,429000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  31) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 6.49261222e+19 should be ==6.49261221e+19. [circulation, ethamount] 444596999999999971426304,276000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  32) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 6.67648191e+19 should be ==6.67648190e+19. [circulation, ethamount] 153221999999999994232832,749000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  33) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 4.54293968e+19 should be ==4.54293967e+19. [circulation, ethamount] 12810999999999999213568,657000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  34) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 6.64599899e+19 should be ==6.64599898e+19. [circulation, ethamount] 26529999999999999475712,950000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  35) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 6.43926678e+19 should be ==6.43926677e+19. [circulation, ethamount] 523340999999999981912064,257000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  36) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 5.40742435e+19 should be ==5.40742434e+19. [circulation, ethamount] 625675999999999988465664,210000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  37) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 2.17759106e+20 should be ==2.17759105e+20. [circulation, ethamount] 484615000000000004456448,890000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  38) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 4.99078095e+19 should be ==4.99078094e+19. [circulation, ethamount] 902213000000000034340864,192000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  39) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 3.40453311e+19 should be ==3.40453310e+19. [circulation, ethamount] 342053999999999985844224,180000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  40) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 7.51339799e+19 should be ==7.51339798e+19. [circulation, ethamount] 985815000000000050593792,289000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  41) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.74674342e+19 should be ==3.74674343e+19. [circulation, ethamount] 792390999999999987679232,533000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  42) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.53877826e+19 should be ==5.53877827e+19. [circulation, ethamount] 370288000000000004194304,429000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  43) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.11011031e+19 should be ==7.11011032e+19. [circulation, ethamount] 538432999999999993446400,907000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  44) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.00435304e+19 should be ==7.00435305e+19. [circulation, ethamount] 785251000000000005505024,996000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  45) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.18816227e+19 should be ==6.18816228e+19. [circulation, ethamount] 769607000000000054788096,879000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  46) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 9.23576067e+18 should be ==9.23576068e+18. [circulation, ethamount] 597827000000000013893632,125000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  47) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.59058514e+19 should be ==7.59058515e+19. [circulation, ethamount] 401489000000000022806528,671000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  48) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.98399098e+19 should be ==5.98399099e+19. [circulation, ethamount] 787043999999999948619776,851000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  49) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.94134708e+19 should be ==6.94134709e+19. [circulation, ethamount] 863453999999999987941376,990000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  50) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.79265476e+19 should be ==5.79265477e+19. [circulation, ethamount] 816591000000000035913728,825000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  51) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.71568534e+19 should be ==6.71568536e+19. [circulation, ethamount] 969184999999999951503360,959000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  52) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.94649608e+19 should be ==3.94649609e+19. [circulation, ethamount] 780177999999999949144064,561000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  53) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.81001369e+19 should be ==2.81001370e+19. [circulation, ethamount] 690825000000000058458112,395000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  54) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.30966434e+19 should be ==6.30966435e+19. [circulation, ethamount] 532362000000000001572864,798000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  55) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.03054302e+19 should be ==3.03054303e+19. [circulation, ethamount] 842536999999999949406208,432000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  56) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.71162067e+19 should be ==3.71162068e+19. [circulation, ethamount] 792270999999999968804864,528000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  57) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.38591895e+19 should be ==4.38591896e+19. [circulation, ethamount] 618143000000000014942208,601000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  58) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.58961228e+19 should be ==5.58961229e+19. [circulation, ethamount] 637389000000000015466496,773000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  59) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.02567191e+19 should be ==6.02567192e+19. [circulation, ethamount] 904920999999999936823296,860000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  60) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.90012788e+19 should be ==3.90012789e+19. [circulation, ethamount] 993497999999999947046912,557000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  61) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.13736850e+19 should be ==5.13736851e+19. [circulation, ethamount] 731356999999999977717760,727000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  62) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.13783991e+18 should be ==7.13783992e+18. [circulation, ethamount] 589156000000000015728640,96000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  63) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 8.08398141e+19 should be ==8.08398142e+19. [circulation, ethamount] 415847999999999989514240,756000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  64) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.83439633e+19 should be ==3.83439634e+19. [circulation, ethamount] 535296000000000000000000,487000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  65) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.56823610e+19 should be ==4.56823611e+19. [circulation, ethamount] 906046000000000029884416,652000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  66) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 1.93951792e+20 should be ==1.93951793e+20. [circulation, ethamount] 210440999999999991349248,839000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  67) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 9.35982157e+18 should be ==9.35982159e+18. [circulation, ethamount] 614485000000000063700992,128000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  68) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.69901940e+19 should be ==7.69901941e+19. [circulation, ethamount] 484615000000000004456448,890000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  69) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 9.31592953e+19 should be ==9.31592954e+19. [circulation, ethamount] 141552999999999997640704,362000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  70) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.79706545e+19 should be ==3.79706546e+19. [circulation, ethamount] 603952000000000020971520,516000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  71) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.07753612e+19 should be ==5.07753613e+19. [circulation, ethamount] 366043000000000024379392,386000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  72) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.86520311e+19 should be ==2.86520312e+19. [circulation, ethamount] 383497999999999968018432,235000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  73) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.95255391e+19 should be ==6.95255392e+19. [circulation, ethamount] 775474000000000041418752,988000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  74) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 1.21909237e+19 should be ==1.21909238e+19. [circulation, ethamount] 710522999999999982436352,172000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  75) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.41051488e+19 should be ==4.41051489e+19. [circulation, ethamount] 810808999999999978766336,628000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  76) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.27818907e+19 should be ==4.27818908e+19. [circulation, ethamount] 996476000000000059768832,611000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  77) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.02019623e+18 should be ==4.02019624e+18. [circulation, ethamount] 549167000000000010747904,52000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  78) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.82683743e+19 should be ==4.82683744e+19. [circulation, ethamount] 802074000000000064487424,687000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  79) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 1.00142738e+19 should be ==1.00142739e+19. [circulation, ethamount] 964297000000000041680896,143000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  80) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.39922170e+19 should be ==4.39922171e+19. [circulation, ethamount] 615635000000000009699328,602000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  81) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.89553091e+19 should be ==5.89553092e+19. [circulation, ethamount] 872620000000000013631488,841000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  82) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 1.80983704e+19 should be ==1.80983705e+19. [circulation, ethamount] 586963000000000009699328,243000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  83) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.02364832e+19 should be ==2.02364833e+19. [circulation, ethamount] 985815000000000050593792,289000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  84) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 4.73811087e+19 should be ==4.73811086e+19. [circulation, ethamount] 370288000000000004194304,429000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  85) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 5.93056943e+18 should be ==5.93056944e+18. [circulation, ethamount] 231875999999999990562816,91000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  86) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 9.42194413e+18 should be ==9.42194414e+18. [circulation, ethamount] 46492000000000001048576,245000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  87) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 4.46918030e+19 should be ==4.46918031e+19. [circulation, ethamount] 242598999999999996067840,654000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  88) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 3.05645778e+19 should be ==3.05645779e+19. [circulation, ethamount] 229938000000000007864320,473000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  89) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 4.18655166e+19 should be ==4.18655167e+19. [circulation, ethamount] 194555999999999992659968,752000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  90) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 9.15458745e+17 should be ==9.15458746e+17. [circulation, ethamount] 39147999999999996854272,24000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  91) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 1.04841905e+19 should be ==1.04841906e+19. [circulation, ethamount] 182932000000000003145728,197000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  92) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 2.19996983e+19 should be ==2.19996984e+19. [circulation, ethamount] 38744000000000002097152,577000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  93) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 1.64240411e+19 should be ==1.64240412e+19. [circulation, ethamount] 412116000000000019922944,136000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  94) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 6.91e+7 should be ==6.92e+7. [circulation, ethamount] 186234000000000005767168,786000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  95) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 5.56e+7 should be ==5.57e+7. [circulation, ethamount] 271378999999999992922112,570000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  96) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 5.22e+7 should be ==5.23e+7. [circulation, ethamount] 288497999999999991087104,758000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  97) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 5.98e+7 should be ==5.99e+7. [circulation, ethamount] 248344999999999987154944,901000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  98) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 7.25e+7 should be ==7.26e+7. [circulation, ethamount] 153221999999999994232832,749000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  99) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 6.09e+7 should be ==6.10e+7. [circulation, ethamount] 242598999999999996067840,654000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  100) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 2.08e+7 should be ==2.09e+7. [circulation, ethamount] 618143000000000014942208,601000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  101) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 3.56e+7 should be ==3.57e+7. [circulation, ethamount] 378091999999999996854272,932000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  102) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 3.05e+7 should be ==3.06e+7. [circulation, ethamount] 415847999999999989514240,756000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  103) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 6.30e+7 should be ==6.31e+7. [circulation, ethamount] 229938000000000007864320,473000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  104) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 7.66e+7 should be ==7.67e+7. [circulation, ethamount] 87487000000000006553600,638000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  105) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 5.08e+7 should be ==5.09e+7. [circulation, ethamount] 295556999999999984009216,390000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  106) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 6.81e+7 should be ==6.82e+7. [circulation, ethamount] 194555999999999992659968,752000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  107) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 6.24e+7 should be ==6.25e+7. [circulation, ethamount] 233306999999999990824960,827000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  108) Contract: EasyDABFormula Should get correct expect issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 5.49493823e+19 should be ==5.49493822e+19. [circulation, ethamount] 796246999999999949930496,421000000000000000000
+      at test/EasyDABFormula.js:118:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  109) Contract: EasyDABFormula Should get correct expect issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 6.38300010e+19 should be ==6.38300009e+19. [circulation, ethamount] 1726667999999999938134016,491000000000000000000
+      at test/EasyDABFormula.js:118:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  110) Contract: EasyDABFormula Should get correct expect issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.32408739e+19 should be ==9.32408738e+19. [circulation, ethamount] 636306999999999959367680,694000000000000000000
+      at test/EasyDABFormula.js:118:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+
+210) Contract: EasyDABFormula Should get correct expect issue crr:
+     AssertionError: AssertionError: crr return 5.67e+7 should be ==5.68e+7. [circulation, ethamount] 265470999999999989776384,821000000000000000000
+      at test/EasyDABFormula.js:344:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+
+
+
+126 failing
+
+  1) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.62822357e+19 should be ==9.62822359e+19. [circulation, ethamount] 912219000000000057933824,740000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  2) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 4.82338904e+19 should be ==4.82338905e+19. [circulation, ethamount] 613582999999999968804864,355000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  3) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.10635704e+19 should be ==3.10635705e+19. [circulation, ethamount] 568627999999999994757120,221000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  4) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 8.37780168e+19 should be ==8.37780169e+19. [circulation, ethamount] 754927000000000027525120,640000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  5) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.92550143e+19 should be ==7.92550144e+19. [circulation, ethamount] 677252999999999950454784,598000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  6) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 6.51671563e+19 should be ==6.51671564e+19. [circulation, ethamount] 942557000000000044826624,501000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  7) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 5.14691250e+19 should be ==5.14691251e+19. [circulation, ethamount] 781719000000000000262144,394000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  8) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.98072432e+19 should be ==9.98072433e+19. [circulation, ethamount] 838541000000000032243712,766000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  9) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.69474602e+19 should be ==3.69474603e+19. [circulation, ethamount] 922659999999999965396992,284000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  10) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.05829625e+19 should be ==3.05829626e+19. [circulation, ethamount] 894749999999999971164160,235000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  11) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.07696357e+19 should be ==9.07696358e+19. [circulation, ethamount] 677943000000000025427968,685000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  12) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 5.39760619e+19 should be ==5.39760620e+19. [circulation, ethamount] 955033999999999963824128,415000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  13) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.73065602e+19 should be ==7.73065603e+19. [circulation, ethamount] 599417000000000029097984,564000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  14) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 5.44615033e+19 should be ==5.44615034e+19. [circulation, ethamount] 474856000000000023068672,331000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  15) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.23949681e+19 should be ==7.23949682e+19. [circulation, ethamount] 776605000000000061603840,554000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  16) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.93815608e+19 should be ==3.93815609e+19. [circulation, ethamount] 760757000000000038535168,301000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  17) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 1.24028224e+20 should be ==1.24028225e+20. [circulation, ethamount] 477051999999999992659968,758000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  18) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.38700120e+18 should be ==9.38700121e+18. [circulation, ethamount] 611365999999999985844224,69000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  19) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 1.30527925e+20 should be ==1.30527926e+20. [circulation, ethamount] 726623000000000031719424,994000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  20) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 4.25518985e+20 should be ==4.25518984e+20. [circulation, ethamount] 20542999999999998164992,833000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  21) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 3.97360650e+19 should be ==3.97360651e+19. [circulation, ethamount] 405230000000000017301504,192000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  22) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 5.78764545e+19 should be ==5.78764546e+19. [circulation, ethamount] 959148000000000013631488,445000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  23) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 2.05900992e+20 should be ==2.05900993e+20. [circulation, ethamount] 321933999999999975358464,694000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  24) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 8.15786374e+19 should be ==8.15786375e+19. [circulation, ethamount] 913348000000000057671680,627000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  25) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 8.51576297e+19 should be ==8.51576298e+19. [circulation, ethamount] 864311000000000025427968,654000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  26) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.51500312e+19 should be ==9.51500313e+19. [circulation, ethamount] 882929000000000047972352,731000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  27) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 5.00823349e+19 should be ==5.00823350e+19. [circulation, ethamount] 542743999999999976931328,346000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  28) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 9.12580548e+19 should be ==9.12580547e+19. [circulation, ethamount] 613582999999999968804864,355000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  29) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 1.02315438e+20 should be ==1.02315437e+20. [circulation, ethamount] 781719000000000000262144,394000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  30) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 9.33178206e+19 should be ==9.33178205e+19. [circulation, ethamount] 345542000000000011010048,488000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  31) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 5.93390716e+19 should be ==5.93390715e+19. [circulation, ethamount] 513650999999999967756288,238000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  32) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 2.36367329e+20 should be ==2.36367328e+20. [circulation, ethamount] 644360000000000014680064,916000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  33) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 2.80585744e+19 should be ==2.80585745e+19. [circulation, ethamount] 79754999999999995019264,375000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  34) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 2.14957922e+20 should be ==2.14957921e+20. [circulation, ethamount] 528185999999999988989952,856000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  35) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 6.10835188e+19 should be ==6.10835187e+19. [circulation, ethamount] 894749999999999971164160,235000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  36) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 7.26171568e+19 should be ==7.26171567e+19. [circulation, ethamount] 475500999999999973523456,299000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  37) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 8.03442484e+19 should be ==8.03442483e+19. [circulation, ethamount] 474856000000000023068672,331000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  38) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 4.08095839e+19 should be ==4.08095838e+19. [circulation, ethamount] 898916000000000015728640,157000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  39) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 2.35760989e+20 should be ==2.35760988e+20. [circulation, ethamount] 773791000000000014942208,908000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  40) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 6.10565142e+19 should be ==6.10565141e+19. [circulation, ethamount] 821939999999999961202688,235000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  41) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 8.54607671e+19 should be ==8.54607670e+19. [circulation, ethamount] 178528000000000008388608,879000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  42) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 9.77523081e+19 should be ==9.77523080e+19. [circulation, ethamount] 987172999999999975620608,376000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  43) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 4.48632300e+19 should be ==4.48632299e+19. [circulation, ethamount] 636694000000000023592960,174000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  44) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 1.88151679e+19 should be ==1.88151678e+19. [circulation, ethamount] 467920999999999989252096,78000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  45) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 1.34898199e+20 should be ==1.34898198e+20. [circulation, ethamount] 300043000000000011796480,830000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  46) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 5.86908447e+19 should be ==5.86908446e+19. [circulation, ethamount] 247749000000000000786432,452000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  47) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 8.74088326e+19 should be ==8.74088325e+19. [circulation, ethamount] 542743999999999976931328,346000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  48) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 6.30920421e+19 should be ==6.30920420e+19. [circulation, ethamount] 186393999999999997378560,630000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  49) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.18442807e+19 should be ==5.18442809e+19. [circulation, ethamount] 912219000000000057933824,740000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  50) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.59720948e+19 should be ==2.59720949e+19. [circulation, ethamount] 613582999999999968804864,355000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  51) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 8.85434304e+19 should be ==8.85434305e+19. [circulation, ethamount] 327612999999999986106368,568000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  52) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 1.67265379e+19 should be ==1.67265380e+19. [circulation, ethamount] 568627999999999994757120,221000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  53) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.57114908e+19 should be ==6.57114910e+19. [circulation, ethamount] 854200000000000002097152,937000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  54) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.51112398e+19 should be ==4.51112399e+19. [circulation, ethamount] 754927000000000027525120,640000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  55) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.26757769e+19 should be ==4.26757770e+19. [circulation, ethamount] 677252999999999950454784,598000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  56) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.50900072e+19 should be ==3.50900073e+19. [circulation, ethamount] 942557000000000044826624,501000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  57) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 1.62145740e+19 should be ==1.62145741e+19. [circulation, ethamount] 481374000000000021495808,186000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  58) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.77141442e+19 should be ==2.77141443e+19. [circulation, ethamount] 781719000000000000262144,394000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  59) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.03038855e+19 should be ==7.03038856e+19. [circulation, ethamount] 345542000000000011010048,488000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  60) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 9.64247391e+18 should be ==9.64247392e+18. [circulation, ethamount] 631419000000000049545216,133000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  61) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.60505693e+19 should be ==6.60505695e+19. [circulation, ethamount] 644360000000000014680064,916000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  62) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 1.64027016e+20 should be ==1.64027017e+20. [circulation, ethamount] 146802000000000007864320,641000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  63) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.81068538e+19 should be ==6.81068539e+19. [circulation, ethamount] 528185999999999988989952,856000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  64) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.33701126e+19 should be ==6.33701127e+19. [circulation, ethamount] 986519000000000000262144,905000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  65) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.08654160e+19 should be ==6.08654161e+19. [circulation, ethamount] 521561999999999980601344,757000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  66) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.58589193e+19 should be ==7.58589194e+19. [circulation, ethamount] 37317999999999998427136,277000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  67) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.37423617e+19 should be ==5.37423618e+19. [circulation, ethamount] 838541000000000032243712,766000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  68) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 1.64677490e+19 should be ==1.64677491e+19. [circulation, ethamount] 894749999999999971164160,235000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  69) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.88759576e+19 should be ==4.88759577e+19. [circulation, ethamount] 677943000000000025427968,685000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  70) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.90640333e+19 should be ==2.90640334e+19. [circulation, ethamount] 955033999999999963824128,415000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  71) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.39692885e+19 should be ==5.39692886e+19. [circulation, ethamount] 776671000000000065273856,767000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  72) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 1.98187829e+19 should be ==1.98187830e+19. [circulation, ethamount] 796573999999999937609728,282000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  73) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 8.82348163e+19 should be ==8.82348164e+19. [circulation, ethamount] 392267000000000028573696,751000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  74) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.16266093e+19 should be ==4.16266094e+19. [circulation, ethamount] 599417000000000029097984,564000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  75) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.93254248e+19 should be ==2.93254249e+19. [circulation, ethamount] 474856000000000023068672,331000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  76) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.69473027e+19 should be ==5.69473028e+19. [circulation, ethamount] 536988999999999994494976,725000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  77) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 9.12995761e+19 should be ==9.12995762e+19. [circulation, ethamount] 457617000000000006029312,983000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  78) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.39035508e+19 should be ==6.39035509e+19. [circulation, ethamount] 773791000000000014942208,908000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  79) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.12054558e+19 should be ==2.12054559e+19. [circulation, ethamount] 760757000000000038535168,301000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  80) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.54169130e+19 should be ==6.54169131e+19. [circulation, ethamount] 466371999999999990562816,722000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  81) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.49204638e+19 should be ==6.49204639e+19. [circulation, ethamount] 867574999999999975096320,926000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  82) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.74603553e+18 should be ==2.74603554e+18. [circulation, ethamount] 638931999999999952814080,38000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  83) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.67844285e+19 should be ==6.67844286e+19. [circulation, ethamount] 477051999999999992659968,758000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  84) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.37687568e+19 should be ==7.37687569e+19. [circulation, ethamount] 386951999999999981125632,614000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  85) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.84963178e+19 should be ==5.84963179e+19. [circulation, ethamount] 917905999999999949144064,835000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  86) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.02842675e+19 should be ==7.02842676e+19. [circulation, ethamount] 726623000000000031719424,994000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  87) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.63282836e+19 should be ==2.63282837e+19. [circulation, ethamount] 987172999999999975620608,376000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  88) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.60350208e+18 should be ==5.60350209e+18. [circulation, ethamount] 533632999999999976669184,71000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  89) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.17299288e+19 should be ==3.17299289e+19. [circulation, ethamount] 583945999999999968018432,425000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  90) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 9.06904006e+19 should be ==9.06904007e+19. [circulation, ethamount] 304161000000000001835008,527000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  91) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 7.03751154e+18 should be ==7.03751155e+18. [circulation, ethamount] 467920999999999989252096,78000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  92) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 3.11642447e+19 should be ==3.11642448e+19. [circulation, ethamount] 959148000000000013631488,445000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  93) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 6.91176084e+19 should be ==6.91176085e+19. [circulation, ethamount] 969263999999999953862656,987000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  94) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.39269586e+19 should be ==4.39269587e+19. [circulation, ethamount] 913348000000000057671680,627000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  95) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.58541083e+19 should be ==4.58541084e+19. [circulation, ethamount] 864311000000000025427968,654000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  96) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 5.80696305e+19 should be ==5.80696306e+19. [circulation, ethamount] 665091000000000030670848,811000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  97) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 9.69888467e+18 should be ==9.69888468e+18. [circulation, ethamount] 528722000000000033030144,122000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  98) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.38142246e+19 should be ==4.38142247e+19. [circulation, ethamount] 465186000000000012058624,482000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  99) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 3.70317127e+17 should be ==3.70317128e+17. [circulation, ethamount] 260737000000000010223616,5000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  100) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 4.84264760e+19 should be ==4.84264761e+19. [circulation, ethamount] 192198999999999987679232,878000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  101) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 3.19518077e+19 should be ==3.19518078e+19. [circulation, ethamount] 513650999999999967756288,238000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  102) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 3.97526068e+19 should be ==3.97526069e+19. [circulation, ethamount] 922659999999999965396992,284000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  103) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 5.81625090e+19 should be ==5.81625089e+19. [circulation, ethamount] 313393000000000031195136,631000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  104) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 9.62324895e+18 should be ==9.62324896e+18. [circulation, ethamount] 533632999999999976669184,71000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  105) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 6.08107223e+19 should be ==6.08107224e+19. [circulation, ethamount] 249240999999999987154944,864000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  106) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 4.68797997e+19 should be ==4.68797996e+19. [circulation, ethamount] 304161000000000001835008,527000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  107) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 6.24428876e+19 should be ==6.24428877e+19. [circulation, ethamount] 465186000000000012058624,482000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  108) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 5.93e+7 should be ==5.94e+7. [circulation, ethamount] 251563000000000003407872,388000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  109) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 6.84e+7 should be ==6.85e+7. [circulation, ethamount] 192198999999999987679232,878000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  110) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 4.11e+7 should be ==4.12e+7. [circulation, ethamount] 345542000000000011010048,488000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  111) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 7.39e+7 should be ==7.40e+7. [circulation, ethamount] 135751000000000004456448,319000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  112) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 3.35e+7 should be ==3.36e+7. [circulation, ethamount] 392267000000000028573696,751000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  113) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 7.00e+7 should be ==7.01e+7. [circulation, ethamount] 178528000000000008388608,879000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  114) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 7.00e+7 should be ==7.01e+7. [circulation, ethamount] 178623000000000006553600,842000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  115) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 3.06e+7 should be ==3.07e+7. [circulation, ethamount] 414886000000000019398656,422000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  116) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 5.37e+7 should be ==5.38e+7. [circulation, ethamount] 281069999999999983747072,194000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  117) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 5.57e+7 should be ==5.58e+7. [circulation, ethamount] 270872999999999987154944,784000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  118) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 5.97e+7 should be ==5.98e+7. [circulation, ethamount] 249240999999999987154944,864000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  119) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 4.91e+7 should be ==4.92e+7. [circulation, ethamount] 304161000000000001835008,527000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  120) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 4.99e+7 should be ==5.00e+7. [circulation, ethamount] 300043000000000011796480,830000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  121) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 7.68e+7 should be ==7.69e+7. [circulation, ethamount] 82833999999999999475712,450000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  122) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 4.29e+7 should be ==4.30e+7. [circulation, ethamount] 335873000000000010223616,785000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  123) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 6.91e+7 should be ==6.92e+7. [circulation, ethamount] 186393999999999997378560,630000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  124) Contract: EasyDABFormula Should get correct expect issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 9.62105250e+18 should be ==9.62105249e+18. [circulation, ethamount] 1066424999999999945211904,74000000000000000000
+      at test/EasyDABFormula.js:118:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  125) Contract: EasyDABFormula Should get correct expect issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 6.22665589e+19 should be ==6.22665588e+19. [circulation, ethamount] 88242000000000007864320,125000000000000000000
+      at test/EasyDABFormula.js:118:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  126) Contract: EasyDABFormula Should get correct expect issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 2.05158309e+19 should be ==2.05158308e+19. [circulation, ethamount] 784184999999999978766336,79000000000000000000
+      at test/EasyDABFormula.js:172:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+
+
+  1) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 2.0863470e+20 should be ==2.0863469e+20. [circulation, ethamount] 298451000000000009699328,638000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  2) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+     AssertionError: AssertionError: User's DPT return 7.7391857e+19 should be ==7.7391858e+19. [circulation, ethamount] 798005999999999948095488,593000000000000000000
+      at test/EasyDABFormula.js:144:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  3) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 7.7184675e+19 should be ==7.7184674e+19. [circulation, ethamount] 363595999999999971688448,383000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  4) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 1.8196033e+18 should be ==1.8196032e+18. [circulation, ethamount] 910730000000000001572864,7000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  5) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 1.8583859e+20 should be ==1.8583858e+20. [circulation, ethamount] 502922000000000001572864,750000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  6) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+     AssertionError: AssertionError: User's CDT return 9.6964335e+19 should be ==9.6964334e+19. [circulation, ethamount] 718070999999999975096320,374000000000000000000
+      at test/EasyDABFormula.js:200:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  7) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 8.9274271e+19 should be ==8.9274272e+19. [circulation, ethamount] 417150000000000013107200,839000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  8) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.0129247e+19 should be ==4.0129248e+19. [circulation, ethamount] 592323999999999990562816,541000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  9) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 4.6645492e+19 should be ==4.6645493e+19. [circulation, ethamount] 329732999999999984009216,302000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  10) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+     AssertionError: AssertionError: Founder's DPT return 2.7389396e+19 should be ==2.7389397e+19. [circulation, ethamount] 811431000000000029622272,390000000000000000000
+      at test/EasyDABFormula.js:257:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  11) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+     AssertionError: AssertionError: Founder's CDT return 4.9245675e+18 should be ==4.9245676e+18. [circulation, ethamount] 107123000000000001310720,116000000000000000000
+      at test/EasyDABFormula.js:315:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  12) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 7.0e+7 should be ==7.1e+7. [circulation, ethamount] 174056999999999999737856,988000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  13) Contract: EasyDABFormula Should get correct exact issue crr:
+     AssertionError: AssertionError: crr return 6.0e+7 should be ==6.1e+7. [circulation, ethamount] 244682999999999995019264,908000000000000000000
+      at test/EasyDABFormula.js:373:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+
+
+  1) Contract: EasyDABFormula Should get correct expect issue of user's DPT:
+       AssertionError: AssertionError: User's DPT return 9.75000e+20 should be ==7.80000e+20. [circulation, ethamount] 30000000000000000570425344,30000000000000000000
+        at test/EasyDABFormula.js:118:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    2) Contract: EasyDABFormula Should get correct expect issue of user's CDT:
+       AssertionError: AssertionError: User's CDT return 4.87500e+20 should be ==5.85000e+20. [circulation, ethamount] 30000000000000000570425344,30000000000000000000
+        at test/EasyDABFormula.js:172:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    3) Contract: EasyDABFormula Should get correct expect issue of user's CDT:
+       AssertionError: AssertionError: User's CDT return 2.57381e+21 should be ==2.57380e+21. [circulation, ethamount] 98999999999999994580959232,99000000000000000000
+        at test/EasyDABFormula.js:172:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    4) Contract: EasyDABFormula Should get correct expect issue of founder's DPT:
+       AssertionError: AssertionError: Founder's DPT return 5.25000e+20 should be ==4.20000e+20. [circulation, ethamount] 30000000000000000570425344,30000000000000000000
+        at test/EasyDABFormula.js:228:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    5) Contract: EasyDABFormula Should get correct expect issue of founder's CDT:
+       AssertionError: AssertionError: Founder's CDT return 7.49045e+18 should be ==7.49044e+18. [circulation, ethamount] 1999999999999999966445568,2000000000000000000
+        at test/EasyDABFormula.js:286:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    6) Contract: EasyDABFormula Should get correct expect issue of founder's CDT:
+       AssertionError: AssertionError: Founder's CDT return 2.62500e+20 should be ==3.15000e+20. [circulation, ethamount] 30000000000000000570425344,30000000000000000000
+        at test/EasyDABFormula.js:286:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    7) Contract: EasyDABFormula Should get correct expect issue of founder's CDT:
+       AssertionError: AssertionError: Founder's CDT return 1.38590e+21 should be ==1.38589e+21. [circulation, ethamount] 98999999999999994580959232,99000000000000000000
+        at test/EasyDABFormula.js:286:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    8) Contract: EasyDABFormula Should get correct expect issue crr:
+       AssertionError: AssertionError: crr return 5.0e+7 should be ==4.0e+7. [circulation, ethamount] 30000000000000000570425344,30000000000000000000
+        at test/EasyDABFormula.js:344:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    9) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+       AssertionError: AssertionError: User's CDT return 2.57381e+21 should be ==2.57380e+21. [circulation, ethamount] 98999999999999994580959232,99000000000000000000
+        at test/EasyDABFormula.js:200:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    10) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+       AssertionError: AssertionError: Founder's DPT return 4.62288e+20 should be ==4.62287e+20. [circulation, ethamount] 63999999999999998926258176,64000000000000000000
+        at test/EasyDABFormula.js:257:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    11) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+       AssertionError: AssertionError: Founder's CDT return 7.49045e+18 should be ==7.49044e+18. [circulation, ethamount] 1999999999999999966445568,2000000000000000000
+        at test/EasyDABFormula.js:315:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    12) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+       AssertionError: AssertionError: Founder's CDT return 1.38590e+21 should be ==1.38589e+21. [circulation, ethamount] 98999999999999994580959232,99000000000000000000
+        at test/EasyDABFormula.js:315:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    13) Contract: EasyDABFormula Should get correct expect issue of user's CDT:
+       AssertionError: AssertionError: User's CDT return 5.67855e+19 should be ==5.67854e+19. [circulation, ethamount] 4101601000000000219938816,8000000000000000000
+        at test/EasyDABFormula.js:172:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    14) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+       AssertionError: AssertionError: User's DPT return 9.57136e+19 should be ==9.57135e+19. [circulation, ethamount] 60312105999999998416125952,7000000000000000000
+        at test/EasyDABFormula.js:144:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    15) Contract: EasyDABFormula Should get correct exact issue of user's DPT:
+       AssertionError: AssertionError: User's DPT return 8.09768e+20 should be ==8.09767e+20. [circulation, ethamount] 45800946000000001870135296,47000000000000000000
+        at test/EasyDABFormula.js:144:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    16) Contract: EasyDABFormula Should get correct exact issue of user's CDT:
+       AssertionError: AssertionError: User's CDT return 8.29261e+20 should be ==8.29260e+20. [circulation, ethamount] 19206578999999999212781568,81000000000000000000
+        at test/EasyDABFormula.js:200:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    17) Contract: EasyDABFormula Should get correct exact issue of founder's DPT:
+       AssertionError: AssertionError: Founder's DPT return 5.67567e+20 should be ==5.67566e+20. [circulation, ethamount] 90051946000000006385303552,81000000000000000000
+        at test/EasyDABFormula.js:257:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    18) Contract: EasyDABFormula Should get correct exact issue of founder's CDT:
+       AssertionError: AssertionError: Founder's CDT return 9.16143e+20 should be ==9.16142e+20. [circulation, ethamount] 63511183999999998653628416,66000000000000000000
+        at test/EasyDABFormula.js:315:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+    19) Contract: EasyDABFormula Should get correct exact issue crr:
+       AssertionError: AssertionError: crr return 3.2e+7 should be ==3.3e+7. [circulation, ethamount] 40011348999999996037169152,98000000000000000000
+        at test/EasyDABFormula.js:373:21
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+  1 failing
+
+  1) Contract: EasyDABFormula Should get correct expect issue crr:
+     AssertionError: AssertionError: crr return 6.4e+7 should be ==6.5e+7. [circulation, ethamount] 22088839000000000172228608,70000000000000000000
+      at test/EasyDABFormula.js:344:21
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:169:7)
+
+

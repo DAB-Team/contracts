@@ -13,7 +13,7 @@ def _sigmoid(a, b, l, d, x):
     assert d > 0
     if x > l:
         rate = math.div(math.safeSub(x, l), d)
-        if rate < 0x2800000000:
+        if rate < 0x1e00000000:
             exp = math.fixedExp(rate)
             addexp = math.add(1 << 32, exp)
             divexp = math.div(1 << 32, addexp)
@@ -21,10 +21,9 @@ def _sigmoid(a, b, l, d, x):
             y = math.add(mulexp, b)
         else:
             y = b
-
-    elif (x < l) and (x > 0):
+    elif (x < l) and (x >= 0):
         rate = math.div(math.safeSub(l, x), d)
-        if rate < 0x2800000000:
+        if rate < 0x1e00000000:
             exp = math.fixedExp(rate)
             addexp = math.add(1 << 32, exp)
             divexp = math.div(1 << 32, addexp)
@@ -33,7 +32,7 @@ def _sigmoid(a, b, l, d, x):
         else:
             y = math.add(a, b)
     else:
-        y = math.div(math.add(a, b), 2<<32)
+        y = math.div(math.add(a, b * 2), math.float(2))
     return y
 
 
@@ -45,10 +44,10 @@ class EasyDABFormula(object):
         # Parameters to resize and move the CRR curve
         self.a = 0.6
         self.b = 0.2
-        self.l = 300000
+        self.l = 30000000
         self.d = self.l/4
 
-        self.DPTIP = 1    # Initial Price of DPT
+        self.DPTIP = 0.01    # Initial Price of DPT
         self.DPTP = self.DPTIP    # Contemporary Price of DPT
         self.DPTF = 0    # DPT Issued to Founders
 
@@ -128,13 +127,13 @@ class EasyDABFormula(object):
         ethamount = math.ethertofloat(ethamount)
         crr = self._get_crr(circulation)
         dpt = math.mul(math.div(ethamount, math.decimaltofloat(self.DPTIP * self.decimal)), crr)
-        cdt = math.div(math.mul(math.sub(math.float(1), crr), ethamount), math.decimaltofloat(self.DPTIP * self.decimal))
-        crr = self._get_crr( circulation)
+        cdt = math.div(math.mul(math.sub(math.float(1), crr), ethamount), math.decimaltofloat(self.CDTIP * self.decimal))
+        crr = self._get_crr(circulation)
         # Split the new issued tokens to User and Founder
-        fdpt = math.mul(dpt, math.decimaltofloat(self.F * self.decimal))
-        fcdt = math.mul(cdt, math.decimaltofloat(self.F * self.decimal))
         udpt = math.mul(dpt, math.decimaltofloat(self.U * self.decimal))
         ucdt = math.mul(cdt, math.decimaltofloat(self.U * self.decimal))
+        fdpt = math.mul(dpt, math.decimaltofloat(self.F * self.decimal))
+        fcdt = math.mul(cdt, math.decimaltofloat(self.F * self.decimal))
         return math.floattoether(udpt), math.floattoether(ucdt), math.floattoether(fdpt), math.floattoether(fcdt), math.floattodecimal(crr)
 
 
@@ -163,7 +162,7 @@ class EasyDABFormula(object):
         if (dptsupply-dptcirculation) >= token.real:
             crr = self.get_crr(dptcirculation + token)
             dptprice = dptbalance / ((dptcirculation + token) * crr)
-            return token * self.ether, crr * self.decimal, dptprice * self.decimal
+            return token.real * self.ether, 0, crr.real * self.decimal, dptprice.real * self.decimal
         # the second situation is there is insufficient DPT in the contract
         else:
             # the maximum supposed token transfer from contract to user is determined by the remaining DPT in the contract.
@@ -173,7 +172,54 @@ class EasyDABFormula(object):
             crr = self.get_crr(dptcirculation + token)
             # the maximum price after the deposit
             dptprice = max_balance / (dptcirculation * crr)
-            return token * self.ether, (ethamount - token * dptprice) * self.ether, crr * self.decimal, dptprice * self.decimal
+            return token.real * self.ether, (ethamount - token * dptprice).real * self.ether, crr.real * self.decimal, dptprice.real * self.decimal
+
+
+    def _deposit(self, dptbalance, dptsupply, dptcirculation, ethamount):
+        # check overflow and change unit
+        dptbalance = math.uint256(dptbalance)
+        dptsupply = math.uint256(dptsupply)
+        dptcirculation = math.uint256(dptcirculation)
+        ethamount = math.uint256(ethamount)
+
+        dptbalance = math.ethertofloat(dptbalance)
+        dptsupply = math.ethertofloat(dptsupply)
+        dptcirculation = math.ethertofloat(dptcirculation)
+        ethamount = math.ethertofloat(ethamount)
+
+        # Calculate current CRR and price of DPT
+        crr = self._get_crr(dptcirculation)
+        dptprice = math.div(dptbalance, math.mul(dptcirculation, crr))
+        # Calculate the maximum DPT should be gave to user
+        token = math.div(ethamount, dptprice)
+        # Calculate the maximum balance of DPT contract
+        max_balance = math.add(dptbalance, ethamount)
+        # Calculate the minimum CRR of DPT
+        crr = self._get_crr(math.add(dptcirculation, token))
+        # Calculate the maximum price of DPT
+        dptprice = math.div(max_balance, math.mul(dptcirculation, crr))
+        # Actual price is equal to maximum price of DPT, for exchanging as less DPT to user as possible.
+        token = math.div(ethamount, dptprice)
+        # There could be less DPT remained in the DPT contract than supposed DPT, so contract need to issue new DPT
+        # the first situation is there is enough DPT
+        if math.sub(dptsupply, dptcirculation) >= token.real:
+            crr = self._get_crr(math.add(dptcirculation, token))
+            dptprice = math.div(dptbalance, math.mul(math.add(dptcirculation, token), crr))
+            return math.floattoether(token), 0, math.floattodecimal(crr), math.floattodecimal(dptprice)
+        # the second situation is there is insufficient DPT in the contract
+        else:
+            # the maximum supposed token transfer from contract to user is determined by the remaining DPT in the contract.
+            # the issue price of token is
+            token = math.sub(dptsupply, dptcirculation)
+            # the minimum CRR after the deposit
+            crr = self._get_crr(math.add(dptcirculation, token))
+            # the maximum price after the deposit
+            dptprice = math.div(max_balance, math.mul(dptcirculation, crr))
+            return math.floattoether(token), math.floattoether(math.sub(ethamount, math.mul(token, dptprice))), math.floattodecimal(crr), math.floattodecimal(dptprice)
+
+
+
+
 
     def withdraw(self, dptbalance, dptcirculation, dptamount):
         # change unit
