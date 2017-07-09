@@ -218,9 +218,6 @@ class EasyDABFormula(object):
             return math.floattoether(token), math.floattoether(math.sub(ethamount, math.mul(token, dptprice))), math.floattodecimal(crr), math.floattodecimal(dptprice)
 
 
-
-
-
     def withdraw(self, dptbalance, dptcirculation, dptamount):
         # change unit
         dptbalance /= self.ether
@@ -233,10 +230,31 @@ class EasyDABFormula(object):
         # Calculate the maximum CRR after withdraw
         max_crr = self.get_crr(dptcirculation - dptamount)
         # Calculate the minimum price after withdraw
-        dptprice = (dptbalance - dptamount * dptprice) / (dptcirculation * max_crr)
+        dptprice = (dptbalance - ethamount) / (dptcirculation * max_crr)
         # the actual withdraw price of DPT is equal to the minimum possible price after withdraw, ether=DPT*P
         actual_ether = dptamount * dptprice
         return actual_ether * self.ether, dptamount * self.ether, max_crr * self.decimal, dptprice * self.decimal
+
+    def _withdraw(self, dptbalance, dptcirculation, dptamount):
+        # check overflow and change unit
+        dptbalance = math.uint256(dptbalance)
+        dptcirculation = math.uint256(dptcirculation)
+        dptamount = math.uint256(dptamount)
+
+        dptbalance = math.ethertofloat(dptbalance)
+        dptcirculation = math.ethertofloat(dptcirculation)
+        dptamount = math.ethertofloat(dptamount)
+
+        dptprice = math.div(dptbalance, math.mul(dptcirculation, self._get_crr(dptcirculation)))
+        # Calculate the maximum ether should be returned to user
+        ethamount = math.mul(dptamount, dptprice)
+        # Calculate the maximum CRR after withdraw
+        max_crr = self._get_crr(math.sub(dptcirculation, dptamount))
+        # Calculate the minimum price after withdraw
+        dptprice = math.div(math.sub(dptbalance, ethamount), math.mul(dptcirculation, max_crr))
+        # the actual withdraw price of DPT is equal to the minimum possible price after withdraw, ether=DPT*P
+        actual_ether = math.mul(dptamount, dptprice)
+        return math.floattoether(actual_ether), math.floattoether(dptamount), math.floattoether(max_crr), math.floattoether(dptprice)
 
     def cash(self, cdtbalance, cdtsupply, cdtamount):
         # change unit

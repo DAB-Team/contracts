@@ -16,11 +16,12 @@ test_to_discredit = []
 
 
 test_round = 10000
-test_num = 50
+test_num = 10
 max_balance = 1000000
 max_supply = 100000000
 max_circulation = max_supply
 max_ethamount = 100
+max_dptamount = 15000
 
 def generateTestData(outp):
     """ Generates some random scenarios"""
@@ -214,6 +215,30 @@ def generateTestData(outp):
         except AssertionError as err:
             continue
     outp.write("];\n\n\n")
+
+    # dptbalance, dptcirculation, dptamount
+    outp.write("module.exports.getRandomExpectWithdraw= [\n")
+    num = 0
+    for i in range(1, test_round):
+        balance = random.randrange(1, max_balance - max_ethamount)
+        balance =  balance + max_ethamount
+        supply = random.randrange(int(balance/formula.DPTIP/10), int(balance/formula.DPTIP * 10))
+        circulation = random.randrange(1, supply)
+        dptamount = random.randrange(1, max_dptamount)
+
+        balance *= formula.ether
+        circulation *= formula.ether
+        ethamount *= formula.ether
+        try:
+            ether_expect, dptamount_expect, crr_expect, dptprice_expect = formula._deposit(balance, supply, circulation, ethamount)
+            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d', '%d'],\n" % ( int(balance), int(supply), int(circulation), int(ethamount),  int(token_expect), int(remainethamount_expect), int(crr_expect), int(dptprice_expect)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
 
 
 testfilename = '../test/helpers/FormulaTestData.js'

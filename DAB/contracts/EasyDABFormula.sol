@@ -192,7 +192,7 @@ contract EasyDABFormula is IDABFormula, Math {
         require(ethAmount <= _dptBalance);
 
         uint256 maxcrr = getCRR(sub(_dptCirculation, _dptAmount));
-        tokenPrice = div(sub(_dptBalance, mul(_dptAmount, tokenPrice)), mul(_dptCirculation, maxcrr));
+        tokenPrice = div(sub(_dptBalance, ethAmount), mul(_dptCirculation, maxcrr));
         uint256 actualEther = mul(_dptAmount, tokenPrice);
         return (FloatToEther(actualEther), FloatToEther(_dptAmount), FloatToDecimal(maxcrr), FloatToDecimal(tokenPrice));
     }

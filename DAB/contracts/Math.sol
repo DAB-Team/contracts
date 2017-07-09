@@ -86,7 +86,7 @@ contract Math is SafeMath {
     }
 
 /**
-    @dev cast the Wei to Decimal
+    @dev cast the Ether to Decimal
 
     @return number of tokens
 */
@@ -96,7 +96,7 @@ contract Math is SafeMath {
     }
 
 /**
-    @dev cast the Wei to Decimal
+    @dev cast the Decial to Ether
 
     @return number of tokens
 */
@@ -106,7 +106,7 @@ contract Math is SafeMath {
     }
 
 /**
-    @dev cast the Float to Wei
+    @dev cast the Float to Ether
 
     @return number of tokens
 */
@@ -116,7 +116,7 @@ contract Math is SafeMath {
     }
 
 /**
-    @dev cast the Wei to Float
+    @dev cast the Ether to Float
 
     @return number of tokens
 */
