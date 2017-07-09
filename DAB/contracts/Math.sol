@@ -165,7 +165,13 @@ contract Math is SafeMath {
         uint256 z = _x * _y;
         assert(_x == 0 || z / _x == _y);
         z = z >> PRECISION;
-        assert((_x == 0 || _y == 0) || z != 0);
+        if(_x <= 1 && _y <= FLOAT_ONE){
+            assert(z == 0);
+        }else if(_y <= 1 && _x <= FLOAT_ONE){
+            assert(z == 0);
+        }else{
+            assert(z != 0);
+        }
         return z;
     }
 

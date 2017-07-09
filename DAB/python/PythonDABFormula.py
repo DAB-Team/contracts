@@ -1,16 +1,41 @@
 import cmath
+import DAB.python.contractmath as math
 
-def sigmoid(l, d, a, b, x):
-    """
-    CRR Curve Function
-    :param l:
-    :param d:
-    :param a:
-    :param b:
-    :param x:
-    :return: CRR
-    """
+
+def sigmoid(a, b, l, d, x):
     return 1/(1+cmath.exp((x-l)/d))*a+b
+
+
+def _sigmoid(a, b, l, d, x):
+    assert a > 0
+    assert b >= 0
+    assert l >= 0
+    assert d > 0
+    if x > l:
+        rate = math.div(math.safeSub(x, l), d)
+        if rate < 0x2800000000:
+            exp = math.fixedExp(rate)
+            addexp = math.add(1 << 32, exp)
+            divexp = math.div(1 << 32, addexp)
+            mulexp = math.mul(a, divexp)
+            y = math.add(mulexp, b)
+        else:
+            y = b
+
+    elif (x < l) and (x > 0):
+        rate = math.div(math.safeSub(l, x), d)
+        if rate < 0x2800000000:
+            exp = math.fixedExp(rate)
+            addexp = math.add(1 << 32, exp)
+            divexp = math.div(1 << 32, addexp)
+            mulexp = math.mul(a, divexp)
+            y = math.sub(math.add(a, b * 2), math.add(mulexp, b))
+        else:
+            y = math.add(a, b)
+    else:
+        y = math.div(math.add(a, b), 2<<32)
+    return y
+
 
 class EasyDABFormula(object):
     def __init__(self):
@@ -39,6 +64,11 @@ class EasyDABFormula(object):
         self.decimal = 10 ** 8 * 1.0
 
     def get_interest_rate(self, high, low, supply, circulation):
+        #  check over flow and change unit
+        high = math.uint256(high)
+        low = math.uint256(low)
+        supply = math.uint256(supply)
+        circulation = math.uint256(circulation)
         high /= self.decimal
         low /= self.decimal
         supply /= self.ether
@@ -46,13 +76,35 @@ class EasyDABFormula(object):
         assert 0 < low
         assert low < 0.15 * self.decimal
         assert high < 0.5 * self.decimal
-        assert  low < high
+        assert low < high
         assert 0 < supply
         assert 0 < circulation
-        return sigmoid(high-low, low, supply/2.0, supply/8.0, circulation) * self.decimal
+        return sigmoid(high-low, low, supply/2.0, supply/8.0, circulation).real * self.decimal
+
+
+    def _get_interest_rate(self, high, low, supply, circulation):
+        #  check over flow and change unit
+        high = math.uint256(high)
+        low = math.uint256(low)
+        supply = math.uint256(supply)
+        circulation = math.uint256(circulation)
+        high = math.decimaltofloat(high)
+        low = math.decimaltofloat(low)
+        supply = math.ethertofloat(supply)
+        circulation = math.ethertofloat(circulation)
+        assert 0 < low
+        assert low < math.decimaltofloat(15000000)
+        assert high < math.decimaltofloat(50000000)
+        assert low < high
+        assert 0 < supply
+        assert 0 < circulation
+        return math.floattodecimal(_sigmoid(high-low, low, math.div(supply, math.float(2)), math.div(supply, math.float(8)), circulation))
 
     def get_crr(self, circulation):
-        return sigmoid(self.l, self.d, self.a, self.b, circulation)
+        return sigmoid(self.a, self.b, self.l, self.d, circulation)
+
+    def _get_crr(self, circulation):
+        return _sigmoid(math.decimaltofloat(self.a * self.decimal), math.decimaltofloat(self.b * self.decimal), math.decimaltofloat(self.l * self.decimal), math.decimaltofloat(self.d * self.decimal), circulation)
 
     def issue(self, circulation, ethamount):
         circulation /= self.ether
@@ -66,7 +118,26 @@ class EasyDABFormula(object):
         fcdt = cdt * self.F
         udpt = dpt * self.U
         ucdt = cdt * self.U
-        return udpt.real * self.ether, ucdt.real * self.ether, fdpt.real * self.ether, fcdt.real * self.ether, crr * self.decimal
+        return udpt.real * self.ether, ucdt.real * self.ether, fdpt.real * self.ether, fcdt.real * self.ether, crr.real * self.decimal
+
+    def _issue(self, circulation, ethamount):
+        #  check over flow and change unit
+        circulation = math.uint256(circulation)
+        ethamount = math.uint256(ethamount)
+        circulation = math.ethertofloat(circulation)
+        ethamount = math.ethertofloat(ethamount)
+        crr = self._get_crr(circulation)
+        dpt = math.mul(math.div(ethamount, math.decimaltofloat(self.DPTIP * self.decimal)), crr)
+        cdt = math.div(math.mul(math.sub(math.float(1), crr), ethamount), math.decimaltofloat(self.DPTIP * self.decimal))
+        crr = self._get_crr( circulation)
+        # Split the new issued tokens to User and Founder
+        fdpt = math.mul(dpt, math.decimaltofloat(self.F * self.decimal))
+        fcdt = math.mul(cdt, math.decimaltofloat(self.F * self.decimal))
+        udpt = math.mul(dpt, math.decimaltofloat(self.U * self.decimal))
+        ucdt = math.mul(cdt, math.decimaltofloat(self.U * self.decimal))
+        return math.floattoether(udpt), math.floattoether(ucdt), math.floattoether(fdpt), math.floattoether(fcdt), math.floattodecimal(crr)
+
+
 
     def deposit(self, dptbalance, dptsupply, dptcirculation, ethamount):
         # change unit

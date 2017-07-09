@@ -1,5 +1,10 @@
+# file types
+
+*.xml
+*.pyc
+
+# folders
 .idea
 node_modules/
-.xml
 _mac
 inspection/
