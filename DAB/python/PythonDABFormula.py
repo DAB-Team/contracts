@@ -233,7 +233,7 @@ class EasyDABFormula(object):
         dptprice = (dptbalance - ethamount) / (dptcirculation * max_crr)
         # the actual withdraw price of DPT is equal to the minimum possible price after withdraw, ether=DPT*P
         actual_ether = dptamount * dptprice
-        return actual_ether * self.ether, dptamount * self.ether, max_crr * self.decimal, dptprice * self.decimal
+        return actual_ether.real * self.ether, dptamount.real * self.ether, max_crr.real * self.decimal, dptprice.real * self.decimal
 
     def _withdraw(self, dptbalance, dptcirculation, dptamount):
         # check overflow and change unit
@@ -254,7 +254,7 @@ class EasyDABFormula(object):
         dptprice = math.div(math.sub(dptbalance, ethamount), math.mul(dptcirculation, max_crr))
         # the actual withdraw price of DPT is equal to the minimum possible price after withdraw, ether=DPT*P
         actual_ether = math.mul(dptamount, dptprice)
-        return math.floattoether(actual_ether), math.floattoether(dptamount), math.floattoether(max_crr), math.floattoether(dptprice)
+        return math.floattoether(actual_ether), math.floattoether(dptamount), math.floattodecimal(max_crr), math.floattodecimal(dptprice)
 
     def cash(self, cdtbalance, cdtsupply, cdtamount):
         # change unit

@@ -15,13 +15,14 @@ test_to_credit = []
 test_to_discredit = []
 
 
-test_round = 10000
+test_round = 10000000
 test_num = 10
 max_balance = 1000000
 max_supply = 100000000
 max_circulation = max_supply
 max_ethamount = 100
 max_dptamount = 15000
+fluctuate = 100
 
 def generateTestData(outp):
     """ Generates some random scenarios"""
@@ -89,8 +90,8 @@ def generateTestData(outp):
     outp.write("module.exports.getBasicExactIssue= [\n")
     num = 0
     for i in range(1, test_round):
-        circulation = max_circulation / test_round * (i + 1)
-        ethamount = max_ethamount / test_round * (i + 1)
+        circulation = max_circulation / test_num * (num + 1) + random.randrange(1, fluctuate)
+        ethamount = max_ethamount / test_num * (num + 1)+ random.randrange(1, fluctuate)/10
 
         circulation *= formula.ether
         ethamount *= formula.ether
@@ -105,8 +106,8 @@ def generateTestData(outp):
     outp.write("module.exports.getBasicExpectIssue= [\n")
     num = 0
     for i in range(1, test_round):
-        circulation = max_circulation / test_round * (i + 1)
-        ethamount = max_ethamount / test_round * (i + 1)
+        circulation = max_circulation / test_num * (num + 1) + random.randrange(1, fluctuate)
+        ethamount = max_ethamount / test_num * (num + 1) + random.randrange(1, fluctuate)/10
 
         circulation *= formula.ether
         ethamount *= formula.ether
@@ -126,7 +127,7 @@ def generateTestData(outp):
     num = 0
     for i in range(1, test_round):
         balance = random.randrange(1, max_balance - max_ethamount)
-        balance =  balance + max_ethamount
+        balance += max_ethamount
         supply = random.randrange(int(balance/formula.DPTIP/10), int(balance/formula.DPTIP * 10))
         circulation = random.randrange(1, supply)
         ethamount = random.randrange(1, max_ethamount)
@@ -151,7 +152,7 @@ def generateTestData(outp):
     num = 0
     for i in range(1, test_round):
         balance = random.randrange(1, max_balance - max_ethamount)
-        balance =  balance + max_ethamount
+        balance += max_ethamount
         supply = random.randrange(int(balance/formula.DPTIP/10), int(balance/formula.DPTIP * 10))
         circulation = random.randrange(1, supply)
         ethamount = random.randrange(1, max_ethamount)
@@ -174,10 +175,10 @@ def generateTestData(outp):
     outp.write("module.exports.getBasicExpectDeposit= [\n")
     num = 0
     for i in range(1, test_round):
-        balance = max_balance / test_round * (i + 1)
-        supply = max_supply / test_round * (i + 1)
-        circulation = (max_circulation - max_balance) / test_round * (i + 1)
-        ethamount = max_ethamount / test_round * (i + 1)
+        balance = max_balance / test_num * (num + 1) + random.randrange(1, fluctuate)
+        supply = max_supply / test_num * (num + 1) + random.randrange(1, fluctuate)
+        circulation = (max_circulation - max_balance) / test_num * (num + 1) + random.randrange(1, fluctuate)
+        ethamount = max_ethamount / test_num * (num + 1) + random.randrange(1, fluctuate)/10
 
         balance *= formula.ether
         supply *= formula.ether
@@ -197,10 +198,10 @@ def generateTestData(outp):
     outp.write("module.exports.getBasicExactDeposit= [\n")
     num = 0
     for i in range(1, test_round):
-        balance = max_balance / test_round * (i + 1)
-        supply = max_supply / test_round * (i + 1)
-        circulation = (max_circulation - max_balance) / test_round * (i + 1)
-        ethamount = max_ethamount / test_round * (i + 1)
+        balance = max_balance / test_num * (num + 1) + random.randrange(1, fluctuate)
+        supply = max_supply / test_num * (num + 1) + random.randrange(1, fluctuate)
+        circulation = (max_circulation - max_balance) / test_num * (num + 1) + random.randrange(1, fluctuate)
+        ethamount = max_ethamount / test_num * (num + 1) + random.randrange(1, fluctuate)/10
 
         balance *= formula.ether
         supply *= formula.ether
@@ -221,17 +222,86 @@ def generateTestData(outp):
     num = 0
     for i in range(1, test_round):
         balance = random.randrange(1, max_balance - max_ethamount)
-        balance =  balance + max_ethamount
+        balance += max_ethamount
         supply = random.randrange(int(balance/formula.DPTIP/10), int(balance/formula.DPTIP * 10))
         circulation = random.randrange(1, supply)
         dptamount = random.randrange(1, max_dptamount)
 
         balance *= formula.ether
         circulation *= formula.ether
-        ethamount *= formula.ether
+        dptamount *= formula.ether
         try:
-            ether_expect, dptamount_expect, crr_expect, dptprice_expect = formula._deposit(balance, supply, circulation, ethamount)
-            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d', '%d'],\n" % ( int(balance), int(supply), int(circulation), int(ethamount),  int(token_expect), int(remainethamount_expect), int(crr_expect), int(dptprice_expect)))
+            ethamount_expect, sctamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation, dptamount)
+            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % ( int(balance), int(circulation), int(dptamount),  int(ethamount_expect), int(sctamount_expect), int(crr_expect), int(dptprice_expect)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
+
+    # dptbalance, dptcirculation, dptamount
+    outp.write("module.exports.getRandomExactWithdraw= [\n")
+    num = 0
+    for i in range(1, test_round):
+        balance = random.randrange(1, max_balance - max_ethamount)
+        balance += max_ethamount
+        supply = random.randrange(int(balance/formula.DPTIP/10), int(balance/formula.DPTIP * 10))
+        circulation = random.randrange(1, supply)
+        dptamount = random.randrange(1, max_dptamount)
+
+        balance *= formula.ether
+        circulation *= formula.ether
+        dptamount *= formula.ether
+        try:
+            ethamount_expect, sctamount_expect, crr_expect, dptprice_expect = formula.withdraw(balance, circulation, dptamount)
+            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % ( int(balance), int(circulation), int(dptamount),  int(ethamount_expect), int(sctamount_expect), int(crr_expect), int(dptprice_expect)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
+
+    # dptbalance, dptcirculation, dptamount
+    outp.write("module.exports.getBasicExpectWithdraw= [\n")
+    num = 0
+    for i in range(1, test_round):
+        balance = max_balance / test_num * (num + 1) + random.randrange(1, fluctuate)
+        circulation = max_circulation / test_num * (num + 1) + random.randrange(1, fluctuate)
+        dptamount = max_dptamount / test_num * (num + 1) + random.randrange(1, fluctuate)
+
+        balance *= formula.ether
+        circulation *= formula.ether
+        dptamount *= formula.ether
+        try:
+            ethamount_expect, sctamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation, dptamount)
+            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % ( int(balance), int(circulation), int(dptamount),  int(ethamount_expect), int(sctamount_expect), int(crr_expect), int(dptprice_expect)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
+
+
+    # dptbalance, dptcirculation, dptamount
+    outp.write("module.exports.getBasicExactWithdraw= [\n")
+    num = 0
+    for i in range(1, test_round):
+        balance = max_balance / test_num * (num + 1) + random.randrange(1, fluctuate)
+        circulation = max_circulation / test_num * (num + 1) + random.randrange(1, fluctuate)
+        dptamount = max_dptamount / test_num * (num + 1) + random.randrange(1, fluctuate)
+
+        balance *= formula.ether
+        circulation *= formula.ether
+        dptamount *= formula.ether
+        try:
+            ethamount_expect, sctamount_expect, crr_expect, dptprice_expect = formula.withdraw(balance, circulation, dptamount)
+            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % ( int(balance), int(circulation), int(dptamount),  int(ethamount_expect), int(sctamount_expect), int(crr_expect), int(dptprice_expect)))
             num +=1
             if num > test_num:
                 break
