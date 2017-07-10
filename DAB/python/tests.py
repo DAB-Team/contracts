@@ -360,6 +360,51 @@ def generateTestData(outp):
     outp.write("];\n\n\n")
 
 
+    # cdtbalance, cdtsupply, cdtamount
+    outp.write("module.exports.getBasicExpectCash= [\n")
+    num = 0
+    for i in range(1, test_round):
+        cdtbalance = max_cdtamount / test_num * num + random.randrange(1, fluctuate)
+        cdtsupply = max_supply / test_num * num + random.randrange(1, fluctuate)
+        cdtamount = max_ethamount * 500 / test_num * num + random.randrange(1, fluctuate)
+
+        cdtbalance *= formula.ether
+        cdtsupply *= formula.ether
+        cdtamount *= formula.ether
+
+        try:
+            ethamount, cdtprice = formula._cash(cdtbalance, cdtsupply, cdtamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtbalance), int(cdtsupply), int(cdtamount),  int(ethamount), int(cdtprice)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
+    # cdtbalance, cdtsupply, cdtamount
+    outp.write("module.exports.getBasicExactCash= [\n")
+    num = 0
+    for i in range(1, test_round):
+        cdtbalance = max_cdtamount / test_num * num + random.randrange(1, fluctuate)
+        cdtsupply = max_supply / test_num * num + random.randrange(1, fluctuate)
+        cdtamount = max_ethamount * 500 / test_num * num + random.randrange(1, fluctuate)
+
+        cdtbalance *= formula.ether
+        cdtsupply *= formula.ether
+        cdtamount *= formula.ether
+
+        try:
+            ethamount, cdtprice = formula.cash(cdtbalance, cdtsupply, cdtamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtbalance), int(cdtsupply), int(cdtamount),  int(ethamount), int(cdtprice)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
+
     # cdtamount, interestrate
     outp.write("module.exports.getRandomExpectLoan= [\n")
     num = 0
@@ -479,6 +524,293 @@ def generateTestData(outp):
             continue
     outp.write("];\n\n\n")
 
+
+
+    # repayethamount, sctamount
+    outp.write("module.exports.getRandomExpectRepay= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = random.randrange(20, max_supply)
+        repayethamount = random.randrange(1, int(supply / 10))
+        sctamount = random.randrange(1, int(supply / 10) * 500)
+
+        repayethamount *= formula.ether
+        sctamount *= formula.ether
+
+        try:
+            refundethamount, cdtamount, refundsctamount = formula._repay(repayethamount, sctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % (int(repayethamount), int(sctamount), int(refundethamount), int(cdtamount), int(refundsctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+
+    # repayethamount, sctamount
+    outp.write("module.exports.getRandomExactRepay= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = random.randrange(20, max_supply)
+        repayethamount = random.randrange(1, int(supply / 2))
+        sctamount = random.randrange(1, int(supply / 2) * 500)
+
+        repayethamount *= formula.ether
+        sctamount *= formula.ether
+
+        try:
+            refundethamount, cdtamount, refundsctamount = formula.repay(repayethamount, sctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(repayethamount), int(sctamount), int(refundethamount),  int(cdtamount), int(refundsctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+    # repayethamount, sctamount
+    outp.write("module.exports.getBasicExpectRepay= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = max_supply / test_num * num + random.randrange(1, fluctuate)
+        repayethamount = supply / 2 / test_num * num + random.randrange(1, fluctuate)
+        sctamount =  supply / 2 * 500 / test_num * num + random.randrange(1, fluctuate)
+
+        repayethamount *= formula.ether
+        sctamount *= formula.ether
+
+        try:
+            refundethamount, cdtamount, refundsctamount = formula._repay(repayethamount, sctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(repayethamount), int(sctamount), int(refundethamount),  int(cdtamount), int(refundsctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+
+    # repayethamount, sctamount
+    outp.write("module.exports.getBasicExactRepay= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = max_supply / test_num * num + random.randrange(1, fluctuate)
+        repayethamount = supply / 2 / test_num * num + random.randrange(1, fluctuate)
+        sctamount =  supply / 2 * 500 / test_num * num + random.randrange(1, fluctuate)
+
+        repayethamount *= formula.ether
+        sctamount *= formula.ether
+
+        try:
+            refundethamount, cdtamount, refundsctamount = formula.repay(repayethamount, sctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(repayethamount), int(sctamount), int(refundethamount),  int(cdtamount), int(refundsctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+
+    # repayethamount, dctamount
+    outp.write("module.exports.getRandomExpectToCreditToken= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = random.randrange(20, max_supply)
+        repayethamount = random.randrange(1, int(supply / 10))
+        dctamount = random.randrange(1, int(supply / 10) * 500)
+
+        repayethamount *= formula.ether
+        dctamount *= formula.ether
+
+        try:
+            refundethamount, cdtamount, refunddctamount = formula._to_credit_token(repayethamount, dctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(repayethamount), int(dctamount), int(refundethamount),  int(cdtamount), int(refunddctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+    # repayethamount, dctamount
+    outp.write("module.exports.getRandomExactToCreditToken= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = random.randrange(20, max_supply)
+        repayethamount = random.randrange(1, int(supply / 10))
+        dctamount = random.randrange(1, int(supply / 10) * 500)
+
+        repayethamount *= formula.ether
+        dctamount *= formula.ether
+
+        try:
+            refundethamount, cdtamount, refunddctamount = formula.to_credit_token(repayethamount, dctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(repayethamount), int(dctamount), int(refundethamount),  int(cdtamount), int(refunddctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+
+    # repayethamount, dctamount  change
+    outp.write("module.exports.getBasicExpectToCreditToken= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = max_supply / test_num * num + random.randrange(1, fluctuate)
+        repayethamount = supply / 2 / test_num * num + random.randrange(1, fluctuate)
+        dctamount =  supply / 2 * 500 / test_num * num + random.randrange(1, fluctuate)
+
+        repayethamount *= formula.ether
+        dctamount *= formula.ether
+
+        try:
+            refundethamount, cdtamount, refunddctamount = formula._to_credit_token(repayethamount, dctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(repayethamount), int(dctamount), int(refundethamount),  int(cdtamount), int(refunddctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+    # repayethamount, dctamount  change
+    outp.write("module.exports.getBasicExactToCreditToken= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = max_supply / test_num * num + random.randrange(1, fluctuate)
+        repayethamount = supply / 2 / test_num * num + random.randrange(1, fluctuate)
+        dctamount =  supply / 2 * 500 / test_num * num + random.randrange(1, fluctuate)
+
+        repayethamount *= formula.ether
+        dctamount *= formula.ether
+
+        try:
+            refundethamount, cdtamount, refunddctamount = formula.to_credit_token(repayethamount, dctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(repayethamount), int(dctamount), int(refundethamount),  int(cdtamount), int(refunddctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+
+
+    # cdtbalance, supply, sctamount
+    outp.write("module.exports.getRandomExpectToDiscreditToken= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = random.randrange(20, max_supply)
+        cdtbalance = random.randrange(1, int(supply/2) * 500)
+        sctamount = random.randrange(1, cdtbalance)
+
+        cdtbalance *= formula.ether
+        supply *= formula.ether
+        sctamount *= formula.ether
+
+        try:
+            dctamount, cdtprice = formula._to_discredit_token(cdtbalance, supply, sctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtbalance), int(supply), int(sctamount),  int(dctamount), int(cdtprice)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+    # cdtbalance, supply, sctamount
+    outp.write("module.exports.getRandomExactToDiscreditToken= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = random.randrange(20, max_supply)
+        cdtbalance = random.randrange(1, int(supply/2) * 500)
+        sctamount = random.randrange(1, cdtbalance)
+
+        cdtbalance *= formula.ether
+        supply *= formula.ether
+        sctamount *= formula.ether
+
+        try:
+            dctamount, cdtprice = formula._to_discredit_token(cdtbalance, supply, sctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtbalance), int(supply), int(sctamount),  int(dctamount), int(cdtprice)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+    # cdtbalance, supply, sctamount
+    outp.write("module.exports.getBasicExpectToDiscreditToken= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = max_supply / test_num * num + random.randrange(1, fluctuate)
+        cdtbalance = supply/2 * 500 / test_num * num + random.randrange(1, fluctuate)
+        sctamount = cdtbalance / test_num * num + random.randrange(1, fluctuate)
+
+        cdtbalance *= formula.ether
+        supply *= formula.ether
+        sctamount *= formula.ether
+
+        try:
+            dctamount, cdtprice = formula._to_discredit_token(cdtbalance, supply, sctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtbalance), int(supply), int(sctamount),  int(dctamount), int(cdtprice)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+
+    # cdtbalance, supply, sctamount
+    outp.write("module.exports.getBasicExactToDiscreditToken= [\n")
+    num = 0
+    for i in range(1, test_round):
+        supply = max_supply / test_num * num + random.randrange(1, fluctuate)
+        cdtbalance = supply/2 * 500 / test_num * num + random.randrange(1, fluctuate)
+        sctamount = cdtbalance / test_num * num + random.randrange(1, fluctuate)
+
+        cdtbalance *= formula.ether
+        supply *= formula.ether
+        sctamount *= formula.ether
+
+        try:
+            dctamount, cdtprice = formula.to_discredit_token(cdtbalance, supply, sctamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtbalance), int(supply), int(sctamount),  int(dctamount), int(cdtprice)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
 
 
 

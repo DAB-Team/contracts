@@ -106,7 +106,7 @@ def safeSub(x,y):
 def safeDiv(x, y):
     assert y > 0
     z = int(x / y)
-    assert x == (y * z + x % y)
+    # assert x == (y * z + x % y)
     return z
 
 
@@ -139,7 +139,7 @@ def div(x, y):
     assert y > 0
     x <<= PRECISION
     z = uint256(safeDiv(x, y))
-    assert x == (z * y + x % y)
+    # assert x == (z * y + x % y)
     return z
 
 

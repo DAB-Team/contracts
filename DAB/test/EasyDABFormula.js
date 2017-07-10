@@ -908,6 +908,377 @@ contract('EasyDABFormula', function(accounts){
     };
 
 
+    var refundethamountRepayExpectTest = function(k){
+        var [repayethamount, sctamount, refundethamount, cdtamount, refundsctamount] = k;
+
+        repayethamount = num(repayethamount), sctamount = num(sctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refundsctamount = num(refundsctamount);
+
+        it("Should get correct expect refund ether amount for repay", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.repay.call(repayethamount, sctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refundsctamountr] = retval;
+                refundethamount = (refundethamount/1).toPrecision(eprecision);
+                refundethamountr = (refundethamountr/1).toPrecision(eprecision);
+                assert(refundethamountr == refundethamount,"refund ether amount return "+refundethamountr+" should be =="+refundethamount+". [repayethamount, sctamount] "+[repayethamount, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+    var refundethamountRepayExactTest = function(k){
+        var [repayethamount, sctamount, refundethamount,  cdtamount, refundsctamount] = k;
+
+        repayethamount = num(repayethamount), sctamount = num(sctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refundsctamount = num(refundsctamount);
+
+        it("Should get correct exact refund ether amount for repay", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.repay.call(repayethamount, sctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refundsctamountr] = retval;
+                refundethamount = (refundethamount/1).toPrecision(eprecision);
+                refundethamountr = (refundethamountr/1).toPrecision(eprecision);
+                assert(refundethamountr == refundethamount,"refund ether amount return "+refundethamountr+" should be =="+refundethamount+". [repayethamount, sctamount] "+[repayethamount, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var cdtamountRepayExpectTest = function(k){
+        var [repayethamount, sctamount, refundethamount,  cdtamount, refundsctamount] = k;
+
+        repayethamount = num(repayethamount), sctamount = num(sctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refundsctamount = num(refundsctamount);
+
+        it("Should get correct expect credit token amount for repay", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.repay.call(repayethamount, sctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refundsctamountr] = retval;
+                cdtamount = (cdtamount/1).toPrecision(eprecision);
+                cdtamountr = (cdtamountr/1).toPrecision(eprecision);
+                assert(cdtamountr == cdtamount,"credit token amount return "+cdtamountr+" should be =="+cdtamount+". [repayethamount, sctamount] "+[repayethamount, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var cdtamountRepayExactTest = function(k){
+        var [repayethamount, sctamount, refundethamount, cdtamount, refundsctamount] = k;
+
+        repayethamount = num(repayethamount), sctamount = num(sctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refundsctamount = num(refundsctamount);
+
+        it("Should get correct exact credit token amount for repay", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.repay.call(repayethamount, sctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refundsctamountr] = retval;
+                cdtamount = (cdtamount/1).toPrecision(eprecision);
+                cdtamountr = (cdtamountr/1).toPrecision(eprecision);
+                assert(cdtamountr == cdtamount,"credit token amount return "+cdtamountr+" should be =="+cdtamount+". [repayethamount, sctamount] "+[repayethamount, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var refundsctamountRepayExpectTest = function(k){
+        var [repayethamount, sctamount, refundethamount,  cdtamount, refundsctamount] = k;
+
+        repayethamount = num(repayethamount), sctamount = num(sctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refundsctamount = num(refundsctamount);
+
+        it("Should get correct expect refund sub-credit token amount for repay", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.repay.call(repayethamount, sctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refundsctamountr] = retval;
+                cdtamount = (cdtamount/1).toPrecision(eprecision);
+                cdtamountr = (cdtamountr/1).toPrecision(eprecision);
+                assert(cdtamountr == cdtamount,"refund sub-credit token amount return "+cdtamountr+" should be =="+cdtamount+". [repayethamount, sctamount] "+[repayethamount, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var refundsctamountRepayExactTest = function(k){
+        var [repayethamount, sctamount, refundethamount,  cdtamount, refundsctamount] = k;
+
+        repayethamount = num(repayethamount), sctamount = num(sctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refundsctamount = num(refundsctamount);
+
+        it("Should get correct exact refund sub-credit token amount for repay", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.repay.call(repayethamount, sctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refundsctamountr] = retval;
+                cdtamount = (cdtamount/1).toPrecision(eprecision);
+                cdtamountr = (cdtamountr/1).toPrecision(eprecision);
+                assert(cdtamountr == cdtamount,"refund sub-credit token amount return "+cdtamountr+" should be =="+cdtamount+". [repayethamount, sctamount] "+[repayethamount, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+
+    var refundethamountToCreditTokenExpectTest = function(k){
+        var [repayethamount, dctamount, refundethamount,  cdtamount, refunddctamount] = k;
+
+        repayethamount = num(repayethamount), dctamount = num(dctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refunddctamount = num(refunddctamount);
+
+        it("Should get correct expect refund ether amount for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toCreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refunddctamountr] = retval;
+                refundethamount = (refundethamount/1).toPrecision(eprecision);
+                refundethamountr = (refundethamountr/1).toPrecision(eprecision);
+                assert(refundethamountr == refundethamount,"refund ether amount return "+refundethamountr+" should be =="+refundethamount+". [repayethamount, dctamount] "+[repayethamount, dctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var refundethamountToCreditTokenExactTest = function(k){
+        var [repayethamount, dctamount, refundethamount,  cdtamount, refunddctamount] = k;
+
+        repayethamount = num(repayethamount), dctamount = num(dctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refunddctamount = num(refunddctamount);
+
+        it("Should get correct exact refund ether amount for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toCreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refunddctamountr] = retval;
+                refundethamount = (refundethamount/1).toPrecision(eprecision);
+                refundethamountr = (refundethamountr/1).toPrecision(eprecision);
+                assert(refundethamountr == refundethamount,"refund ether amount return "+refundethamountr+" should be =="+refundethamount+". [repayethamount, dctamount] "+[repayethamount, dctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var cdtamountToCreditTokenExpectTest = function(k){
+        var [repayethamount, dctamount, refundethamount,  cdtamount, refunddctamount] = k;
+
+        repayethamount = num(repayethamount), dctamount = num(dctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refunddctamount = num(refunddctamount);
+
+        it("Should get correct expect credit token amount for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toCreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refunddctamountr] = retval;
+                cdtamount = (cdtamount/1).toPrecision(eprecision);
+                cdtamountr = (cdtamountr/1).toPrecision(eprecision);
+                assert(cdtamountr == cdtamount,"credit token amount return "+cdtamountr+" should be =="+cdtamount+". [repayethamount, dctamount] "+[repayethamount, dctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+    var cdtamountToCreditTokenExactTest = function(k){
+        var [repayethamount, dctamount, refundethamount,  cdtamount, refunddctamount] = k;
+
+        repayethamount = num(repayethamount), dctamount = num(dctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refunddctamount = num(refunddctamount);
+
+        it("Should get correct exact credit token amount for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toCreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refunddctamountr] = retval;
+                cdtamount = (cdtamount/1).toPrecision(eprecision);
+                cdtamountr = (cdtamountr/1).toPrecision(eprecision);
+                assert(cdtamountr == cdtamount,"credit token amount"+cdtamountr+" should be =="+cdtamount+". [repayethamount, dctamount] "+[repayethamount, dctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var refunddctamountToCreditTokenExpectTest = function(k){
+        var [repayethamount, dctamount, refundethamount,  cdtamount, refunddctamount] = k;
+
+        repayethamount = num(repayethamount), dctamount = num(dctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refunddctamount = num(refunddctamount);
+
+        it("Should get correct expect refund discredit token amount for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toCreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refunddctamountr] = retval;
+                refunddctamount = (refunddctamount/1).toPrecision(eprecision);
+                refunddctamountr = (refunddctamountr/1).toPrecision(eprecision);
+                assert(refunddctamountr == refunddctamount,"refund discredit token amount return"+refunddctamountr+" should be =="+refunddctamount+". [repayethamount, dctamount] "+[repayethamount, dctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+
+    var refunddctamountToCreditTokenExactTest = function(k){
+        var [repayethamount, dctamount, refundethamount, cdtamount, refunddctamount] = k;
+
+        repayethamount = num(repayethamount), dctamount = num(dctamount), refundethamount = num(refundethamount), cdtamount = num(cdtamount), refunddctamount = num(refunddctamount);
+
+        it("Should get correct exact refund discredit token amount for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toCreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [refundethamountr,  cdtamountr, refunddctamountr] = retval;
+                refunddctamount = (refunddctamount/1).toPrecision(eprecision);
+                refunddctamountr = (refunddctamountr/1).toPrecision(eprecision);
+                assert(refunddctamountr == refunddctamount,"refund discredit token amount return "+refunddctamountr+" should be =="+refunddctamount+". [repayethamount, dctamount] "+[repayethamount, dctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var dctamountToDiscreditTokenExpectTest = function(k){
+        var [cdtbalance, supply, sctamount, dctamount, cdtprice] = k;
+
+        cdtbalance = num(cdtbalance), supply = num(supply), sctamount = num(sctamount), dctamount = num(dctamount), cdtprice = num(cdtprice);
+
+        it("Should get correct expect refund discredit token amount for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toDiscreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [dctamountr, cdtpricer] = retval;
+                dctamount = (dctamount/1).toPrecision(eprecision);
+                dctamountr = (dctamountr/1).toPrecision(eprecision);
+                assert(dctamountr == dctamount,"refund discredit token amount return "+dctamountr+" should be =="+dctamount+". [cdtbalance, supply, sctamount] "+[cdtbalance, supply, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var dctamountToDiscreditTokenExactTest = function(k){
+        var [cdtbalance, supply, sctamount, dctamount, cdtprice] = k;
+
+        cdtbalance = num(cdtbalance), supply = num(supply), sctamount = num(sctamount), dctamount = num(dctamount), cdtprice = num(cdtprice);
+
+        it("Should get correct exact refund discredit token amount for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toDiscreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [dctamountr, cdtpricer] = retval;
+                dctamount = (dctamount/1).toPrecision(eprecision);
+                dctamountr = (dctamountr/1).toPrecision(eprecision);
+                assert(dctamountr == dctamount,"refund discredit token amount return "+dctamountr+" should be =="+dctamount+". [cdtbalance, supply, sctamount] "+[cdtbalance, supply, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var cdtpriceToDiscreditTokenExpectTest = function(k){
+        var [cdtbalance, supply, sctamount, dctamount, cdtprice] = k;
+
+        cdtbalance = num(cdtbalance), supply = num(supply), sctamount = num(sctamount), dctamount = num(dctamount), cdtprice = num(cdtprice);
+
+        it("Should get correct expect price of credit token for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toDiscreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [dctamountr, cdtpricer] = retval;
+                cdtprice = (cdtprice/1).toPrecision(eprecision);
+                cdtpricer = (cdtpricer/1).toPrecision(eprecision);
+                assert(cdtpricer == cdtprice,"price of credit token return "+cdtpricer+" should be =="+cdtprice+". [cdtbalance, supply, sctamount] "+[cdtbalance, supply, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+    var cdtpriceToDiscreditTokenExactTest = function(k){
+        var [cdtbalance, supply, sctamount, dctamount, cdtprice] = k;
+
+        cdtbalance = num(cdtbalance), supply = num(supply), sctamount = num(sctamount), dctamount = num(dctamount), cdtprice = num(cdtprice);
+
+        it("Should get correct exact price of credit token for to_credit_token", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.toDiscreditToken.call(repayethamount, dctamount);
+                }).then(function(retval){
+                var [dctamountr, cdtpricer] = retval;
+                cdtprice = (cdtprice/1).toPrecision(eprecision);
+                cdtpricer = (cdtpricer/1).toPrecision(eprecision);
+                assert(cdtpricer == cdtprice,"price of credit token return "+cdtpricer+" should be =="+cdtprice+". [cdtbalance, supply, sctamount] "+[cdtbalance, supply, sctamount]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+
+
+
+
 
     /*
     // Test for Random getInterestRate Function
@@ -983,15 +1354,22 @@ contract('EasyDABFormula', function(accounts){
     testdata.getRandomExactWithdraw.forEach(dptpriceWithdrawExactTest);
 
 
-     // Test for Random cash Function
-     testdata.getRandomExpectCash.forEach(ethamountCashExpectTest)
-     testdata.getRandomExpectCash.forEach(cdtpriceCashExpectTest)
+    // Test for Random and Basic cash Function
+    testdata.getRandomExpectCash.forEach(ethamountCashExpectTest);
+    testdata.getRandomExpectCash.forEach(cdtpriceCashExpectTest);
 
-     testdata.getRandomExactCash.forEach(ethamountCashExactTest)
-     testdata.getRandomExactCash.forEach(cdtpriceCashExactTest)
+    testdata.getRandomExactCash.forEach(ethamountCashExactTest);
+    testdata.getRandomExactCash.forEach(cdtpriceCashExactTest);
+
+    testdata.getBasicExpectCash.forEach(ethamountCashExpectTest);
+    testdata.getBasicExpectCash.forEach(cdtpriceCashExpectTest);
+
+    testdata.getBasicExactCash.forEach(ethamountCashExactTest);
+    testdata.getBasicExactCash.forEach(cdtpriceCashExactTest);
 
 
-    // Test for Random loan Function
+
+    // Test for Random and Basic loan Function
     testdata.getRandomExpectLoan.forEach(ethamountLoanExpectTest);
     testdata.getRandomExpectLoan.forEach(issuecdtamountLoanExpectTest);
     testdata.getRandomExpectLoan.forEach(sctamountLoanExpectTest);
@@ -1008,7 +1386,61 @@ contract('EasyDABFormula', function(accounts){
     testdata.getBasicExactLoan.forEach(ethamountLoanExactTest);
     testdata.getBasicExactLoan.forEach(issuecdtamountLoanExactTest);
     testdata.getBasicExactLoan.forEach(sctmountLoanExactTest);
-     */
+
+    */
+
+    // Test for Random and Basic repay Function
+    testdata.getRandomExpectRepay.forEach(refundethamountRepayExpectTest);
+    testdata.getRandomExpectRepay.forEach(cdtamountRepayExpectTest);
+    testdata.getRandomExpectRepay.forEach(refundsctamountRepayExpectTest);
+
+    testdata.getRandomExactRepay.forEach(refundethamountRepayExactTest);
+    testdata.getRandomExactRepay.forEach(cdtamountRepayExactTest);
+    testdata.getRandomExactRepay.forEach(refundsctamountRepayExactTest);
+
+    testdata.getBasicExpectRepay.forEach(refundethamountRepayExpectTest);
+    testdata.getBasicExpectRepay.forEach(cdtamountRepayExpectTest);
+    testdata.getBasicExpectRepay.forEach(refundsctamountRepayExpectTest);
+
+    testdata.getBasicExactRepay.forEach(refundethamountRepayExactTest);
+    testdata.getBasicExactRepay.forEach(cdtamountRepayExactTest);
+    testdata.getBasicExactRepay.forEach(refundsctamountRepayExactTest);
+
+
+    // Test for Random and Basic toCreditToken Function
+    testdata.getRandomExpectToCreditToken.forEach(refundethamountToCreditTokenExpectTest);
+    testdata.getRandomExpectToCreditToken.forEach(cdtamountToCreditTokenExpectTest);
+    testdata.getRandomExpectToCreditToken.forEach(refundsctamountRepayExpectTest);
+
+    testdata.getRandomExactToCreditToken.forEach(refundethamountToCreditTokenExactTest);
+    testdata.getRandomExactToCreditToken.forEach(cdtamountToCreditTokenExactTest);
+    testdata.getRandomExactToCreditToken.forEach(refundsctamountRepayExactTest);
+
+
+    testdata.getBasicExpectToCreditToken.forEach(refundethamountToCreditTokenExpectTest);
+    testdata.getBasicExpectToCreditToken.forEach(cdtamountToCreditTokenExpectTest);
+    testdata.getBasicExpectToCreditToken.forEach(refundsctamountRepayExpectTest);
+
+    testdata.getBasicExpectToCreditToken.forEach(refundethamountToCreditTokenExactTest);
+    testdata.getBasicExpectToCreditToken.forEach(cdtamountToCreditTokenExactTest);
+    testdata.getBasicExpectToCreditToken.forEach(refundsctamountRepayExactTest);
+
+
+    // Test for Random and Basic toDiscreditToken Function
+    testdata.getRandomExpectToDiscreditToken.forEach(dctamountToDiscreditTokenExpectTest);
+    testdata.getRandomExpectToDiscreditToken.forEach(cdtpriceToDiscreditTokenExpectTest);
+
+    testdata.getRandomExactToDiscreditToken.forEach(dctamountToDiscreditTokenExactTest);
+    testdata.getRandomExactToDiscreditToken.forEach(cdtpriceToDiscreditTokenExactTest);
+
+
+    testdata.getBasicExpectToDiscreditToken.forEach(dctamountToDiscreditTokenExpectTest);
+    testdata.getBasicExpectToDiscreditToken.forEach(cdtpriceToDiscreditTokenExpectTest);
+
+    testdata.getBasicExactToDiscreditToken.forEach(dctamountToDiscreditTokenExactTest);
+    testdata.getBasicExactToDiscreditToken.forEach(cdtpriceToDiscreditTokenExactTest);
+
+
 
 
 
