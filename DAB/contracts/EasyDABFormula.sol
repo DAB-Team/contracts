@@ -29,7 +29,7 @@ contract EasyDABFormula is IDABFormula, Math {
 
     uint256 private cdtReserveRate = DecimalToFloat(10000000);   // credit token reserve the rate of interest to expand itself
 
-    uint256 private sctToDCTRate = DecimalToFloat(95000000);      // subCredit token to discredit token ratio
+    uint256 private sctToDCTRate = DecimalToFloat(90000000);      // subCredit token to discredit token ratio
 
     string public version = '0.1';
 
@@ -262,7 +262,7 @@ contract EasyDABFormula is IDABFormula, Math {
             ethAmount = _repayETHAmount;
             cdtAmount = div(ethAmount, cdtLoanRate);
             refundSCTAmount = sub(_sctAmount, cdtAmount);
-            return (0, cdtAmount, refundSCTAmount);
+            return (0, FloatToEther(cdtAmount), FloatToEther(refundSCTAmount));
         }
         else {
             cdtAmount = div(ethAmount, cdtLoanRate);
@@ -288,7 +288,7 @@ contract EasyDABFormula is IDABFormula, Math {
             ethAmount = _repayETHAmount;
             cdtAmount = div(ethAmount, cdtLoanRate);
             refundDCTAmount = sub(_dctAmount, cdtAmount);
-            return (0, cdtAmount, refundDCTAmount);
+            return (0, FloatToEther(cdtAmount), FloatToEther(refundDCTAmount));
         }
         else {
             cdtAmount = div(ethAmount, cdtLoanRate);

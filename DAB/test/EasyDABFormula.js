@@ -1189,11 +1189,11 @@ contract('EasyDABFormula', function(accounts){
 
         cdtbalance = num(cdtbalance), supply = num(supply), sctamount = num(sctamount), dctamount = num(dctamount), cdtprice = num(cdtprice);
 
-        it("Should get correct expect refund discredit token amount for to_credit_token", function(){
+        it("Should get correct expect discredit token amount for to_discredit_token", function(){
             return EasyDABFormula.deployed().then(
                 function(f)
                 {
-                    return f.toDiscreditToken.call(repayethamount, dctamount);
+                    return f.toDiscreditToken.call(cdtbalance, supply, sctamount);
                 }).then(function(retval){
                 var [dctamountr, cdtpricer] = retval;
                 dctamount = (dctamount/1).toPrecision(eprecision);
@@ -1212,11 +1212,11 @@ contract('EasyDABFormula', function(accounts){
 
         cdtbalance = num(cdtbalance), supply = num(supply), sctamount = num(sctamount), dctamount = num(dctamount), cdtprice = num(cdtprice);
 
-        it("Should get correct exact refund discredit token amount for to_credit_token", function(){
+        it("Should get correct exact discredit token amount for to_discredit_token", function(){
             return EasyDABFormula.deployed().then(
                 function(f)
                 {
-                    return f.toDiscreditToken.call(repayethamount, dctamount);
+                    return f.toDiscreditToken.call(cdtbalance, supply, sctamount);
                 }).then(function(retval){
                 var [dctamountr, cdtpricer] = retval;
                 dctamount = (dctamount/1).toPrecision(eprecision);
@@ -1239,7 +1239,7 @@ contract('EasyDABFormula', function(accounts){
             return EasyDABFormula.deployed().then(
                 function(f)
                 {
-                    return f.toDiscreditToken.call(repayethamount, dctamount);
+                    return f.toDiscreditToken.call(cdtbalance, supply, sctamount);
                 }).then(function(retval){
                 var [dctamountr, cdtpricer] = retval;
                 cdtprice = (cdtprice/1).toPrecision(eprecision);
@@ -1258,11 +1258,11 @@ contract('EasyDABFormula', function(accounts){
 
         cdtbalance = num(cdtbalance), supply = num(supply), sctamount = num(sctamount), dctamount = num(dctamount), cdtprice = num(cdtprice);
 
-        it("Should get correct exact price of credit token for to_credit_token", function(){
+        it("Should get correct exact price of credit token for to_discredit_token", function(){
             return EasyDABFormula.deployed().then(
                 function(f)
                 {
-                    return f.toDiscreditToken.call(repayethamount, dctamount);
+                    return f.toDiscreditToken.call(cdtbalance, supply, sctamount);
                 }).then(function(retval){
                 var [dctamountr, cdtpricer] = retval;
                 cdtprice = (cdtprice/1).toPrecision(eprecision);
@@ -1280,7 +1280,7 @@ contract('EasyDABFormula', function(accounts){
 
 
 
-    /*
+   
     // Test for Random getInterestRate Function
     testdata.getInterestRate.forEach(interestExpectRateTest);
     testdata.getInterestRate.forEach(interestExactRateTest);
@@ -1387,7 +1387,7 @@ contract('EasyDABFormula', function(accounts){
     testdata.getBasicExactLoan.forEach(issuecdtamountLoanExactTest);
     testdata.getBasicExactLoan.forEach(sctmountLoanExactTest);
 
-    */
+
 
     // Test for Random and Basic repay Function
     testdata.getRandomExpectRepay.forEach(refundethamountRepayExpectTest);
@@ -1410,20 +1410,20 @@ contract('EasyDABFormula', function(accounts){
     // Test for Random and Basic toCreditToken Function
     testdata.getRandomExpectToCreditToken.forEach(refundethamountToCreditTokenExpectTest);
     testdata.getRandomExpectToCreditToken.forEach(cdtamountToCreditTokenExpectTest);
-    testdata.getRandomExpectToCreditToken.forEach(refundsctamountRepayExpectTest);
+    testdata.getRandomExpectToCreditToken.forEach(refunddctamountToCreditTokenExpectTest);
 
     testdata.getRandomExactToCreditToken.forEach(refundethamountToCreditTokenExactTest);
     testdata.getRandomExactToCreditToken.forEach(cdtamountToCreditTokenExactTest);
-    testdata.getRandomExactToCreditToken.forEach(refundsctamountRepayExactTest);
+    testdata.getRandomExactToCreditToken.forEach(refunddctamountToCreditTokenExactTest);
 
 
     testdata.getBasicExpectToCreditToken.forEach(refundethamountToCreditTokenExpectTest);
     testdata.getBasicExpectToCreditToken.forEach(cdtamountToCreditTokenExpectTest);
-    testdata.getBasicExpectToCreditToken.forEach(refundsctamountRepayExpectTest);
+    testdata.getBasicExpectToCreditToken.forEach(refunddctamountToCreditTokenExpectTest);
 
     testdata.getBasicExpectToCreditToken.forEach(refundethamountToCreditTokenExactTest);
     testdata.getBasicExpectToCreditToken.forEach(cdtamountToCreditTokenExactTest);
-    testdata.getBasicExpectToCreditToken.forEach(refundsctamountRepayExactTest);
+    testdata.getBasicExpectToCreditToken.forEach(refunddctamountToCreditTokenExactTest);
 
 
     // Test for Random and Basic toDiscreditToken Function

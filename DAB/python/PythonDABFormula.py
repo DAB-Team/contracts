@@ -350,7 +350,7 @@ class EasyDABFormula(object):
             ethamount = repayethamount
             cdtamount = math.div(ethamount, math.decimaltofloat(self.CDTL * self.decimal))
             refundsctamount = math.sub(sctamount, cdtamount)
-            return 0, math.ethertofloat(cdtamount), math.ethertofloat(refundsctamount)
+            return 0, math.floattoether(cdtamount), math.floattoether(refundsctamount)
         else:
             cdtamount = math.div(ethamount, math.decimaltofloat(self.CDTL * self.decimal))
             refundethamount = math.sub(repayethamount, ethamount)
@@ -399,7 +399,7 @@ class EasyDABFormula(object):
         supply /= self.ether
         sctamount /= self.ether
         cdtprice = cdtbalance /(supply * self.CDT_CRR)
-        return (sctamount * 0.95) * self.ether, cdtprice * self.decimal
+        return (sctamount * 0.9) * self.ether, cdtprice * self.decimal
 
     def _to_discredit_token(self, cdtbalance, supply, sctamount):
         # check overflow and change unit
@@ -411,8 +411,8 @@ class EasyDABFormula(object):
         supply = math.ethertofloat(supply)
         sctamount = math.ethertofloat(sctamount)
 
-        cdtprice = math.div(cdtbalance, math.mul(supply, self.CDT_CRR))
-        return math.mul(sctamount, math.decimaltofloat(0.95 * self.decimal)), math.floattodecimal(cdtprice)
+        cdtprice = math.div(cdtbalance, math.mul(supply, math.decimaltofloat(self.CDT_CRR * self.decimal)))
+        return math.floattoether(math.mul(sctamount, math.decimaltofloat(0.9 * self.decimal))), math.floattodecimal(cdtprice)
 
 
 
