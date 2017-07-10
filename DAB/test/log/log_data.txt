@@ -2550,3 +2550,23 @@
       at process._tickCallback (internal/process/next_tick.js:169:7)
 
 
+  1 failing
+
+    1) Contract: EasyDABFormula Should get correct expect issued credit token for loan:
+       AssertionError: AssertionError: issued credit token amount return 3.752666e+19 should be ==3.752665e+19. [cdtamount, interestrate] 15075999999999998951424,9956661
+        at test/EasyDABFormula.js:747:17
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:169:7)
+
+
+   1 failing
+
+   1) Contract: EasyDABFormula Should get correct exact ether amount for cash:
+      AssertionError: AssertionError: ether amount return 4.0920e+17 should be ==4.0921e+17. [cdtbalance, cdtsupply, cdtamount] 7531000000000000262144,76369100000000003964665856,13832000000000000000000
+       at test/EasyDABFormula.js:722:17
+       at <anonymous>
+       at process._tickCallback (internal/process/next_tick.js:169:7)
+
+
+
+

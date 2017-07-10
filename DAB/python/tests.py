@@ -15,14 +15,18 @@ test_to_credit = []
 test_to_discredit = []
 
 
-test_round = 10000000
+test_round = 100000
 test_num = 10
 max_balance = 1000000
 max_supply = 100000000
 max_circulation = max_supply
 max_ethamount = 100
 max_dptamount = 15000
+max_cdtamount = 50000
+
+
 fluctuate = 100
+
 
 def generateTestData(outp):
     """ Generates some random scenarios"""
@@ -233,7 +237,7 @@ def generateTestData(outp):
         try:
             ethamount_expect, sctamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation, dptamount)
             outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % ( int(balance), int(circulation), int(dptamount),  int(ethamount_expect), int(sctamount_expect), int(crr_expect), int(dptprice_expect)))
-            num +=1
+            num += 1
             if num > test_num:
                 break
         except AssertionError as err:
@@ -308,6 +312,173 @@ def generateTestData(outp):
         except AssertionError as err:
             continue
     outp.write("];\n\n\n")
+
+
+    # cdtbalance, cdtsupply, cdtamount
+    outp.write("module.exports.getRandomExpectCash= [\n")
+    num = 0
+    for i in range(1, test_round):
+        cdtbalance = random.randrange(1, max_cdtamount)
+        cdtsupply = random.randrange(20, max_supply)
+        cdtamount = random.randrange(1, max_ethamount * 500)
+
+        cdtbalance *= formula.ether
+        cdtsupply *= formula.ether
+        cdtamount *= formula.ether
+
+        try:
+            ethamount, cdtprice = formula._cash(cdtbalance, cdtsupply, cdtamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtbalance), int(cdtsupply), int(cdtamount),  int(ethamount), int(cdtprice)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
+
+    # cdtbalance, cdtsupply, cdtamount
+    outp.write("module.exports.getRandomExactCash= [\n")
+    num = 0
+    for i in range(1, test_round):
+        cdtbalance = random.randrange(1, max_cdtamount)
+        cdtsupply = random.randrange(20, max_supply)
+        cdtamount = random.randrange(1, max_ethamount * 500)
+
+        cdtbalance *= formula.ether
+        cdtsupply *= formula.ether
+        cdtamount *= formula.ether
+
+        try:
+            ethamount, cdtprice = formula.cash(cdtbalance, cdtsupply, cdtamount)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtbalance), int(cdtsupply), int(cdtamount),  int(ethamount), int(cdtprice)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
+
+    # cdtamount, interestrate
+    outp.write("module.exports.getRandomExpectLoan= [\n")
+    num = 0
+    for i in range(1, test_round):
+        high = random.randrange(10000, 30000) / 100000.0
+        low = random.randrange(5000, 10000) /100000.0
+        supply = random.randrange(20, max_supply)
+        circulation = random.randrange(1, supply)
+
+        high *= formula.decimal
+        low *= formula.decimal
+        supply *= formula.ether
+        circulation *= formula.ether
+
+        cdtamount = random.randrange(1, max_cdtamount)
+        interestrate_exact = formula.get_interest_rate(high, low, supply, circulation)
+
+        cdtamount *= formula.ether
+        try:
+            ethamount, issuecdtamount, sctamount = formula._loan(cdtamount, interestrate_exact)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtamount), int(interestrate_exact), int(ethamount),  int(issuecdtamount), int(sctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            # raise err
+            continue
+    outp.write("];\n\n\n")
+
+
+
+    # cdtamount, interestrate
+    outp.write("module.exports.getRandomExactLoan= [\n")
+    num = 0
+    for i in range(1, test_round):
+        high = random.randrange(10000, 30000) / 100000.0
+        low = random.randrange(5000, 10000) /100000.0
+        supply = random.randrange(20, max_supply)
+        circulation = random.randrange(1, supply)
+
+        high *= formula.decimal
+        low *= formula.decimal
+        supply *= formula.ether
+        circulation *= formula.ether
+
+        cdtamount = random.randrange(1, max_cdtamount)
+        interestrate_exact = formula.get_interest_rate(high, low, supply, circulation)
+
+        cdtamount *= formula.ether
+        try:
+            ethamount, issuecdtamount, sctamount = formula.loan(cdtamount, interestrate_exact)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtamount), int(interestrate_exact), int(ethamount),  int(issuecdtamount), int(sctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
+
+
+    # cdtamount, interestrate
+    outp.write("module.exports.getBasicExpectLoan= [\n")
+    num = 0
+    for i in range(1, test_round):
+        high = random.randrange(10000, 30000) / 100000.0
+        low = random.randrange(5000, 10000) /100000.0
+        supply = random.randrange(20, max_supply)
+        circulation = random.randrange(1, supply)
+
+        high *= formula.decimal
+        low *= formula.decimal
+        supply *= formula.ether
+        circulation *= formula.ether
+
+        cdtamount = max_cdtamount / test_num * num + random.randrange(1, fluctuate)
+        interestrate_exact = formula.get_interest_rate(high, low, supply, circulation)
+
+        cdtamount *= formula.ether
+        try:
+            ethamount, issuecdtamount, sctamount = formula._loan(cdtamount, interestrate_exact)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtamount), int(interestrate_exact), int(ethamount),  int(issuecdtamount), int(sctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
+
+
+    # cdtamount, interestrate
+    outp.write("module.exports.getBasicExactLoan= [\n")
+    num = 0
+    for i in range(1, test_round):
+        high = random.randrange(10000, 30000) / 100000.0
+        low = random.randrange(5000, 10000) /100000.0
+        supply = random.randrange(20, max_supply)
+        circulation = random.randrange(1, supply)
+
+        high *= formula.decimal
+        low *= formula.decimal
+        supply *= formula.ether
+        circulation *= formula.ether
+
+        cdtamount = max_cdtamount / test_num * num + random.randrange(1, fluctuate)
+        interestrate_exact = formula.get_interest_rate(high, low, supply, circulation)
+
+        cdtamount *= formula.ether
+        try:
+            ethamount, issuecdtamount, sctamount = formula.loan(cdtamount, interestrate_exact)
+            outp.write("\t['%d','%d','%d','%d','%d'],\n" % ( int(cdtamount), int(interestrate_exact), int(ethamount),  int(issuecdtamount), int(sctamount)))
+            num +=1
+            if num > test_num:
+                break
+        except AssertionError as err:
+            continue
+    outp.write("];\n\n\n")
+
 
 
 

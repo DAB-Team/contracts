@@ -161,7 +161,7 @@ class EasyDABFormula(object):
         # the first situation is there is enough DPT
         if (dptsupply-dptcirculation) >= token.real:
             crr = self.get_crr(dptcirculation + token)
-            dptprice = dptbalance / ((dptcirculation + token) * crr)
+            dptprice = max_balance / ((dptcirculation + token) * crr)
             return token.real * self.ether, 0, crr.real * self.decimal, dptprice.real * self.decimal
         # the second situation is there is insufficient DPT in the contract
         else:
@@ -204,7 +204,7 @@ class EasyDABFormula(object):
         # the first situation is there is enough DPT
         if math.sub(dptsupply, dptcirculation) >= token.real:
             crr = self._get_crr(math.add(dptcirculation, token))
-            dptprice = math.div(dptbalance, math.mul(math.add(dptcirculation, token), crr))
+            dptprice = math.div(max_balance, math.mul(math.add(dptcirculation, token), crr))
             return math.floattoether(token), 0, math.floattodecimal(crr), math.floattodecimal(dptprice)
         # the second situation is there is insufficient DPT in the contract
         else:
@@ -264,9 +264,31 @@ class EasyDABFormula(object):
         # Approximate calculation for it is always less than actual amount
         cdtprice = cdtbalance / (cdtsupply * self.CDT_CRR)
         ethamount = cdtamount * cdtprice
+        assert ethamount < cdtbalance
+        cashfee = ethamount * self.CDT_CASHFEE
+        ethamount -= cashfee
         cdtbalance -= ethamount
         cdtprice = cdtbalance / (cdtsupply * self.CDT_CRR)
-        return ethamount * self.ether, cdtprice * self.decimal
+        return ethamount.real * self.ether, cdtprice * self.decimal
+
+    def _cash(self, cdtbalance, cdtsupply, cdtamount):
+        # check overflow and change unit
+        cdtbalance = math.uint256(cdtbalance)
+        cdtsupply = math.uint256(cdtsupply)
+        cdtamount = math.uint256(cdtamount)
+        cdtbalance = math.ethertofloat(cdtbalance)
+        cdtsupply = math.ethertofloat(cdtsupply)
+        cdtamount = math.ethertofloat(cdtamount)
+
+        # Approximate calculation for it is always less than actual amount
+        cdtprice = math.div(cdtbalance, math.mul(cdtsupply, math.decimaltofloat(self.CDT_CRR * self.decimal)))
+        ethamount = math.mul(cdtamount, cdtprice)
+        assert ethamount < cdtbalance
+        cashfee = math.mul(ethamount, math.decimaltofloat(self.CDT_CASHFEE * self.decimal))
+        ethamount = math.sub(ethamount, cashfee)
+        cdtbalance = math.sub(cdtbalance, ethamount)
+        cdtprice = math.div(cdtbalance, math.mul(cdtsupply, math.decimaltofloat(self.CDT_CRR * self.decimal)))
+        return math.floattoether(ethamount), math.floattodecimal(cdtprice)
 
     def loan(self, cdtamount, interestrate):
         # change unit
@@ -281,6 +303,24 @@ class EasyDABFormula(object):
         ethamount = ethamount - earn
         sctamount = cdtamount
         return ethamount * self.ether, issuecdtamount * self.ether, sctamount * self.ether
+
+
+    def _loan(self, cdtamount, interestrate):
+        # check overflow and change unit
+        cdtamount = math.uint256(cdtamount)
+        interestrate = math.uint256(interestrate)
+        cdtamount = math.ethertofloat(cdtamount)
+        interestrate = math.decimaltofloat(interestrate)
+
+        # loaned ether
+        ethamount = math.mul(cdtamount,  math.decimaltofloat(self.CDTL * self.decimal))
+        # calculate the interest
+        earn = math.mul(ethamount, interestrate)
+        issuecdtamount = math.div(math.mul(earn, math.decimaltofloat(self.CDT_RESERVE * self.decimal)), math.mul(math.decimaltofloat(self.CDTIP * self.decimal), math.float(2)))
+        # calculate the new issue CDT to prize loaned user using the interest
+        ethamount = math.sub(ethamount, earn)
+        sctamount = cdtamount
+        return math.floattoether(ethamount), math.floattoether(issuecdtamount), math.floattoether(sctamount)
 
     def repay(self, repayethamount, sctamount):
         # change unit
@@ -297,6 +337,27 @@ class EasyDABFormula(object):
             refundethamount = repayethamount - ethamount
             return refundethamount * self.ether, cdtamount * self.ether, 0
 
+
+    def _repay(self, repayethamount, sctamount):
+        # check overflow and change unit
+        repayethamount = math.uint256(repayethamount)
+        sctamount = math.uint256(sctamount)
+        repayethamount = math.ethertofloat(repayethamount)
+        sctamount = math.uint256(sctamount)
+
+        ethamount = math.mul(sctamount, math.decimaltofloat(self.CDTL * self.decimal))
+        if repayethamount < ethamount:
+            ethamount = repayethamount
+            cdtamount = math.div(ethamount, math.decimaltofloat(self.CDTL * self.decimal))
+            refundsctamount = math.sub(sctamount, cdtamount)
+            return 0, math.ethertofloat(cdtamount), math.ethertofloat(refundsctamount)
+        else:
+            cdtamount = math.div(ethamount, math.decimaltofloat(self.CDTL * self.decimal))
+            refundethamount = math.sub(repayethamount, ethamount)
+            return math.floattoether(refundethamount) , math.floattoether(cdtamount), 0
+
+
+
     def to_credit_token(self,repayethamount, dctamount):
         repayethamount /= self.ether
         dctamount /= self.ether
@@ -311,6 +372,27 @@ class EasyDABFormula(object):
             refundethamount = repayethamount -ethamount
             return refundethamount * self.ether, cdtamount * self.ether, 0
 
+
+    def _to_credit_token(self,repayethamount, dctamount):
+        # check over float and change unit
+        repayethamount = math.uint256(repayethamount)
+        dctamount = math.uint256(dctamount)
+
+        repayethamount = math.ethertofloat(repayethamount)
+        dctamount = math.ethertofloat(dctamount)
+        ethamount = math.mul(dctamount, math.decimaltofloat(self.CDTL * self.decimal))
+        if repayethamount < ethamount:
+            ethamount = repayethamount
+            cdtamount = math.div(ethamount, math.decimaltofloat(self.CDTL * self.decimal))
+            refunddctamount = math.sub(dctamount, cdtamount)
+            return 0, math.floattoether(cdtamount), math.floattoether(refunddctamount)
+        else:
+            cdtamount = math.div(ethamount,  math.decimaltofloat(self.CDTL * self.decimal))
+            refundethamount = math.sub(repayethamount, ethamount)
+            return math.floattoether(refundethamount), math.floattoether(cdtamount), 0
+
+
+
     def to_discredit(self, cdtbalance, supply, sctamount):
         # change unit
         cdtbalance /= self.ether
@@ -318,6 +400,19 @@ class EasyDABFormula(object):
         sctamount /= self.ether
         cdtprice = cdtbalance /(supply * self.CDT_CRR)
         return (sctamount * 0.95) * self.ether, cdtprice * self.decimal
+
+    def _to_discredit(self, cdtbalance, supply, sctamount):
+        # check overflow and change unit
+        cdtbalance = math.uint256(cdtbalance)
+        supply = math.uint256(supply)
+        sctamount = math.uint256(sctamount)
+
+        cdtbalance = math.ethertofloat(cdtbalance)
+        supply = math.ethertofloat(supply)
+        sctamount = math.ethertofloat(sctamount)
+
+        cdtprice = math.div(cdtbalance, math.mul(supply, self.CDT_CRR))
+        return math.mul(sctamount, math.decimaltofloat(0.95 * self.decimal)), math.floattodecimal(cdtprice)
 
 
 
