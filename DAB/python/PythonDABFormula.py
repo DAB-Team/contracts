@@ -248,6 +248,7 @@ class EasyDABFormula(object):
         dptprice = math.div(dptbalance, math.mul(dptcirculation, self._get_crr(dptcirculation)))
         # Calculate the maximum ether should be returned to user
         ethamount = math.mul(dptamount, dptprice)
+
         # Calculate the maximum CRR after withdraw
         max_crr = self._get_crr(math.sub(dptcirculation, dptamount))
         # Calculate the minimum price after withdraw

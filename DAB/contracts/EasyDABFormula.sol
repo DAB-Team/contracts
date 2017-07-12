@@ -31,57 +31,19 @@ contract EasyDABFormula is IDABFormula, Math {
 
     uint256 private sctToDCTRate = DecimalToFloat(90000000);      // subCredit token to discredit token ratio
 
+    LoanPlan public halfAYear;
+
+    LoanPlan public aYear;
+
+    LoanPlan public twoYear;
+
+
+
     string public version = '0.1';
 
-/*
- TO complete doc
-*/
-    function sigmoid(uint256 _a, uint256 _b, uint256 _l, uint256 _d, uint256 _x)
-    private
-    returns (uint256){
+    function EasyDABFormula(){
 
-        require(0 <= _b);
-        require(0 < _a);
-        require(0 <= _l);
-        require(0 < _d);
 
-        uint256 y;
-        uint256 rate;
-        uint256 exp;
-        uint256 addexp;
-        uint256 divexp;
-        uint256 mulexp;
-        if (_x > _l) {
-            rate = div(safeSub(_x, _l), _d);
-            if (rate < 0x1e00000000) {
-                exp = fixedExp(rate);
-                addexp = add(FLOAT_ONE, exp);
-                divexp = div(FLOAT_ONE, addexp);
-                mulexp = mul(_a, divexp);
-                y = add(mulexp, _b);
-            }
-            else {
-                y = _b;
-            }
-
-        }
-        else if (_x < _l && _x >= 0) {
-            rate = div(safeSub(_l, _x), _d);
-            if (rate < 0x1e00000000) {
-                exp = fixedExp(rate);
-                addexp = add(FLOAT_ONE, exp);
-                divexp = div(FLOAT_ONE, addexp);
-                mulexp = mul(_a, divexp);
-                y = sub(add(_a, _b * 2), add(mulexp, _b));
-            }
-            else {
-                y = add(_a, _b);
-            }
-        }
-        else {
-            y = div(add(_a, _b * 2), Float(2));
-        }
-        return y;
     }
 
     function getCRR(uint256 _circulation)
@@ -89,27 +51,6 @@ contract EasyDABFormula is IDABFormula, Math {
     returns (uint256){
         return sigmoid(a, b, l, d, _circulation);
     }
-
-/*
- TO complete doc
-*/
-
-    function getInterestRate(uint256 _highRate, uint256 _lowRate, uint256 _supply, uint256 _circulation)
-    public
-    returns (uint256){
-        _highRate = DecimalToFloat(_highRate);
-        _lowRate = DecimalToFloat(_lowRate);
-        _supply = EtherToFloat(_supply);
-        _circulation = EtherToFloat(_circulation);
-
-        require(0 < _lowRate && _lowRate < (DecimalToFloat(15000000)));
-        require(_highRate < (DecimalToFloat(50000000)) && _lowRate < _highRate);
-        require(0 <= _supply);
-        require(0 <= _circulation && _circulation <= _supply);
-
-        return FloatToDecimal(sigmoid(sub(_highRate, _lowRate), _lowRate, _supply / 2, _supply / 8, _circulation));
-    }
-
 
 /*
  TO complete doc
@@ -188,8 +129,6 @@ contract EasyDABFormula is IDABFormula, Math {
 
         tokenPrice = div(_dptBalance, mul(_dptCirculation, getCRR(_dptCirculation)));
         ethAmount = mul(_dptAmount, tokenPrice);
-
-        require(ethAmount <= _dptBalance);
 
         uint256 maxcrr = getCRR(sub(_dptCirculation, _dptAmount));
         tokenPrice = div(sub(_dptBalance, ethAmount), mul(_dptCirculation, maxcrr));

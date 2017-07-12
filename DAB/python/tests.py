@@ -16,7 +16,7 @@ test_to_credit = []
 test_to_discredit = []
 
 test_round = 100000
-test_num = 2000
+test_num = 10
 max_balance = 1000000
 max_supply = 100000000
 max_circulation = max_supply

@@ -10,8 +10,12 @@ const DepositToken = artifacts.require("SmartToken.sol");
 const CreditToken = artifacts.require("SmartToken.sol");
 const SubCreditToken = artifacts.require("SmartToken.sol");
 const DiscreditToken = artifacts.require("SmartToken.sol");
-const SmartTokenController = artifacts.require('SmartTokenController.sol');
-const OperationController = artifacts.require('OperationController.sol');
+const DepositTokenController = artifacts.require('SmartTokenController.sol');
+const CreditTokenController = artifacts.require('SmartTokenController.sol');
+const SubCreditTokenController = artifacts.require('SmartTokenController.sol');
+const DiscreditTokenController = artifacts.require('SmartTokenController.sol');
+const DABSmartTokenController = artifacts.require('DABSmartTokenController.sol');
+const DABOperationController = artifacts.require('DABOperationController.sol');
 const DAB = artifacts.require("DAB.sol");
 
 
@@ -28,8 +32,11 @@ module.exports =  async (deployer) =>{
   deployer.deploy(CreditToken, "Credit Token", "CDT", 8);
   deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 8);
   deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 8);
-  deployer.deploy(SmartTokenController, DepositToken.address, CreditToken.address, SubCreditToken.address, DiscreditToken.address);
-  deployer.deploy(OperationController, DepositToken.address, CreditToken.address, SubCreditToken.address, DiscreditToken.address, 1499650380, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
-  deployer.deploy(DAB, EasyDABFormula.address, DepositToken.address, CreditToken.address, SubCreditToken.address, DiscreditToken.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1499650380);
+  deployer.deploy(DepositTokenController, DepositToken.address);
+  deployer.deploy(CreditTokenController, CreditToken.address);
+  deployer.deploy(SubCreditTokenController, SubCreditToken.address);
+  deployer.deploy(DiscreditTokenController, DiscreditToken.address);
+  deployer.deploy(DABOperationController, DepositTokenController.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1499650380);
+  deployer.deploy(DAB, EasyDABFormula.address, DepositTokenController.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1499650380);
 
 };

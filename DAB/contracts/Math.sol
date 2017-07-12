@@ -408,4 +408,57 @@ contract Math is SafeMath {
 
         return res / 0xde1bc4d19efcac82445da75b00000000;
     }
+
+/*
+ TO complete doc
+*/
+    function sigmoid(uint256 _a, uint256 _b, uint256 _l, uint256 _d, uint256 _x)
+    private
+    returns (uint256){
+
+        require(0 <= _b);
+        require(0 < _a);
+        require(0 <= _l);
+        require(0 < _d);
+
+        uint256 y;
+        uint256 rate;
+        uint256 exp;
+        uint256 addexp;
+        uint256 divexp;
+        uint256 mulexp;
+        if (_x > _l) {
+            rate = div(safeSub(_x, _l), _d);
+            if (rate < 0x1e00000000) {
+                exp = fixedExp(rate);
+                addexp = add(FLOAT_ONE, exp);
+                divexp = div(FLOAT_ONE, addexp);
+                mulexp = mul(_a, divexp);
+                y = add(mulexp, _b);
+            }
+            else {
+                y = _b;
+            }
+
+        }
+        else if (_x < _l && _x >= 0) {
+            rate = div(safeSub(_l, _x), _d);
+            if (rate < 0x1e00000000) {
+                exp = fixedExp(rate);
+                addexp = add(FLOAT_ONE, exp);
+                divexp = div(FLOAT_ONE, addexp);
+                mulexp = mul(_a, divexp);
+                y = sub(add(_a, _b * 2), add(mulexp, _b));
+            }
+            else {
+                y = add(_a, _b);
+            }
+        }
+        else {
+            y = div(add(_a, _b * 2), Float(2));
+        }
+        return y;
+    }
+
+
 }

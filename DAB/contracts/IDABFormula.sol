@@ -16,8 +16,8 @@ input:supply, circulation, uDPTAmount, uCDTAmount, fDPTAmount, fCDTAmount
 
 contract IDABFormula {
 
-    function getInterestRate(uint256 _highRate, uint256 _lowRate, uint256 _supply, uint256 _circulation)
-    public returns (uint256);
+    function getLoan(uint256 _highRate, uint256 _lowRate, uint256 _supply, uint256 _circulation)
+    public returns (uint256, uint256, uint256);
 
     function issue(uint256 circulation, uint256 ethAmount)
     public returns (uint256, uint256, uint256, uint256, uint256);

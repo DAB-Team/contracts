@@ -1274,13 +1274,7 @@ contract('EasyDABFormula', function(accounts){
         });
     };
 
-
-
-
-
-
-
-   
+    
     // Test for Random getInterestRate Function
     testdata.getInterestRate.forEach(interestExpectRateTest);
     testdata.getInterestRate.forEach(interestExactRateTest);
@@ -1322,9 +1316,9 @@ contract('EasyDABFormula', function(accounts){
     testdata.getBasicExactDeposit.forEach(dptpriceDepositExactTest);
 
     testdata.getRandomExpectDeposit.forEach(tokenDepositExpectTest);
-    testdata.getRandomExactDeposit.forEach(remainethDepositExpectTest);
-    testdata.getRandomExactDeposit.forEach(crrDepositExpectTest);
-    testdata.getRandomExactDeposit.forEach(dptpriceDepositExpectTest);
+    testdata.getRandomExpectDeposit.forEach(remainethDepositExpectTest);
+    testdata.getRandomExpectDeposit.forEach(crrDepositExpectTest);
+    testdata.getRandomExpectDeposit.forEach(dptpriceDepositExpectTest);
 
     testdata.getRandomExactDeposit.forEach(tokenDepositExactTest);
     testdata.getRandomExactDeposit.forEach(remainethDepositExactTest);
@@ -1334,9 +1328,9 @@ contract('EasyDABFormula', function(accounts){
 
     // Test for Basic and Random withdraw Function
     testdata.getBasicExpectWithdraw.forEach(ethamountWithdrawExpectTest);
-    testdata.getBasicExactWithdraw.forEach(sctamountWithdrawExpectTest);
-    testdata.getBasicExactWithdraw.forEach(crrWithdrawExpectTest);
-    testdata.getBasicExactWithdraw.forEach(dptpriceWithdrawExpectTest);
+    testdata.getBasicExpectWithdraw.forEach(sctamountWithdrawExpectTest);
+    testdata.getBasicExpectWithdraw.forEach(crrWithdrawExpectTest);
+    testdata.getBasicExpectWithdraw.forEach(dptpriceWithdrawExpectTest);
 
     testdata.getBasicExactWithdraw.forEach(ethamountWithdrawExactTest);
     testdata.getBasicExactWithdraw.forEach(sctamountWithdrawExactTest);
@@ -1344,9 +1338,9 @@ contract('EasyDABFormula', function(accounts){
     testdata.getBasicExactWithdraw.forEach(dptpriceWithdrawExactTest);
 
     testdata.getRandomExpectWithdraw.forEach(ethamountWithdrawExpectTest);
-    testdata.getRandomExactWithdraw.forEach(sctamountWithdrawExpectTest);
-    testdata.getRandomExactWithdraw.forEach(crrWithdrawExpectTest);
-    testdata.getRandomExactWithdraw.forEach(dptpriceWithdrawExpectTest);
+    testdata.getRandomExpectWithdraw.forEach(sctamountWithdrawExpectTest);
+    testdata.getRandomExpectWithdraw.forEach(crrWithdrawExpectTest);
+    testdata.getRandomExpectWithdraw.forEach(dptpriceWithdrawExpectTest);
 
     testdata.getRandomExactWithdraw.forEach(ethamountWithdrawExactTest);
     testdata.getRandomExactWithdraw.forEach(sctamountWithdrawExactTest);
