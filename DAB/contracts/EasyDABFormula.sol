@@ -31,21 +31,12 @@ contract EasyDABFormula is IDABFormula, Math {
 
     uint256 private sctToDCTRate = DecimalToFloat(90000000);      // subCredit token to discredit token ratio
 
-    LoanPlan public halfAYear;
-
-    LoanPlan public aYear;
-
-    LoanPlan public twoYear;
-
-
-
     string public version = '0.1';
 
-    function EasyDABFormula(){
 
-
-    }
-
+/*
+ TO complete doc
+*/
     function getCRR(uint256 _circulation)
     private
     returns (uint256){
@@ -55,8 +46,6 @@ contract EasyDABFormula is IDABFormula, Math {
 /*
  TO complete doc
 */
-
-// assertion error when circulation>10000000
     function issue(uint256 _circulation, uint256 _ethAmount)
     public
     returns (uint256, uint256, uint256, uint256, uint256){
@@ -118,7 +107,7 @@ contract EasyDABFormula is IDABFormula, Math {
 
     function withdraw(uint256 _dptBalance, uint256 _dptCirculation, uint256 _dptAmount)
     public
-    returns (uint256 ethAmount, uint256 sctAmount, uint256 CRR, uint256 tokenPrice){
+    returns (uint256 ethAmount, uint256 CRR, uint256 tokenPrice){
         require( _dptBalance > 0 );
         require(_dptCirculation > 0);
         require(_dptAmount > 0);
@@ -133,7 +122,7 @@ contract EasyDABFormula is IDABFormula, Math {
         uint256 maxcrr = getCRR(sub(_dptCirculation, _dptAmount));
         tokenPrice = div(sub(_dptBalance, ethAmount), mul(_dptCirculation, maxcrr));
         uint256 actualEther = mul(_dptAmount, tokenPrice);
-        return (FloatToEther(actualEther), FloatToEther(_dptAmount), FloatToDecimal(maxcrr), FloatToDecimal(tokenPrice));
+        return (FloatToEther(actualEther), FloatToDecimal(maxcrr), FloatToDecimal(tokenPrice));
     }
 
 /*

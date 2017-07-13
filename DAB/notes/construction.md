@@ -4,4 +4,6 @@
     3. transfer four smart tokens' ownership to the SmartControllers respectively
     4. construct a DAB with four SmartControllers, bineficiary and start time
     5. transfer four SmartControllers' ownership to DAB
+    6. transfer DAB's ownership to a DAO contract.
+    7. DAO can update the formulas (DAB formula and Loan formulas)
 

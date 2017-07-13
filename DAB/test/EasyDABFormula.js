@@ -48,43 +48,6 @@ contract('EasyDABFormula', function(accounts){
         }).catch(expectedThrow);
     });
 
-    var interestExpectRateTest = function(k){
-        var [high, low, supply, circulation, expect, exact] = k;
-        high = num(high), low = num(low), supply = num(supply), circulation = num(circulation), expect = num(expect), exact = num(exact);
-
-        it("Should get correct expect rate of interest", function(){
-            return EasyDABFormula.deployed().then(
-                function(f)
-                {
-                    return f.getInterestRate.call(high, low, supply, circulation);
-                }).then(function(retval){
-                assert(retval.eq(expect),"Rate return "+retval+" should be =="+expect+"("+exact+")"+". [high, low, supply, circulation] "+[high, low, supply, circulation]);
-            }).catch(function(error){
-                assert(false, error.toString());
-            });
-        });
-    };
-
-
-    var interestExactRateTest = function(k){
-        var [high, low, supply, circulation, expect, exact] = k;
-        high = num(high), low = num(low), supply = num(supply), circulation = num(circulation), expect = num(expect), exact = num(exact);
-
-        it("Should get correct exact rate of interest", function(){
-            return EasyDABFormula.deployed().then(
-                function(f)
-                {
-                    return f.getInterestRate.call(high, low, supply, circulation);
-                }).then(function(retval){
-                retval = (retval/1).toPrecision(dprecision);
-                exact = (exact/1).toPrecision(dprecision);
-                assert(retval == exact,"Rate return "+retval+" should be =="+exact+"("+expect+")"+". [high, low, supply, circulation] "+[high, low, supply, circulation]);
-            }).catch(function(error){
-                assert(false, error.toString());
-            });
-        });
-    };
-
     var udptIssueExpectTest = function(k){
         var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
 
@@ -499,9 +462,9 @@ contract('EasyDABFormula', function(accounts){
 
 
     var ethamountWithdrawExpectTest = function(k){
-        var [balance, circulation, dptamount, ethamount, sctamount, crr, dptprice] = k;
+        var [balance, circulation, dptamount, ethamount, crr, dptprice] = k;
 
-        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), sctamount = num(sctamount), crr = num(crr), dptprice = num(dptprice);
+        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), crr = num(crr), dptprice = num(dptprice);
 
         it("Should get correct expect eth amount for withdraw", function(){
             return EasyDABFormula.deployed().then(
@@ -509,7 +472,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.withdraw.call(balance, circulation, dptamount);
                 }).then(function(retval){
-                var [ethamountr, sctamountr, crrr, dptpricer] = retval;
+                var [ethamountr, crrr, dptpricer] = retval;
                 ethamount = (ethamount/1).toPrecision(eprecision);
                 ethamountr = (ethamountr/1).toPrecision(eprecision);
                 assert(ethamountr == ethamount,"ether return "+ethamountr+" should be =="+ethamount+". [balance, circulation, dptamount] "+[balance, circulation, dptamount]);
@@ -522,9 +485,9 @@ contract('EasyDABFormula', function(accounts){
 
 
     var ethamountWithdrawExactTest = function(k){
-        var [balance, circulation, dptamount, ethamount, sctamount, crr, dptprice] = k;
+        var [balance, circulation, dptamount, ethamount, crr, dptprice] = k;
 
-        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), sctamount = num(sctamount), crr = num(crr), dptprice = num(dptprice);
+        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), crr = num(crr), dptprice = num(dptprice);
 
         it("Should get correct exact eth amount for withdraw", function(){
             return EasyDABFormula.deployed().then(
@@ -532,7 +495,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.withdraw.call(balance, circulation, dptamount);
                 }).then(function(retval){
-                var [ethamountr, sctamountr, crrr, dptpricer] = retval;
+                var [ethamountr, crrr, dptpricer] = retval;
                 ethamount = (ethamount/1).toPrecision(eprecision);
                 ethamountr = (ethamountr/1).toPrecision(eprecision);
                 assert(ethamountr == ethamount,"ether return "+ethamountr+" should be =="+ethamount+". [balance, circulation, dptamount] "+[balance, circulation, dptamount]);
@@ -542,58 +505,10 @@ contract('EasyDABFormula', function(accounts){
         });
     };
 
-
-
-    var sctamountWithdrawExpectTest = function(k){
-        var [balance, circulation, dptamount, ethamount, sctamount, crr, dptprice] = k;
-
-        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), sctamount = num(sctamount), crr = num(crr), dptprice = num(dptprice);
-
-        it("Should get correct expect subCredit amount for withdraw", function(){
-            return EasyDABFormula.deployed().then(
-                function(f)
-                {
-                    return f.withdraw.call(balance, circulation, dptamount);
-                }).then(function(retval){
-                var [ethamountr, sctamountr, crrr, dptpricer] = retval;
-                sctamount = (sctamount/1).toPrecision(eprecision);
-                sctamountr = (sctamountr/1).toPrecision(eprecision);
-                assert(sctamountr == sctamount,"subCredit amount return "+sctamountr+" should be =="+sctamount+". [balance, supply, circulation, dptamount] "+[balance, circulation, dptamount]);
-            }).catch(function(error){
-                assert(false, error.toString());
-            });
-        });
-    };
-
-
-
-    var sctamountWithdrawExactTest = function(k){
-        var [balance, circulation, dptamount, ethamount, sctamount, crr, dptprice] = k;
-
-        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), sctamount = num(sctamount), crr = num(crr), dptprice = num(dptprice);
-
-        it("Should get correct exact subCredit amount for withdraw", function(){
-            return EasyDABFormula.deployed().then(
-                function(f)
-                {
-                    return f.withdraw.call(balance, circulation, dptamount);
-                }).then(function(retval){
-                var [ethamountr, sctamountr, crrr, dptpricer] = retval;
-                sctamount = (sctamount/1).toPrecision(eprecision);
-                sctamountr = (sctamountr/1).toPrecision(eprecision);
-                assert(sctamountr == sctamount,"subCredit amount return "+sctamountr+" should be =="+sctamount+". [balance, supply, circulation, dptamount] "+[balance, circulation, dptamount]);
-            }).catch(function(error){
-                assert(false, error.toString());
-            });
-        });
-    };
-
-
-
     var crrWithdrawExpectTest = function(k){
-        var [balance, circulation, dptamount, ethamount, sctamount, crr, dptprice] = k;
+        var [balance, circulation, dptamount, ethamount, crr, dptprice] = k;
 
-        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), sctamount = num(sctamount), crr = num(crr), dptprice = num(dptprice);
+        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), crr = num(crr), dptprice = num(dptprice);
 
         it("Should get correct expect crr for withdraw", function(){
             return EasyDABFormula.deployed().then(
@@ -601,7 +516,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.withdraw.call(balance, circulation, dptamount);
                 }).then(function(retval){
-                var [ethamountr, sctamountr, crrr, dptpricer] = retval;
+                var [ethamountr, crrr, dptpricer] = retval;
                 crr = (crr/1).toPrecision(2);
                 crrr = (crrr/1).toPrecision(2);
                 assert(crrr == crr,"crr return "+crrr+" should be =="+crr+". [balance, supply, circulation, dptamount] "+[balance, circulation, dptamount]);
@@ -614,9 +529,9 @@ contract('EasyDABFormula', function(accounts){
 
 
     var crrWithdrawExactTest = function(k){
-        var [balance, circulation, dptamount, ethamount, sctamount, crr, dptprice] = k;
+        var [balance, circulation, dptamount, ethamount, crr, dptprice] = k;
 
-        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), sctamount = num(sctamount), crr = num(crr), dptprice = num(dptprice);
+        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), crr = num(crr), dptprice = num(dptprice);
 
         it("Should get correct exact crr for withdraw", function(){
             return EasyDABFormula.deployed().then(
@@ -624,7 +539,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.withdraw.call(balance, circulation, dptamount);
                 }).then(function(retval){
-                var [ethamountr, sctamountr, crrr, dptpricer] = retval;
+                var [ethamountr, crrr, dptpricer] = retval;
                 crr = (crr/1).toPrecision(2);
                 crrr = (crrr/1).toPrecision(2);
                 assert(crrr == crr,"crr return "+crrr+" should be =="+crr+". [balance, supply, circulation, dptamount] "+[balance, circulation, dptamount]);
@@ -637,9 +552,9 @@ contract('EasyDABFormula', function(accounts){
 
 
     var dptpriceWithdrawExpectTest = function(k){
-        var [balance, circulation, dptamount, ethamount, sctamount, crr, dptprice] = k;
+        var [balance, circulation, dptamount, ethamount, crr, dptprice] = k;
 
-        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), sctamount = num(sctamount), crr = num(crr), dptprice = num(dptprice);
+        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), crr = num(crr), dptprice = num(dptprice);
 
         it("Should get correct expect deposit price for withdraw", function(){
             return EasyDABFormula.deployed().then(
@@ -647,7 +562,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.withdraw.call(balance, circulation, dptamount);
                 }).then(function(retval){
-                var [ethamountr, sctamountr, crrr, dptpricer] = retval;
+                var [ethamountr, crrr, dptpricer] = retval;
                 dptprice = (dptprice/1).toPrecision(dprecision);
                 dptpricer = (dptpricer/1).toPrecision(dprecision);
                 assert(dptpricer == dptprice,"deposit price return "+dptpricer+" should be =="+dptprice+". [balance, supply, circulation, dptamount] "+[balance, circulation, dptamount]);
@@ -660,9 +575,9 @@ contract('EasyDABFormula', function(accounts){
 
 
     var dptpriceWithdrawExactTest = function(k){
-        var [balance, circulation, dptamount, ethamount, sctamount, crr, dptprice] = k;
+        var [balance, circulation, dptamount, ethamount, crr, dptprice] = k;
 
-        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), sctamount = num(sctamount), crr = num(crr), dptprice = num(dptprice);
+        balance = num(balance), circulation = num(circulation), dptamount = num(dptamount), ethamount = num(ethamount), crr = num(crr), dptprice = num(dptprice);
 
         it("Should get correct exact deposit price for withdraw", function(){
             return EasyDABFormula.deployed().then(
@@ -670,7 +585,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.withdraw.call(balance, circulation, dptamount);
                 }).then(function(retval){
-                var [ethamountr, sctamountr, crrr, dptpricer] = retval;
+                var [ethamountr, crrr, dptpricer] = retval;
                 dptprice = (dptprice/1).toPrecision(dprecision);
                 dptpricer = (dptpricer/1).toPrecision(dprecision);
                 assert(dptpricer == dptprice,"deposit price return "+dptpricer+" should be =="+dptprice+". [balance, supply, circulation, dptamount] "+[balance, circulation, dptamount]);
@@ -1275,10 +1190,7 @@ contract('EasyDABFormula', function(accounts){
     };
 
     
-    // Test for Random getInterestRate Function
-    testdata.getInterestRate.forEach(interestExpectRateTest);
-    testdata.getInterestRate.forEach(interestExactRateTest);
-
+   
     // Test for Basic and Random issue Function
     testdata.getBasicExpectIssue.forEach(udptIssueExpectTest);
     testdata.getBasicExpectIssue.forEach(ucdtIssueExpectTest);
@@ -1328,22 +1240,18 @@ contract('EasyDABFormula', function(accounts){
 
     // Test for Basic and Random withdraw Function
     testdata.getBasicExpectWithdraw.forEach(ethamountWithdrawExpectTest);
-    testdata.getBasicExpectWithdraw.forEach(sctamountWithdrawExpectTest);
     testdata.getBasicExpectWithdraw.forEach(crrWithdrawExpectTest);
     testdata.getBasicExpectWithdraw.forEach(dptpriceWithdrawExpectTest);
 
     testdata.getBasicExactWithdraw.forEach(ethamountWithdrawExactTest);
-    testdata.getBasicExactWithdraw.forEach(sctamountWithdrawExactTest);
     testdata.getBasicExactWithdraw.forEach(crrWithdrawExactTest);
     testdata.getBasicExactWithdraw.forEach(dptpriceWithdrawExactTest);
 
     testdata.getRandomExpectWithdraw.forEach(ethamountWithdrawExpectTest);
-    testdata.getRandomExpectWithdraw.forEach(sctamountWithdrawExpectTest);
     testdata.getRandomExpectWithdraw.forEach(crrWithdrawExpectTest);
     testdata.getRandomExpectWithdraw.forEach(dptpriceWithdrawExpectTest);
 
     testdata.getRandomExactWithdraw.forEach(ethamountWithdrawExactTest);
-    testdata.getRandomExactWithdraw.forEach(sctamountWithdrawExactTest);
     testdata.getRandomExactWithdraw.forEach(crrWithdrawExactTest);
     testdata.getRandomExactWithdraw.forEach(dptpriceWithdrawExactTest);
 
@@ -1433,11 +1341,6 @@ contract('EasyDABFormula', function(accounts){
 
     testdata.getBasicExactToDiscreditToken.forEach(dctamountToDiscreditTokenExactTest);
     testdata.getBasicExactToDiscreditToken.forEach(cdtpriceToDiscreditTokenExactTest);
-
-
-
-
-
 
 
 

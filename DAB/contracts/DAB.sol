@@ -4,7 +4,7 @@ pragma solidity ^0.4.11;
 import './DABOperationController.sol';
 import './IDABFormula.sol';
 import './ILoanPlanFormula.sol';
-import './SmartTokenController.sol';
+import './ISmartToken.sol';
 
 
 /*
@@ -12,6 +12,7 @@ import './SmartTokenController.sol';
 
     TO DO:
     LoanPlan
+    withdraw is false
 */
 
 /*
@@ -21,20 +22,56 @@ import './SmartTokenController.sol';
 contract DAB is DABOperationController{
 
     struct LoanPlan{
-        bool isEnabled;
+    bool isEnabled;
+    }
+
+    struct Reserve {
+    uint256 balance;
+    }
+
+    struct Token {
+    uint256 supply;         // total supply = issue - destroy
+    uint256 circulation;    // supply minus those in contract
+    uint256 price;          // price of token
+    uint256 balance;    // virtual balance = (supply-circulation) * price
+    uint256 currentCRR;  // current cash ratio of the token
+
+    bool isReserved;   // true if reserve is enabled, false if not
+    bool isPurchaseEnabled;         // is purchase of the smart token enabled with the reserve, can be set by the token owner
+    bool isSet;                     // used to tell if the mapping element is defined
     }
 
     string public version = '0.1';
 
     uint256 maxStream = 100 ether;
 
+    bool public isDABActive = false;
+
+    ISmartToken public depositToken;
+
+    ISmartToken public creditToken;
+
+    ISmartToken public subCreditToken;
+
+    ISmartToken public discreditToken;
+
+    address[] public tokenSet;
+
+    Reserve public depositReserve;
+
+    Reserve public creditReserve;
+
+    Reserve public beneficiaryDPTReserve;
+
+    Reserve public beneficiaryCDTReserve;
+
+    mapping (address => Token) public tokens;   //  token addresses -> token data
+
     IDABFormula public formula;
 
     address[] public loanPlanAddresses;
 
     mapping (address => LoanPlan) public loanPlans;
-
-    mapping (address => ILoanPlanFormula) public loanPlanFormulas;
 
     event Issue(address _to, uint256 _amountOfETH, uint256 _amountOfDPT, uint256 _amountOfCDT);
 
@@ -67,13 +104,133 @@ contract DAB is DABOperationController{
     // set formula
         formula = _formula;
 
+
+    // set token controller address
+        depositToken = _depositTokenController.getToken();
+        creditToken = _creditTokenController.getToken();
+        subCreditToken = _subCreditTokenController.getToken();
+        discreditToken = _discreditTokenController.getToken();
+
+    // reserve start from 0
+
+        depositReserve.balance = 0;
+        creditReserve.balance = 0;
+
+    // add deposit token
+
+        tokens[depositToken].supply = 0;
+        tokens[depositToken].circulation = 0;
+        tokens[depositToken].price = 0;
+        tokens[depositToken].balance = 0;
+        tokens[depositToken].currentCRR = Decimal(1);
+        tokens[depositToken].isReserved = true;
+        tokens[depositToken].isPurchaseEnabled = true;
+        tokens[depositToken].isSet = true;
+        tokenSet.push(depositToken);
+
+    // add credit token
+
+        tokens[creditToken].supply = 0;
+        tokens[creditToken].circulation = 0;
+        tokens[creditToken].price = 0;
+        tokens[creditToken].balance = 0;
+        tokens[creditToken].currentCRR = Decimal(3);
+        tokens[creditToken].isReserved = true;
+        tokens[creditToken].isPurchaseEnabled = false;
+        tokens[creditToken].isSet = true;
+        tokenSet.push(creditToken);
+
+    // add subCredit token
+
+        tokens[subCreditToken].supply = 0;
+        tokens[subCreditToken].circulation = 0;
+        tokens[subCreditToken].price = 0;
+        tokens[subCreditToken].balance = 0;
+        tokens[subCreditToken].currentCRR = Decimal(3);
+        tokens[subCreditToken].isReserved = false;
+        tokens[subCreditToken].isPurchaseEnabled = false;
+        tokens[subCreditToken].isSet = true;
+        tokenSet.push(subCreditToken);
+
+    // add subCredit token
+
+    // always change
+        tokens[discreditToken].supply = 0;
+    // always change
+        tokens[discreditToken].circulation = 0;
+    // always 0
+        tokens[discreditToken].price = 0;
+        tokens[discreditToken].balance = 0;
+        tokens[discreditToken].currentCRR = 0;
+        tokens[discreditToken].isReserved = false;
+        tokens[discreditToken].isPurchaseEnabled = false;
+        tokens[discreditToken].isSet = true;
+        tokenSet.push(discreditToken);
+
+    }
+
+// validates a token address - verifies that the address belongs to one of the changeable tokens
+    modifier validToken(address _address) {
+        require(tokens[_address].isSet);
+        _;
     }
 
 // validates a reserve token address - verifies that the address belongs to one of the reserve tokens
-    modifier validLoanPlan(address _address) {
+    modifier validLoanPlanFormula(address _address) {
         require(loanPlans[_address].isEnabled);
         _;
     }
+
+// verifies that an amount is greater than zero
+    modifier active() {
+        require(isDABActive == true);
+        _;
+    }
+
+// verifies that an amount is greater than zero
+    modifier inactive() {
+        require(isDABActive == false);
+        _;
+    }
+
+    function activateDAB() activeDABController public {
+        depositTokenController.disableTokenTransfers(false);
+        creditTokenController.disableTokenTransfers(false);
+        subCreditTokenController.disableTokenTransfers(true);
+        discreditTokenController.disableTokenTransfers(false);
+        isDABActive = true;
+    }
+
+
+/**
+    @dev returns the deposit balance if one is defined, otherwise returns the actual balance
+
+    @return reserve balance
+*/
+    function getDepositTokenBalance()
+    public
+    constant
+    returns (uint256 balance)
+    {
+        Token storage deposit = tokens[depositToken];
+        return deposit.balance;
+    }
+
+
+/**
+    @dev returns the deposit balance if one is defined, otherwise returns the actual balance
+
+    @return reserve balance
+*/
+    function getCreditTokenBalance()
+    public
+    constant
+    returns (uint256 balance)
+    {
+        Token storage credit = tokens[creditToken];
+        return credit.balance;
+    }
+
 
 /**
         @dev returns the number of loan plans defined
@@ -81,7 +238,7 @@ contract DAB is DABOperationController{
         @return number of loan plans
     */
     function loanPlanCount() public constant returns (uint16 count) {
-        return uint16(loanPlans.length);
+        return uint16(loanPlanAddresses.length);
     }
 
 
@@ -89,47 +246,45 @@ contract DAB is DABOperationController{
     @dev defines a new loan plan
     can only be called by the owner
 
-    @param _loanPlan         address of the loan plan
+    @param _loanPlanFormula         address of the loan plan
 */
-    function addLoanPlan(ILoanPlan _loanPlan)
+    function addLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
     public
     ownerOnly
-    validAddress(_loanPlan)
-    notThis(_loanPlan)
+    validAddress(_loanPlanFormula)
+    notThis(_loanPlanFormula)
     {
-        require(!loanPlans[_loanPlan].isSet); // validate input
-        loanPlans[_loanPlan].isEnabled = true;
-        loanPlanAddresses.push(_loanPlan);
+        require(!loanPlans[_loanPlanFormula].isEnabled); // validate input
+        loanPlans[_loanPlanFormula].isEnabled = true;
+        loanPlanAddresses.push(_loanPlanFormula);
     }
 
 /**
     @dev updates one of the token reserves
     can only be called by the token owner
 
-    @param _loanPlan           address of the loan plan
+    @param _loanPlanFormula           address of the loan plan
     @param _disable            disable loan plan or not
 */
-    function disableLoanPlan(ILoanPlan _loanPlan, bool _disable)
+    function disableLoanPlan(ILoanPlanFormula _loanPlanFormula, bool _disable)
     public
     ownerOnly
-    validAddress(_loanPlan)
-    notThis(_loanPlan)
-    validLoanPlan(_loanPlan)
+    validAddress(_loanPlanFormula)
+    notThis(_loanPlanFormula)
+    validLoanPlanFormula(_loanPlanFormula)
     {
-        LoanPlan loanPlan = loanPlans[_loanPlan];
+        LoanPlan storage loanPlan = loanPlans[_loanPlanFormula];
         loanPlan.isEnabled = !_disable;
     }
 
 
+/**
+    @dev returns the number of reserve tokens defined
 
-
-    /**
-        @dev returns the number of reserve tokens defined
-
-        @return number of tokens
-    */
+    @return number of tokens
+*/
     function tokenCount() public constant returns (uint16 count) {
-    return uint16(tokenSet.length);
+        return uint16(tokenSet.length);
     }
 
 
@@ -149,21 +304,6 @@ contract DAB is DABOperationController{
     }
 
 
-/*
-    @dev allows the owner to update the formula contract address
-
-    @param _formula    address of a bancor formula contract
-*/
-    function addLoanPlan(ILoanPlan _loanPlan)
-    public
-    ownerOnly
-    notThis(_loanPlan)
-    validAddress(_loanPlan)
-    {
-        require(_formula != formula);
-        formula = _formula;
-    }
-
 
 /**
 @dev buys the token by depositing one of its reserve tokens
@@ -178,8 +318,8 @@ contract DAB is DABOperationController{
     started
     validAmount(_issueAmount)
     returns (bool issued) {
-        Token storage deposit = tokens[depositAddress];
-        Token storage credit = tokens[creditAddress];
+        Token storage deposit = tokens[depositToken];
+        Token storage credit = tokens[creditToken];
     // ensure the trade gives something in return and meets the minimum requested amount
 
     // update virtual balance if relevant
@@ -225,7 +365,7 @@ contract DAB is DABOperationController{
     active
     started
     validAmount(msg.value) {
-        Token storage deposit = tokens[depositAddress];
+        Token storage deposit = tokens[depositToken];
     // function deposit(uint256 dptBalance, uint256 dptSupply, uint256 dptCirculation, uint256 ethAmount)
     //  return (add(dptAmount, mul(fdpt, U)), mul(fcdt, U), mul(fdpt, F), mul(fcdt, F), fcrr, dptPrice);
         var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(depositReserve.balance, deposit.supply, safeSub(deposit.supply, deposit.balance), msg.value);
@@ -235,7 +375,7 @@ contract DAB is DABOperationController{
         // assert(depositReserve.balance == this.value);
             deposit.circulation = safeAdd(deposit.circulation, dptAmount);
             assert(depositTokenController.transferTokensFrom(this, msg.sender, dptAmount));
-            deposit.balance = depositToken.balanceOf(this);
+            deposit.balance = depositTokenController.balanceOf(this);
             assert(deposit.balance == (safeSub(deposit.supply, deposit.circulation)));
             deposit.currentCRR = currentCRR;
             deposit.price = dptPrice;
@@ -260,26 +400,21 @@ contract DAB is DABOperationController{
     active
     activeDPT
     validAmount(_withdrawAmount) {
-        Token storage deposit = tokens[depositAddress];
-        Token storage subCredit = tokens[subCreditAddress];
+        Token storage deposit = tokens[depositToken];
     // function withdraw(uint256 dptBalance, uint256 dptCirculation, uint256 dptAmount)
     //  returns (uint256 ethAmount, uint256 sctAmount, uint256 CRR, uint256 tokenPrice)
-        var (ethAmount, sctAmount, currentCRR, dptPrice) = formula.withdraw(depositReserve.balance, safeSub(deposit.supply, deposit.balance), _withdrawAmount);
+        var (ethAmount, currentCRR, dptPrice) = formula.withdraw(depositReserve.balance, safeSub(deposit.supply, deposit.balance), _withdrawAmount);
         assert(ethAmount > 0);
-        assert(sctAmount > 0);
 
     // assert(beneficiary.send(msg.value))
         msg.sender.transfer(ethAmount);
-        assert(depositToken.transferTokensFrom(msg.sender, this, _withdrawAmount));
-        subCreditToken.issue(msg.sender, sctAmount);
+        assert(depositTokenController.transferTokensFrom(msg.sender, this, _withdrawAmount));
 
         depositReserve.balance = safeSub(depositReserve.balance, ethAmount);
         deposit.circulation = safeSub(deposit.circulation, _withdrawAmount);
-        deposit.balance = depositToken.balanceOf(this);
+        deposit.balance = depositTokenController.balanceOf(this);
         deposit.currentCRR = currentCRR;
         deposit.price = dptPrice;
-
-        subCredit.supply = safeAdd(subCredit.supply, sctAmount);
 
         assert(deposit.balance == (safeSub(deposit.supply, deposit.circulation)));
     // assert(depositReserve.balance == this.value);
@@ -301,7 +436,7 @@ contract DAB is DABOperationController{
     active
     activeCDT
     validAmount(_cashAmount) {
-        Token storage credit = tokens[creditAddress];
+        Token storage credit = tokens[creditToken];
     // cash(uint256 cdtBalance, uint256 cdtSupply, uint256 cdtAmount)
     //  returns (uint256 ethAmount, uint256 cdtPrice)
         var (ethAmount, cdtPrice) = formula.cash(depositReserve.balance, safeSub(credit.supply, credit.balance), _cashAmount);
@@ -314,7 +449,7 @@ contract DAB is DABOperationController{
 
         creditReserve.balance = safeSub(creditReserve.balance, ethAmount);
         credit.circulation = safeSub(credit.circulation, _cashAmount);
-        credit.balance = creditToken.balanceOf(this);
+        credit.balance = creditTokenController.balanceOf(this);
         credit.price = cdtPrice;
 
         credit.supply = safeSub(credit.supply, _cashAmount);
@@ -335,16 +470,17 @@ contract DAB is DABOperationController{
 
 @param _loanAmount amount to loan (in credit token)
 */
-    function loan(uint256 _loanAmount)
+    function loan(uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
     public
     active
     activeCDT
-    validAmount(_loanAmount) {
-        Token storage credit = tokens[creditAddress];
-        Token storage subCredit = tokens[subCreditAddress];
+    validAmount(_loanAmount)
+    validLoanPlanFormula(_loanPlanFormula){
+        Token storage credit = tokens[creditToken];
+        Token storage subCredit = tokens[subCreditToken];
 
     // function getInterestRate(uint256 _highRate, uint256 _lowRate, uint256 _supply, uint256 _circulation)
-        uint256 interestRate = formula.getInterestRate(loanPlan.highRate, loanPlan.lowRate, safeAdd(credit.supply, subCredit.supply), credit.supply);
+        var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(safeAdd(credit.supply, subCredit.supply), credit.supply);
 
 
     // function loan(uint256 cdtAmount, uint256 interestRate)
@@ -355,12 +491,12 @@ contract DAB is DABOperationController{
     // assert(beneficiary.send(msg.value))
         msg.sender.transfer(ethAmount);
         assert(depositTokenController.transferTokensFrom(msg.sender, this, _loanAmount));
-        creditToken.issue(msg.sender, issueCDTAmount);
-        subCreditToken.issue(msg.sender, sctAmount);
+        creditTokenController.issueTokens(msg.sender, issueCDTAmount);
+        subCreditTokenController.issueTokens(msg.sender, sctAmount);
 
         creditReserve.balance = safeSub(creditReserve.balance, ethAmount);
         credit.circulation = safeSub(credit.circulation, _loanAmount);
-        credit.balance = creditToken.balanceOf(this);
+        credit.balance = creditTokenController.balanceOf(this);
         credit.supply = safeAdd(credit.supply, issueCDTAmount);
         assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
     // assert(depositReserve.balance == this.value);
@@ -386,12 +522,12 @@ contract DAB is DABOperationController{
     activeCDT
     validAmount(_repayAmount) {
         require(msg.value > 0);
-        Token storage credit = tokens[creditAddress];
-        Token storage subCredit = tokens[subCreditAddress];
+        Token storage credit = tokens[creditToken];
+        Token storage subCredit = tokens[subCreditToken];
 
     // function repay(uint256 _repayETHAmount, uint256 _sctAmount)
     // returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundSCTAmount)
-        uint256 sctAmount = subCreditToken.balanceOf(msg.sender);
+        uint256 sctAmount = subCreditTokenController.balanceOf(msg.sender);
         var (refundETHAmount, cdtAmount, refundSCTAmount) = formula.repay(_repayAmount, sctAmount);
 
         if (refundETHAmount > 0) {
@@ -454,12 +590,12 @@ contract DAB is DABOperationController{
     activeCDT
     validAmount(_payAmount) {
         require(msg.value > 0);
-        Token storage credit = tokens[creditAddress];
-        Token storage discredit = tokens[discreditAddress];
+        Token storage credit = tokens[creditToken];
+        Token storage discredit = tokens[discreditToken];
 
     // function toCreditToken(uint256 _repayETHAmount, uint256 _dctAmount)
     // returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundDCTAmount)
-        uint256 dctAmount = discreditToken.balanceOf(msg.sender);
+        uint256 dctAmount = discreditTokenController.balanceOf(msg.sender);
         var (refundETHAmount, cdtAmount, refundDCTAmount) = formula.toCreditToken(_payAmount, dctAmount);
 
         if (refundETHAmount > 0) {
@@ -523,9 +659,9 @@ contract DAB is DABOperationController{
     active
     activeCDT
     validAmount(_sctAmount) {
-        Token storage credit = tokens[creditAddress];
-        Token storage subCredit = tokens[subCreditAddress];
-        Token storage discredit = tokens[discreditAddress];
+        Token storage credit = tokens[creditToken];
+        Token storage subCredit = tokens[subCreditToken];
+        Token storage discredit = tokens[discreditToken];
 
     // function toDiscreditToken(uint256 _cdtBalance, uint256 _supply, uint256 _sctAmount)
     // returns (uint256 dctAmount, uint256 cdtPrice)
@@ -536,7 +672,7 @@ contract DAB is DABOperationController{
 
         credit.supply = safeSub(credit.supply, _sctAmount);
         credit.circulation = safeSub(credit.circulation, _sctAmount);
-        credit.balance = creditToken.balanceOf(this);
+        credit.balance = creditTokenController.balanceOf(this);
         credit.price = cdtPrice;
 
         assert(credit.balance == (safeSub(credit.supply, credit.circulation)));

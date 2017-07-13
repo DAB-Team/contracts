@@ -2,8 +2,12 @@ import os
 import random
 
 from DAB.python.PythonDABFormula import EasyDABFormula as Formula
+from DAB.python.PythonLoanPlanFormula import HalfAYearLoanPlanFormula
 
 formula = Formula()
+
+halfayearformula = HalfAYearLoanPlanFormula()
+
 
 test_sigmoid = []
 test_issue = []
@@ -16,7 +20,7 @@ test_to_credit = []
 test_to_discredit = []
 
 test_round = 100000
-test_num = 10
+test_num = 2
 max_balance = 1000000
 max_supply = 100000000
 max_circulation = max_supply
@@ -30,28 +34,26 @@ fluctuate = 100
 def generateTestData(outp):
     """ Generates some random scenarios"""
 
-    outp.write("module.exports.getInterestRate= [\n")
+    outp.write("module.exports.getHalfAYearLoanPlan= [\n")
     num = 0
     for i in range(1, test_round):
-        high = random.randrange(10000, 30000) / 100000.0
-        low = random.randrange(5000, 10000) / 100000.0
         supply = random.randrange(20, max_supply)
         circulation = random.randrange(1, supply)
 
-        high *= formula.decimal
-        low *= formula.decimal
         supply *= formula.ether
         circulation *= formula.ether
         try:
-            interestrate_expect = formula._get_interest_rate(high, low, supply, circulation)
-            interestrate_exact = formula.get_interest_rate(high, low, supply, circulation)
-            outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
-            int(high), int(low), int(supply), int(circulation), int(interestrate_expect), int(interestrate_exact)))
+            interestrate_expect, loandays_expect, exemptdays_expect = halfayearformula._get_loan_plan(supply, circulation)
+            interestrate_exact, loandays_exact, exemptdays_exact = halfayearformula.get_loan_plan(supply, circulation)
+            outp.write("\t['%d','%d','%d','%d','%d','%d','%d','%d'],\n" % (
+            int(supply), int(circulation), int(interestrate_expect), int(loandays_expect), int(exemptdays_expect), int(interestrate_exact), int(loandays_exact), int(exemptdays_exact)))
             num += 1
             if num > test_num:
                 break
         except AssertionError as err:
-            continue
+            raise err
+
+            # continue
 
     outp.write("];\n\n\n")
 
@@ -246,11 +248,10 @@ def generateTestData(outp):
         circulation *= formula.ether
         dptamount *= formula.ether
         try:
-            ethamount_expect, sctamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation,
+            ethamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation,
                                                                                                 dptamount)
-            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % (
-            int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(sctamount_expect),
-            int(crr_expect), int(dptprice_expect)))
+            outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
+            int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(crr_expect), int(dptprice_expect)))
             num += 1
             if num > test_num:
                 break
@@ -272,11 +273,9 @@ def generateTestData(outp):
         circulation *= formula.ether
         dptamount *= formula.ether
         try:
-            ethamount_expect, sctamount_expect, crr_expect, dptprice_expect = formula.withdraw(balance, circulation,
-                                                                                               dptamount)
-            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % (
-            int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(sctamount_expect),
-            int(crr_expect), int(dptprice_expect)))
+            ethamount_expect, crr_expect, dptprice_expect = formula.withdraw(balance, circulation, dptamount)
+            outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
+            int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(crr_expect), int(dptprice_expect)))
             num += 1
             if num > test_num:
                 break
@@ -296,11 +295,10 @@ def generateTestData(outp):
         circulation *= formula.ether
         dptamount *= formula.ether
         try:
-            ethamount_expect, sctamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation,
+            ethamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation,
                                                                                                 dptamount)
-            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % (
-            int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(sctamount_expect),
-            int(crr_expect), int(dptprice_expect)))
+            outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
+            int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(crr_expect), int(dptprice_expect)))
             num += 1
             if num > test_num:
                 break
@@ -320,11 +318,9 @@ def generateTestData(outp):
         circulation *= formula.ether
         dptamount *= formula.ether
         try:
-            ethamount_expect, sctamount_expect, crr_expect, dptprice_expect = formula.withdraw(balance, circulation,
-                                                                                               dptamount)
-            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % (
-            int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(sctamount_expect),
-            int(crr_expect), int(dptprice_expect)))
+            ethamount_expect, crr_expect, dptprice_expect = formula.withdraw(balance, circulation, dptamount)
+            outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
+            int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(crr_expect), int(dptprice_expect)))
             num += 1
             if num > test_num:
                 break
@@ -439,7 +435,7 @@ def generateTestData(outp):
         circulation *= formula.ether
 
         cdtamount = random.randrange(1, max_cdtamount)
-        interestrate_exact = formula.get_interest_rate(high, low, supply, circulation)
+        interestrate_exact, loandays, exemptdays = halfayearformula.get_loan_plan(supply, circulation)
 
         cdtamount *= formula.ether
         try:
@@ -469,7 +465,7 @@ def generateTestData(outp):
         circulation *= formula.ether
 
         cdtamount = random.randrange(1, max_cdtamount)
-        interestrate_exact = formula.get_interest_rate(high, low, supply, circulation)
+        interestrate_exact, loandays, exemptdays = halfayearformula.get_loan_plan(supply, circulation)
 
         cdtamount *= formula.ether
         try:
@@ -498,7 +494,7 @@ def generateTestData(outp):
         circulation *= formula.ether
 
         cdtamount = max_cdtamount / test_num * num + random.randrange(1, fluctuate)
-        interestrate_exact = formula.get_interest_rate(high, low, supply, circulation)
+        interestrate_exact, loandays, exemptdays = halfayearformula.get_loan_plan(supply, circulation)
 
         cdtamount *= formula.ether
         try:
@@ -527,7 +523,7 @@ def generateTestData(outp):
         circulation *= formula.ether
 
         cdtamount = max_cdtamount / test_num * num + random.randrange(1, fluctuate)
-        interestrate_exact = formula.get_interest_rate(high, low, supply, circulation)
+        interestrate_exact, loandays, exemptdays = halfayearformula.get_loan_plan(supply, circulation)
 
         cdtamount *= formula.ether
         try:

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 import '../DABOperationController.sol';
-import '../SmartTokenController.sol'
+import '../SmartTokenController.sol';
 
 /*
     Test operation controller with start time < now < end time

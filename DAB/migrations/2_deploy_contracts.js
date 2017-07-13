@@ -3,6 +3,8 @@ const SafeMath = artifacts.require('SafeMath.sol');
 const Math = artifacts.require('Math.sol');
 const TestMath = artifacts.require('./helpers/TestMath.sol');
 const EasyDABFormula = artifacts.require("EasyDABFormula.sol");
+const HalfAYearLoanPlanFormula = artifacts.require("HalfAYearLoanPlanFormula.sol");
+
 const Owned = artifacts.require('Owned.sol');
 const TokenHolder = artifacts.require('TokenHolder.sol');
 const ERC20Token = artifacts.require('ERC20Token.sol');
@@ -25,6 +27,7 @@ module.exports =  async (deployer) =>{
   deployer.deploy(Math);
   deployer.deploy(TestMath);
   deployer.deploy(EasyDABFormula);
+  deployer.deploy(HalfAYearLoanPlanFormula);
   deployer.deploy(Owned);
   deployer.deploy(TokenHolder);
   deployer.deploy(ERC20Token, "Token", "TKN1", 8);

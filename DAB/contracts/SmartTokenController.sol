@@ -123,11 +123,15 @@ contract SmartTokenController is TokenHolder {
     }
 
 
-function balanceOf(address _address) public returns(uint256 value){
+    function balanceOf(address _address) public
+    active
+    returns(uint256 value){
         return token.balanceOf(_address);
     }
 
-    function allowance(address _from, address _to) public returns(uint256 value){
+    function allowance(address _from, address _to) public
+    active
+    returns(uint256 value){
         return token.allowance(_from, _to);
     }
 
@@ -143,7 +147,27 @@ function balanceOf(address _address) public returns(uint256 value){
     function withdrawFromToken(IERC20Token _token, address _to, uint256 _amount) public ownerOnly {
         token.withdrawTokens(_token, _to, _amount);
     }
+/*
+To add doc
 
+*/
+
+    function getTokenAddress() public
+    active
+    returns (address tokenAddress){
+        return address(token);
+    }
+
+/*
+To add doc
+
+*/
+
+    function getToken() public
+    active
+    returns (ISmartToken){
+        return token;
+    }
 
 
 }
