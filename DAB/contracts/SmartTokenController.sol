@@ -61,7 +61,6 @@ contract SmartTokenController is TokenHolder {
         can only be called by the contract owner
     */
     function acceptTokenOwnership() public
-    inactive
     ownerOnly {
         token.acceptOwnership();
     }
@@ -118,7 +117,7 @@ contract SmartTokenController is TokenHolder {
 
     }
 
-    function totalSupply() public returns(uint256 value){
+    function totalSupply() public active returns(uint256 value){
         return token.totalSupply();
     }
 
@@ -147,27 +146,4 @@ contract SmartTokenController is TokenHolder {
     function withdrawFromToken(IERC20Token _token, address _to, uint256 _amount) public ownerOnly {
         token.withdrawTokens(_token, _to, _amount);
     }
-/*
-To add doc
-
-*/
-
-    function getTokenAddress() public
-    active
-    returns (address tokenAddress){
-        return address(token);
-    }
-
-/*
-To add doc
-
-*/
-
-    function getToken() public
-    active
-    returns (ISmartToken){
-        return token;
-    }
-
-
 }

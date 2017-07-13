@@ -104,12 +104,11 @@ contract DAB is DABOperationController{
     // set formula
         formula = _formula;
 
-
     // set token controller address
-        depositToken = _depositTokenController.getToken();
-        creditToken = _creditTokenController.getToken();
-        subCreditToken = _subCreditTokenController.getToken();
-        discreditToken = _discreditTokenController.getToken();
+        depositToken = _depositTokenController.token();
+        creditToken = _creditTokenController.token();
+        subCreditToken = _subCreditTokenController.token();
+        discreditToken = _discreditTokenController.token();
 
     // reserve start from 0
 
@@ -374,7 +373,7 @@ contract DAB is DABOperationController{
             depositReserve.balance = safeAdd(depositReserve.balance, msg.value);
         // assert(depositReserve.balance == this.value);
             deposit.circulation = safeAdd(deposit.circulation, dptAmount);
-            assert(depositTokenController.transferTokensFrom(this, msg.sender, dptAmount));
+            assert(depositTokenController.transferTokens(msg.sender, dptAmount));
             deposit.balance = depositTokenController.balanceOf(this);
             assert(deposit.balance == (safeSub(deposit.supply, deposit.circulation)));
             deposit.currentCRR = currentCRR;
@@ -534,7 +533,7 @@ contract DAB is DABOperationController{
             assert(refundSCTAmount == 0);
 
             msg.sender.transfer(refundETHAmount);
-            assert(depositTokenController.transferTokensFrom(this, msg.sender, cdtAmount));
+            assert(depositTokenController.transferTokens(msg.sender, cdtAmount));
             subCreditTokenController.destroyTokens(msg.sender, sctAmount);
 
             creditReserve.balance = safeAdd(creditReserve.balance, safeSub(_repayAmount, refundETHAmount));
@@ -555,7 +554,7 @@ contract DAB is DABOperationController{
         else {
             assert(refundSCTAmount >= 0);
 
-            assert(depositTokenController.transferTokensFrom(this, msg.sender, cdtAmount));
+            assert(depositTokenController.transferTokens(msg.sender, cdtAmount));
             subCreditTokenController.destroyTokens(msg.sender, safeSub(sctAmount, refundSCTAmount));
 
             creditReserve.balance = safeAdd(creditReserve.balance, _repayAmount);
@@ -602,7 +601,7 @@ contract DAB is DABOperationController{
             assert(refundDCTAmount == 0);
 
             msg.sender.transfer(refundETHAmount);
-            assert(depositTokenController.transferTokensFrom(this, msg.sender, cdtAmount));
+            assert(depositTokenController.transferTokens(msg.sender, cdtAmount));
             discreditTokenController.destroyTokens(msg.sender, dctAmount);
 
             creditReserve.balance = safeAdd(creditReserve.balance, safeSub(_payAmount, refundETHAmount));
@@ -623,7 +622,7 @@ contract DAB is DABOperationController{
         else {
             assert(refundDCTAmount >= 0);
 
-            assert(depositTokenController.transferTokensFrom(this, msg.sender, cdtAmount));
+            assert(depositTokenController.transferTokens(msg.sender, cdtAmount));
             discreditTokenController.destroyTokens(msg.sender, safeSub(dctAmount, refundDCTAmount));
 
             creditReserve.balance = safeAdd(creditReserve.balance, _payAmount);
