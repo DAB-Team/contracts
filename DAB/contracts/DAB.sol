@@ -6,15 +6,6 @@ import './IDABFormula.sol';
 import './ILoanPlanFormula.sol';
 import './ISmartToken.sol';
 
-
-/*
-    Open issues:
-
-    TO DO:
-    LoanPlan
-    withdraw is false
-*/
-
 /*
     DAB v0.1
 
