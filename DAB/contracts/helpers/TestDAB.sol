@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 import '../DAB.sol';
-import '../IDABFormula.sol';
+import '../interfaces/IDABFormula.sol';
 import '../SmartTokenController.sol';
 
 /*

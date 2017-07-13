@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 
-import './IDABFormula.sol';
+import './interfaces/IDABFormula.sol';
 import './Math.sol';
 
 

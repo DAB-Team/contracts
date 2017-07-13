@@ -2,9 +2,9 @@ pragma solidity ^0.4.11;
 
 
 import './DABOperationController.sol';
-import './IDABFormula.sol';
-import './ILoanPlanFormula.sol';
-import './ISmartToken.sol';
+import './interfaces/IDABFormula.sol';
+import './interfaces/ILoanPlanFormula.sol';
+import './interfaces/ISmartToken.sol';
 
 /*
     DAB v0.1
@@ -631,7 +631,7 @@ contract DAB is DABOperationController{
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
         Token storage discredit = tokens[discreditToken];
-    
+
         var (dctAmount, cdtPrice) = formula.toDiscreditToken(creditReserve.balance, credit.supply, _sctAmount);
 
         subCreditTokenController.destroyTokens(msg.sender, _sctAmount);

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.0;
 
-import './ILoanPlanFormula.sol';
+import './interfaces/ILoanPlanFormula.sol';
 import './Math.sol';
 
 contract HalfAYearLoanPlanFormula is ILoanPlanFormula, Math {
