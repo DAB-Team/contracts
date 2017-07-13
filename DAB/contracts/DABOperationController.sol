@@ -8,16 +8,16 @@ import './DABSmartTokenController.sol';
 
 
 /*
-    Crowdsale v0.1
+    Operation v0.1
 
-    The crowdsale version of the smart token controller, allows contributing ether in exchange for Bancor tokens
+    The operation version of the smart token controller, allows contributing ether in exchange for Bancor tokens
     The price remains fixed for the entire duration of the crowdsale
     Note that 20% of the contributions are the Bancor token's reserve
 */
 
 contract DABOperationController is DABSmartTokenController, Math{
 
-uint256 public constant DURATION = 14 days;                 // crowdsale duration
+uint256 public constant DURATION = 14 days;                 // activation duration
 uint256 public constant CDT_ACTIVATION_LAG = 14 days;         // credit token activation lag
 
 uint256 public constant BASE_LINE = 50000 ether;       // minimum ether deposit

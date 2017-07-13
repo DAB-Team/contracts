@@ -310,15 +310,9 @@ contract DAB is DABOperationController{
     returns (bool issued) {
         Token storage deposit = tokens[depositToken];
         Token storage credit = tokens[creditToken];
-    // ensure the trade gives something in return and meets the minimum requested amount
-
-    // update virtual balance if relevant
-
-    // deposit.balance = safeAdd(deposit.balance, _depositAmount);
 
         var (uDPTAmount, uCDTAmount, fDPTAmount, fCDTAmount, currentCRR) = formula.issue(deposit.circulation, _issueAmount);
 
-    // transfer _depositAmount funds from the caller in the reserve token
         depositTokenController.issueTokens(msg.sender, uDPTAmount);
         depositTokenController.issueTokens(beneficiary, fDPTAmount);
         deposit.supply = safeAdd(deposit.supply, uDPTAmount);
@@ -356,8 +350,7 @@ contract DAB is DABOperationController{
     started
     validAmount(msg.value) {
         Token storage deposit = tokens[depositToken];
-    // function deposit(uint256 dptBalance, uint256 dptSupply, uint256 dptCirculation, uint256 ethAmount)
-    //  return (add(dptAmount, mul(fdpt, U)), mul(fcdt, U), mul(fdpt, F), mul(fcdt, F), fcrr, dptPrice);
+
         var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(depositReserve.balance, deposit.supply, safeSub(deposit.supply, deposit.balance), msg.value);
 
         if (dptAmount > 0) {
@@ -391,8 +384,7 @@ contract DAB is DABOperationController{
     activeDPT
     validAmount(_withdrawAmount) {
         Token storage deposit = tokens[depositToken];
-    // function withdraw(uint256 dptBalance, uint256 dptCirculation, uint256 dptAmount)
-    //  returns (uint256 ethAmount, uint256 sctAmount, uint256 CRR, uint256 tokenPrice)
+
         var (ethAmount, currentCRR, dptPrice) = formula.withdraw(depositReserve.balance, safeSub(deposit.supply, deposit.balance), _withdrawAmount);
         assert(ethAmount > 0);
 
@@ -427,8 +419,6 @@ contract DAB is DABOperationController{
     activeCDT
     validAmount(_cashAmount) {
         Token storage credit = tokens[creditToken];
-    // cash(uint256 cdtBalance, uint256 cdtSupply, uint256 cdtAmount)
-    //  returns (uint256 ethAmount, uint256 cdtPrice)
         var (ethAmount, cdtPrice) = formula.cash(depositReserve.balance, safeSub(credit.supply, credit.balance), _cashAmount);
         assert(ethAmount > 0);
         assert(cdtPrice > 0);
@@ -454,7 +444,6 @@ contract DAB is DABOperationController{
 
 
 
-
 /**
 @dev loan by credit token
 
@@ -469,16 +458,11 @@ contract DAB is DABOperationController{
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
 
-    // function getInterestRate(uint256 _highRate, uint256 _lowRate, uint256 _supply, uint256 _circulation)
         var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(safeAdd(credit.supply, subCredit.supply), credit.supply);
 
-
-    // function loan(uint256 cdtAmount, uint256 interestRate)
-    //  returns (uint256 ethAmount, uint256 issueCDTAmount, uint256 sctAmount)
         var (ethAmount, issueCDTAmount, sctAmount) = formula.loan(_loanAmount, interestRate);
         assert(ethAmount > 0);
 
-    // assert(beneficiary.send(msg.value))
         msg.sender.transfer(ethAmount);
         assert(depositTokenController.transferTokensFrom(msg.sender, this, _loanAmount));
         creditTokenController.issueTokens(msg.sender, issueCDTAmount);
@@ -499,7 +483,6 @@ contract DAB is DABOperationController{
     }
 
 
-
 /**
 @dev repay by ether
 
@@ -515,8 +498,6 @@ contract DAB is DABOperationController{
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
 
-    // function repay(uint256 _repayETHAmount, uint256 _sctAmount)
-    // returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundSCTAmount)
         uint256 sctAmount = subCreditTokenController.balanceOf(msg.sender);
         var (refundETHAmount, cdtAmount, refundSCTAmount) = formula.repay(_repayAmount, sctAmount);
 
@@ -583,8 +564,6 @@ contract DAB is DABOperationController{
         Token storage credit = tokens[creditToken];
         Token storage discredit = tokens[discreditToken];
 
-    // function toCreditToken(uint256 _repayETHAmount, uint256 _dctAmount)
-    // returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundDCTAmount)
         uint256 dctAmount = discreditTokenController.balanceOf(msg.sender);
         var (refundETHAmount, cdtAmount, refundDCTAmount) = formula.toCreditToken(_payAmount, dctAmount);
 
@@ -652,9 +631,7 @@ contract DAB is DABOperationController{
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
         Token storage discredit = tokens[discreditToken];
-
-    // function toDiscreditToken(uint256 _cdtBalance, uint256 _supply, uint256 _sctAmount)
-    // returns (uint256 dctAmount, uint256 cdtPrice)
+    
         var (dctAmount, cdtPrice) = formula.toDiscreditToken(creditReserve.balance, credit.supply, _sctAmount);
 
         subCreditTokenController.destroyTokens(msg.sender, _sctAmount);
@@ -677,7 +654,6 @@ contract DAB is DABOperationController{
         ToDiscreditToken(msg.sender, _sctAmount, dctAmount);
 
     }
-
 
     function() payable {
         deposit();
