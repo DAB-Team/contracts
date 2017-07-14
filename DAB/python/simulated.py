@@ -82,6 +82,8 @@ class ERC20(object):
         self.ratio = [1 for i in range(self.size)]          # Log Profit Ratio for Each Issuer just after Issuing
         self.crr = [ 0 for i in range(self.size) ]          # Log CRR Curve in the Process
         self.dpt = [ 0 for i in range(self.size) ]          # Log the amount of DPT Issued to Issuers
+        self.dptb = [ 0 for i in range(self.size) ]          # Log the reserve ETH balance of DPT
+        self.dpts = [ 0 for i in range(self.size) ]          # Log the supply of DPT
         self.cdt = [ 0 for i in range(self.size) ]          # Log the amount fo CDT Issued to Issuers
         self.e = [ 0 for i in range(self.size) ]            # Log the amount of ether for each Issuer
         self.issuer = 0      # Issuer Index
@@ -144,6 +146,8 @@ class ERC20(object):
             self.x[self.issuer] = self.DPTS - dpt/2
             self.crr[self.issuer] = (self.DPT_CRR + crrpre )/2
             self.dpt[self.issuer] = udpt
+            self.dptb[self.issuer] = self.DPTB
+            self.dpts[self.issuer] = self.DPTS
             self.cdt[self.issuer] = ucdt
             self.e[self.issuer] = ether
             self.issuer += 1
@@ -479,7 +483,7 @@ def plot_dpt(e):
     :return:
     """
     ip = [  e.ip[i] / e.DPTIP for i in range(e.issuer)]
-    p = [ e.p[i] / e.DPTIP for i in range(e.issuer)]
+    p = [ e.dptb[i] / (e.dpts[i] * e.crr[i]) for i in range(e.issuer)]
     ratio = [ e.ratio[i] for i in range(e.issuer)]
     value1 = [ (e.dpt[0]*e.p[i]+e.cdt[0]*e.CDTIP)/e.e[0] for i in range(e.issuer)]
     crr = [ e.crr[i] for i in range(e.issuer)]
