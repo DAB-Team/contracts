@@ -7,7 +7,7 @@
       "type": "constructor"
     }
   ],
-  "unlinked_binary": "0x60606040523415600b57fe5b5b5b5b603380601b6000396000f30060606040525bfe00a165627a7a72305820860b9eea2d7d9e8d22efa321b8cff94135833d2cae9b557fa42ca10fcd05cdf10029",
+  "unlinked_binary": "0x60606040523415600b57fe5b5b5b5b603380601b6000396000f30060606040525bfe00a165627a7a72305820da91fd76c0999afc10b7544bfe2839522e7a382182b7ecd9b5a880b6edef12480029",
   "networks": {
     "1499946816055": {
       "events": {},
@@ -20,8 +20,14 @@
       "links": {},
       "address": "0xd47c98a56c20c3407adc96f0718830c8d5005455",
       "updated_at": 1500025495922
+    },
+    "1500026482338": {
+      "events": {},
+      "links": {},
+      "address": "0x9ac67cf0f4e89093fbefecb768fe5b7be131097e",
+      "updated_at": 1500027522041
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1500025495922
+  "updated_at": 1500027522041
 }

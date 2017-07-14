@@ -128,6 +128,8 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
         await discreditTokenController.transferOwnership(creditAgent.address);
         await creditAgent.acceptDiscreditTokenControllerOwnership();
 
+        creditAgent.setDepositAgent(depositAgentAddress);
+
         await depositAgent.transferOwnership(dabAddress);
         await dab.acceptDepositAgentOwnership();
         await creditAgent.transferOwnership(dabAddress);
@@ -193,6 +195,8 @@ contract('DAB', (accounts) => {
         await discreditTokenController.transferOwnership(creditAgent.address);
         await creditAgent.acceptDiscreditTokenControllerOwnership();
 
+        creditAgent.setDepositAgent(depositAgentAddress);
+
     });
 
     it('verifies the base storage values after construction', async () => {
@@ -202,8 +206,10 @@ contract('DAB', (accounts) => {
 
         let creditAgent = await dab.creditAgent.call();
         assert.equal(creditAgent, creditAgentAddress);
-
+        
     });
+    
+    
 
 
 

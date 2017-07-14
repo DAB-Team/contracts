@@ -619,8 +619,32 @@
       },
       "updated_at": 1500025495932,
       "address": "0x1ef4b2524261c55514b80e99894f24cd6e2500f0"
+    },
+    "1500026482338": {
+      "links": {},
+      "events": {
+        "0x343765429aea5a34b3ff6a3785a98a5abb2597aca87bfbb58632c173d585373a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_prevOwner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnerUpdate",
+          "type": "event"
+        }
+      },
+      "updated_at": 1500027522052,
+      "address": "0x5595103c4fd40cf60c5611b92d531b3e347d493a"
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1500025495932
+  "updated_at": 1500027522052
 }

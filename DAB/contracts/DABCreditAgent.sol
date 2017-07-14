@@ -356,7 +356,10 @@ add doc
         creditTokenController.issueTokens(_user, issueCDTAmount);
         subCreditTokenController.issueTokens(_user, sctAmount);
 
+        // TODO split the interest to deposit agent and credit agent
+        // TODO get DPT from deposit agent, if there is insufficient DPT, which will issue the DPT and CDT to credit agent.
         creditReserve.balance = safeSub(creditReserve.balance, ethAmount);
+
         credit.circulation = safeSub(credit.circulation, _loanAmount);
         credit.balance = creditTokenController.balanceOf(this);
         credit.supply = safeAdd(credit.supply, issueCDTAmount);

@@ -38,15 +38,15 @@ module.exports =  async (deployer) =>{
   deployer.deploy(CreditToken, "Credit Token", "CDT", 8);
   deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 8);
   deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 8);
-  deployer.deploy(SmartTokenController, DepositToken.address);
-  deployer.deploy(DepositTokenController, DepositToken.address);
-  deployer.deploy(CreditTokenController, CreditToken.address);
-  deployer.deploy(SubCreditTokenController, SubCreditToken.address);
-  deployer.deploy(DiscreditTokenController, DiscreditToken.address);
-  deployer.deploy(DABCreditAgent, EasyDABFormula.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address);
-  deployer.deploy(DABDepositAgent, DABCreditAgent.address, EasyDABFormula.address, DepositTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
+  await deployer.deploy(SmartTokenController, DepositToken.address);
+  await deployer.deploy(DepositTokenController, DepositToken.address);
+  await deployer.deploy(CreditTokenController, CreditToken.address);
+  await deployer.deploy(SubCreditTokenController, SubCreditToken.address);
+  await deployer.deploy(DiscreditTokenController, DiscreditToken.address);
+  await deployer.deploy(DABCreditAgent, EasyDABFormula.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address);
+  await deployer.deploy(DABDepositAgent, DABCreditAgent.address, EasyDABFormula.address, DepositTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
 
-  deployer.deploy(DABOperationManager,  1501119180);
-  deployer.deploy(DAB, DABDepositAgent.address, DABCreditAgent.address, 1501119180);
+  await deployer.deploy(DABOperationManager,  1501119180);
+  await deployer.deploy(DAB, DABDepositAgent.address, DABCreditAgent.address, 1501119180);
 
 };
