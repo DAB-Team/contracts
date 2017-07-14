@@ -1,8 +1,8 @@
 import os
 import random
 
-from DAB.python.PythonDABFormula import EasyDABFormula as Formula
-from DAB.python.PythonLoanPlanFormula import HalfAYearLoanPlanFormula
+from DAB.python.dabformula import EasyDABFormula as Formula
+from DAB.python.loanplanformula import HalfAYearLoanPlanFormula
 
 formula = Formula()
 
