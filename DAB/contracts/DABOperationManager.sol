@@ -14,10 +14,7 @@ import './Math.sol';
 contract DABOperationManager is Owned, Math{
 
 uint256 public constant DURATION = 14 days;                 // activation duration
-uint256 public constant CDT_ACTIVATION_LAG = 14 days;         // credit token activation lag
-
-uint256 public constant BASE_LINE = 50000 ether;       // minimum ether deposit
-uint256 public constant ACTIVATION_LINE = 300000 ether;       // activation threshold of ether deposit
+uint256 public constant CDT_AGENT_ACTIVATION_LAG = 14 days;         // credit token activation lag
 
 string public version = '0.1';
 
@@ -25,25 +22,22 @@ uint256 public startTime = 0;                   // crowdsale start time (in seco
 uint256 public endTime = 0;                     // crowdsale end time (in seconds)
 uint256 public depositAgentActivationTime = 0;                     // activation time of deposit token (in seconds)
 uint256 public creditAgentActivationTime = 0;                     // activation time of credit token (in seconds)
-address public beneficiary = 0x0;               // address to receive all ether contributions
 
 
 /**
     @dev constructor
 
     @param _startTime      crowdsale start time
-    @param _beneficiary    address to receive all ether contributions
 */
 function DABOperationManager(
-address _beneficiary,
 uint256 _startTime
 )
 earlierThan(_startTime)
 {
 startTime = _startTime;
 endTime = startTime + DURATION;
-dptActivationTime = endTime;
-cdtActivationTime = dptActivationTime + CDT_ACTIVATION_LAG;
+depositAgentActivationTime = endTime;
+creditAgentActivationTime = depositAgentActivationTime + CDT_AGENT_ACTIVATION_LAG;
 }
 
 // ensures that it's earlier than the given time
@@ -80,6 +74,25 @@ _;
 // ensures that credit contract activated
 modifier activeCreditAgent() {
 assert(now > creditAgentActivationTime);
+_;
+}
+
+// verifies that an amount is greater than zero
+modifier validAmount(uint256 _amount) {
+require(_amount > 0);
+_;
+}
+
+// validates an address - currently only checks that it isn't null
+modifier validAddress(address _address) {
+require(_address != 0x0);
+_;
+}
+
+
+// verifies that the address is different than this contract address
+modifier notThis(address _address) {
+require(_address != address(this));
 _;
 }
 

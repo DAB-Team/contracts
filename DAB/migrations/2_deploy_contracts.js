@@ -18,7 +18,9 @@ const CreditTokenController = artifacts.require('SmartTokenController.sol');
 const SubCreditTokenController = artifacts.require('SmartTokenController.sol');
 const DiscreditTokenController = artifacts.require('SmartTokenController.sol');
 const DABSmartTokenController = artifacts.require('DABSmartTokenController.sol');
-const DABOperationController = artifacts.require('DABOperationController.sol');
+const DABDepositAgent = artifacts.require('DABDepositAgent.sol');
+const DABCreditAgent = artifacts.require('DABCreditAgent.sol');
+const DABOperationManager = artifacts.require('DABOperationManager.sol');
 const DAB = artifacts.require("DAB.sol");
 
 
@@ -41,7 +43,10 @@ module.exports =  async (deployer) =>{
   deployer.deploy(CreditTokenController, CreditToken.address);
   deployer.deploy(SubCreditTokenController, SubCreditToken.address);
   deployer.deploy(DiscreditTokenController, DiscreditToken.address);
-  deployer.deploy(DABOperationController, DepositTokenController.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1501119180);
-  deployer.deploy(DAB, EasyDABFormula.address, DepositTokenController.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1501119180);
+  deployer.deploy(DABCreditAgent, EasyDABFormula.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address);
+  deployer.deploy(DABDepositAgent, DABCreditAgent.address, EasyDABFormula.address, DepositTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
+
+  deployer.deploy(DABOperationManager,  1501119180);
+  deployer.deploy(DAB, DABDepositAgent.address, DABCreditAgent.address, 1501119180);
 
 };

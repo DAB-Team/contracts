@@ -3,9 +3,9 @@ pragma solidity ^0.4.0;
 import './interfaces/IDABFormula.sol';
 import './SmartTokenController.sol';
 import './DABCreditAgent.sol';
-import './Math.sol';
+import './DABAgent.sol';
 
-contract DABDepositAgent is Owned, Math{
+contract DABDepositAgent is DABAgent{
 
     Reserve public depositReserve;
 
@@ -13,9 +13,9 @@ contract DABDepositAgent is Owned, Math{
 
     SmartTokenController public depositTokenController;
 
-    DABCreditAgent public dabCreditAgent;
+    DABCreditAgent public creditAgent;
 
-    address public beneficiary;              // address to receive all ether contributions
+    address public beneficiary = 0x0;              // address to receive all ether contributions
 
     event Issue(address _to, uint256 _amountOfETH, uint256 _amountOfDPT);
 
@@ -25,18 +25,18 @@ contract DABDepositAgent is Owned, Math{
 
 
     function DABDepositAgent(
-    DABCreditAgent _dabCreditAgent,
+    DABCreditAgent _creditAgent,
     IDABFormula _formula,
     SmartTokenController _depositTokenController,
     address _beneficiary)
-    validAddress(_dabCreditAgent)
+    validAddress(_creditAgent)
     validAddress(_formula)
     validAddress(_depositTokenController)
     validAddress(_beneficiary)
     DABAgent(_formula)
     {
     // set DABCreditController
-        dabCreditAgent = _dabCreditAgent;
+        creditAgent = _creditAgent;
 
         depositToken = _depositTokenController.token();
 
@@ -112,7 +112,7 @@ contract DABDepositAgent is Owned, Math{
     function issue(address _user, uint256 _issueAmount)
     private
     validAmount(_issueAmount)
-    returns (bool issued) {
+    returns (bool success) {
         Token storage deposit = tokens[depositToken];
     // Token storage credit = tokens[creditToken];
 
@@ -126,15 +126,12 @@ contract DABDepositAgent is Owned, Math{
         deposit.circulation = safeAdd(deposit.circulation, fDPTAmount);
         deposit.currentCRR = currentCRR;
 
-    // creditTokenController.issueTokens(msg.sender, uCDTAmount);
-    // creditTokenController.issueTokens(beneficiary, fCDTAmount);
-    // credit.supply = safeAdd(credit.supply, uCDTAmount);
-    // credit.supply = safeAdd(credit.supply, fCDTAmount);
-    // credit.circulation = safeAdd(credit.circulation, uCDTAmount);
-    // credit.circulation = safeAdd(credit.circulation, fCDTAmount);
-
         depositReserve.balance = safeAdd(depositReserve.balance, safeMul(_issueAmount, currentCRR));
-    // creditReserve.balance = safeAdd(creditReserve.balance, safeMul(_issueAmount, currentCRR));
+
+        creditAgent.transfer(safeMul(_issueAmount, currentCRR));
+
+        assert(creditAgent.issue(_user, safeMul(_issueAmount, currentCRR), uCDTAmount));
+        assert(creditAgent.issue(beneficiary, 0, fCDTAmount));
 
     // event
         Issue(msg.sender, _issueAmount, uDPTAmount);
@@ -149,33 +146,35 @@ contract DABDepositAgent is Owned, Math{
 /**
     @dev deposit ethereum
 */
-    function deposit(address _user, uint256 _ethamount)
+    function deposit(address _user, uint256 _ethAmount)
     public
     activeDepositTokenController
     validAddress(_user)
-    validAmount(_ethamount)
-    ownerOnly{
+    validAmount(_ethAmount)
+    ownerOnly
+    returns (bool success){
         Token storage deposit = tokens[depositToken];
 
-        var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(depositReserve.balance, deposit.supply, safeSub(deposit.supply, deposit.balance), msg.value);
+        var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(depositReserve.balance, deposit.supply, safeSub(deposit.supply, deposit.balance), _ethAmount);
 
         if (dptAmount > 0) {
-            depositReserve.balance = safeAdd(depositReserve.balance, msg.value);
+            depositReserve.balance = safeAdd(depositReserve.balance, _ethAmount);
         // assert(depositReserve.balance == this.value);
             deposit.circulation = safeAdd(deposit.circulation, dptAmount);
-            assert(depositTokenController.transferTokens(msg.sender, dptAmount));
+            assert(depositTokenController.transferTokens(_user, dptAmount));
             deposit.balance = depositTokenController.balanceOf(this);
             assert(deposit.balance == (safeSub(deposit.supply, deposit.circulation)));
             deposit.currentCRR = currentCRR;
             deposit.price = dptPrice;
         // event
-            Deposit(msg.sender, msg.value, dptAmount);
+            Deposit(_user, _ethAmount, dptAmount);
 
         }
 
         if (remainEther > 0) {
-            assert(issue(remainEther));
+            assert(issue(_user, remainEther));
         }
+        return true;
     }
 
 
@@ -189,7 +188,8 @@ contract DABDepositAgent is Owned, Math{
     activeDepositTokenController
     validAddress(_user)
     validAmount(_withdrawAmount)
-    ownerOnly{
+    ownerOnly
+    returns (bool success){
         Token storage deposit = tokens[depositToken];
 
         var (ethAmount, currentCRR, dptPrice) = formula.withdraw(depositReserve.balance, safeSub(deposit.supply, deposit.balance), _withdrawAmount);
@@ -210,6 +210,7 @@ contract DABDepositAgent is Owned, Math{
 
     // event
         Withdraw(msg.sender, _withdrawAmount, ethAmount);
+        return true;
 
     }
 

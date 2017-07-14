@@ -16,7 +16,7 @@ contract DABCreditAgent is DABAgent{
 
     address[] public loanPlanAddresses;
 
-    address public depositAgent="0x0";
+    address public depositAgent= 0x0;
 
     mapping (address => LoanPlan) public loanPlans;
 
@@ -110,6 +110,12 @@ contract DABCreditAgent is DABAgent{
         _;
     }
 
+// validates a reserve token address - verifies that the address belongs to one of the reserve tokens
+    modifier validLoanPlanFormula(address _address) {
+        require(loanPlans[_address].isEnabled);
+        _;
+    }
+
 
 // ensures that the controller is the token's owner
     modifier activeDABCreditAgent() {
@@ -176,7 +182,7 @@ add doc
 
 */
 
-    function setDABDepositAgent(address _depositAgent) public
+    function setDepositAgent(address _depositAgent) public
     validAddress(_depositAgent)
     notThis(_depositAgent)
     ownerOnly
@@ -293,7 +299,8 @@ add doc
     active
     validAddress(_user)
     validAmount(_cashAmount)
-    ownerOnly{
+    ownerOnly
+    returns (bool success){
         Token storage credit = tokens[creditToken];
         var (ethAmount, cdtPrice) = formula.cash(creditReserve.balance, safeSub(credit.supply, credit.balance), _cashAmount);
         assert(ethAmount > 0);
@@ -315,7 +322,7 @@ add doc
 
     // event
         Cash(_user, _cashAmount, ethAmount);
-
+        return true;
     }
 
 
@@ -332,11 +339,14 @@ add doc
     validAddress(_user)
     validAmount(_loanAmount)
     validLoanPlanFormula(_loanPlanFormula)
-    ownerOnly{
+    ownerOnly
+    returns (bool success) {
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
 
-        var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(safeAdd(credit.supply, subCredit.supply), credit.supply);
+//        var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(safeAdd(credit.supply, subCredit.supply), credit.supply);
+
+        uint256 interestRate;
 
         var (ethAmount, issueCDTAmount, sctAmount) = formula.loan(_loanAmount, interestRate);
         assert(ethAmount > 0);
@@ -357,7 +367,7 @@ add doc
 
     // event
         Loan(_user, _loanAmount, ethAmount, sctAmount);
-
+        return true;
     }
 
 
@@ -374,8 +384,8 @@ add doc
     active
     validAddress(_user)
     validAmount(_repayAmount)
-    ownerOnly{
-        require(msg.value > 0);
+    ownerOnly
+    returns (bool success) {
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
 
@@ -402,7 +412,7 @@ add doc
 
         // event
             Repay(_user, safeSub(_repayAmount, refundETHAmount), sctAmount, cdtAmount);
-
+            return true;
         }
         else {
             assert(refundSCTAmount >= 0);
@@ -423,7 +433,7 @@ add doc
 
         // event
             Repay(_user, _repayAmount, safeSub(sctAmount, refundSCTAmount), cdtAmount);
-
+            return true;
         }
 
     }
@@ -441,7 +451,8 @@ add doc
     active
     validAddress(_user)
     validAmount(_payAmount)
-    ownerOnly {
+    ownerOnly
+    returns (bool success) {
         Token storage credit = tokens[creditToken];
         Token storage discredit = tokens[discreditToken];
 
@@ -468,7 +479,7 @@ add doc
 
         // event
             ToCreditToken(_user, safeSub(_payAmount, refundETHAmount), dctAmount, cdtAmount);
-
+            return true;
         }
         else {
             assert(refundDCTAmount >= 0);
@@ -491,7 +502,7 @@ add doc
         // ToCreditToken(address _to, uint256 _amountOfETH, uint256 _amountOfDCT, uint256 _amountOfCDT);
 
             ToCreditToken(_user, _payAmount, safeSub(dctAmount, refundDCTAmount), cdtAmount);
-
+            return true;
         }
 
     }
@@ -510,7 +521,8 @@ add doc
     active
     validAddress(_user)
     validAmount(_sctAmount)
-    ownerOnly{
+    ownerOnly
+    returns (bool success) {
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
         Token storage discredit = tokens[discreditToken];
@@ -535,7 +547,7 @@ add doc
 
     // event event ToDiscreditToken(address _to, uint256 _amountOfSCT, uint256 _amountOfDCT);
         ToDiscreditToken(_user, _sctAmount, dctAmount);
-
+        return true;
     }
 
 

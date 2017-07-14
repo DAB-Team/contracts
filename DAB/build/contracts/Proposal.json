@@ -1,0 +1,14 @@
+{
+  "contract_name": "Proposal",
+  "abi": [
+    {
+      "inputs": [],
+      "payable": false,
+      "type": "constructor"
+    }
+  ],
+  "unlinked_binary": "0x60606040523415600b57fe5b5b5b5b603380601b6000396000f30060606040525bfe00a165627a7a72305820a1ef1ff93ca5c2917bf34e9924d0419068e2de076742f563cd2f2d86760c4f960029",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1500025316142
+}

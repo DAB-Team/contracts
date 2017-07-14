@@ -44,11 +44,6 @@ contract DABAgent is Owned, Math{
         _;
     }
 
-// validates a reserve token address - verifies that the address belongs to one of the reserve tokens
-    modifier validLoanPlanFormula(address _address) {
-        require(loanPlans[_address].isEnabled);
-        _;
-    }
 
 // verifies that an amount is greater than zero
     modifier active() {

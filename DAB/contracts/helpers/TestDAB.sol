@@ -9,15 +9,11 @@ import '../SmartTokenController.sol';
 
 contract TestDAB is DAB {
     function TestDAB(
-    IDABFormula _formula,
-    SmartTokenController _depositTokenController,
-    SmartTokenController _creditTokenController,
-    SmartTokenController _subCreditTokenController,
-    SmartTokenController _discreditTokenController,
-    address _beneficiary,
+    DABDepositAgent _depositAgent,
+    DABCreditAgent _creditAgent,
     uint256 _startTime,
     uint256 _startTimeOverride)
-    DAB(_formula, _depositTokenController, _creditTokenController, _subCreditTokenController, _discreditTokenController, _beneficiary, _startTime)
+    DAB(_depositAgent, _creditAgent, _startTime)
     {
         startTime = _startTimeOverride;
         endTime = startTime + DURATION;

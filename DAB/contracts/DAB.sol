@@ -4,8 +4,6 @@ pragma solidity ^0.4.11;
 import './DABOperationManager.sol';
 import './DABDepositAgent.sol';
 import './DABCreditAgent.sol';
-import './DAO.sol';
-
 
 /*
     DAB v0.1
@@ -25,7 +23,7 @@ contract DAB is DABOperationManager{
     uint256 _startTime)
     validAddress(_depositAgent)
     validAddress(_creditAgent)
-    DABOperationController(_startTime)
+    DABOperationManager(_startTime)
     {
         depositAgent = _depositAgent;
         creditAgent = _creditAgent;
@@ -43,46 +41,25 @@ contract DAB is DABOperationManager{
         _;
     }
 
+    function acceptDepositAgentOwnership()
+    public
+    ownerOnly {
+        depositAgent.acceptOwnership();
+    }
+
+    function acceptCreditAgentOwnership()
+    public
+    ownerOnly {
+        creditAgent.acceptOwnership();
+    }
+
     function activate()
-    ownerOnly
-    public {
-        dabDepositAgent.activate();
-        dabCreditAgent.activate();
+    public
+    ownerOnly {
+        depositAgent.activate();
+        creditAgent.activate();
         isActive = true;
     }
-
-/**
-    @dev defines a new loan plan
-    can only be called by the owner
-
-    @param _loanPlanFormula         address of the loan plan
-*/
-    function addLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
-    public
-    ownerOnly
-    validAddress(_loanPlanFormula)
-    notThis(_loanPlanFormula)
-    {
-        require(!loanPlans[_loanPlanFormula].isEnabled); // validate input
-        loanPlans[_loanPlanFormula].isEnabled = true;
-        loanPlanAddresses.push(_loanPlanFormula);
-    }
-
-/*
-    @dev allows the owner to update the formula contract address
-
-    @param _formula    address of a bancor formula contract
-*/
-    function setCreditFormula(IDABFormula _formula)
-    public
-    ownerOnly
-    notThis(_formula)
-    validAddress(_formula)
-    {
-        require(_formula != formula);
-        formula = _formula;
-    }
-
 
 /**
     @dev deposit ethereum
@@ -92,8 +69,9 @@ contract DAB is DABOperationManager{
     payable
     active
     started
+    activeDepositAgent
     validAmount(msg.value) {
-        assert(dabDepositController.deposit(msg.sender, msg.value));
+        assert(depositAgent.deposit(msg.sender, msg.value));
     }
 
 
@@ -105,9 +83,9 @@ contract DAB is DABOperationManager{
     function withdraw(uint256 _withdrawAmount)
     public
     active
-    activeDPT
+    activeDepositAgent
     validAmount(_withdrawAmount) {
-        assert(dabDepositController.withdraw(msg.sender, _withdrawAmount));
+        assert(depositAgent.withdraw(msg.sender, _withdrawAmount));
     }
 
 
@@ -120,9 +98,9 @@ contract DAB is DABOperationManager{
     function cash(uint256 _cashAmount)
     public
     active
-    activeCDT
+    activeCreditAgent
     validAmount(_cashAmount) {
-        assert(dabCreditController.cash(msg.sender, _cashAmount));
+        assert(creditAgent.cash(msg.sender, _cashAmount));
     }
 
 
@@ -137,10 +115,10 @@ contract DAB is DABOperationManager{
     function loan(uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
     public
     active
-    activeCDT
+    activeCreditAgent
     validAmount(_loanAmount)
     {
-        assert(dabCreditController.loan(msg.sender, _loanAmount, _loanPlanFormula));
+        assert(creditAgent.loan(msg.sender, _loanAmount, _loanPlanFormula));
     }
 
 
@@ -148,36 +126,32 @@ contract DAB is DABOperationManager{
 /**
 @dev repay by ether
 
-@param _repayAmount amount to repay (in ether)
 */
 
 
-    function repay(uint256 _repayAmount)
+    function repay()
     public
     payable
     active
-    activeCDT
-    validAmount(_repayAmount)
+    activeCreditAgent
     validAmount(msg.value){
-        assert(dabCreditController.repay(msg.sender, msg.value, _repayAmount));
+        assert(creditAgent.repay(msg.sender, msg.value));
     }
 
 
 /**
 @dev convert discredit token to credit token by paying the debt in ether
 
-@param _payAmount amount to pay (in ether)
 */
 
 
-    function toCreditToken(uint256 _payAmount)
+    function toCreditToken()
     public
     payable
     active
-    activeCDT
-    validAmount(_payAmount)
+    activeCreditAgent
     validAmount(msg.value){
-        assert(dabCreditController.toCreditToken(msg.sender, msg.value, _payAmount));
+        assert(creditAgent.toCreditToken(msg.sender, msg.value));
     }
 
 
@@ -192,9 +166,9 @@ contract DAB is DABOperationManager{
     function toDiscreditToken(uint256 _sctAmount)
     public
     active
-    activeCDT
+    activeCreditAgent
     validAmount(_sctAmount) {
-        assert(dabCreditController.toDiscreditToken(msg.sender, _sctAmount));
+        assert(creditAgent.toDiscreditToken(msg.sender, _sctAmount));
     }
 
     function() payable {

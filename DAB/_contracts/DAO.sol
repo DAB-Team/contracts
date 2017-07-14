@@ -5,7 +5,7 @@ import './Proposal.sol';
 
 contract DAO is Owned{
 
-    ProposalRecord{
+    struct ProposalRecord{
         string proposalDecalre;
         string proposedDAOFunction;
         string proposedContractAddress;

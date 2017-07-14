@@ -5,6 +5,8 @@
 const EasyDABFormula = artifacts.require('EasyDABFormula.sol');
 const SmartToken = artifacts.require('SmartToken.sol');
 const SmartTokenController = artifacts.require('SmartTokenController.sol');
+const DABDepositAgent = artifacts.require('DABDepositAgent.sol');
+const DABCreditAgent = artifacts.require('DABCreditAgent.sol');
 const DAB = artifacts.require('DAB.sol');
 const TestDAB= artifacts.require('./helpers/TestDAB.sol');
 const utils = require('./helpers/Utils');
@@ -33,6 +35,16 @@ let creditTokenControllerAddress;
 let subCreditTokenControllerAddress;
 let discreditTokenControllerAddress;
 
+let depositAgent;
+
+let creditAgent;
+
+let depositAgentAddress;
+
+let creditAgentAddress;
+
+let dab;
+
 let dabAddress;
 
 let beneficiaryAddress = '0x69aa30b306805bd17488ce957d03e3c0213ee9e6';
@@ -45,8 +57,17 @@ let badContributionGasPrice = 100000000001;
 
 
 async function generateDefaultDAB() {
-    return await DAB.new(easyDABFormulaAddress, depositTokenControllerAddress, creditTokenControllerAddress,
-        subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress, startTime, { gas: 3000000});
+    dab =  await DAB.new(depositAgentAddress, creditAgentAddress, startTime);
+
+    dabAddress = dab.address;
+
+    await depositAgent.transferOwnership(dabAddress);
+    await dab.acceptDepositAgentOwnership();
+    await creditAgent.transferOwnership(dabAddress);
+    await dab.acceptCreditAgentOwnership();
+    await dab.activate();
+
+    return dab;
 }
 
 
@@ -76,8 +97,16 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
     subCreditTokenControllerAddress = subCreditTokenController.address;
     discreditTokenControllerAddress = discreditTokenController.address;
 
-    let dab = await TestDAB.new(easyDABFormulaAddress, depositTokenControllerAddress, creditTokenControllerAddress,
-        subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress, startTime, startTimeOverride);
+    creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+
+    creditAgentAddress = creditAgent.address;
+
+    depositAgent =await DABDepositAgent.new(creditAgentAddress, easyDABFormulaAddress, depositTokenControllerAddress, beneficiaryAddress);
+
+    depositAgentAddress = depositAgent.address;
+
+    let dab = await TestDAB.new(depositAgentAddress, creditAgentAddress, startTime, startTimeOverride);
+
     dabAddress = dab.address;
 
     if (activate) {
@@ -90,16 +119,21 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
         await discreditToken.transferOwnership(discreditTokenController.address);
         await discreditTokenController.acceptTokenOwnership();
 
-        await depositTokenController.transferOwnership(dab.address);
-        await dab.acceptDepositTokenControllerOwnership();
-        await creditTokenController.transferOwnership(dab.address);
-        await dab.acceptCreditTokenControllerOwnership();
-        await subCreditTokenController.transferOwnership(dab.address);
-        await dab.acceptSubCreditTokenControllerOwnership();
-        await discreditTokenController.transferOwnership(dab.address);
-        await dab.acceptDiscreditTokenControllerOwnership();
+        await depositTokenController.transferOwnership(depositAgent.address);
+        await depositAgent.acceptDepositTokenControllerOwnership();
+        await creditTokenController.transferOwnership(creditAgent.address);
+        await creditAgent.acceptCreditTokenControllerOwnership();
+        await subCreditTokenController.transferOwnership(creditAgent.address);
+        await creditAgent.acceptSubCreditTokenControllerOwnership();
+        await discreditTokenController.transferOwnership(creditAgent.address);
+        await creditAgent.acceptDiscreditTokenControllerOwnership();
 
-        await dab.activateDAB()
+        await depositAgent.transferOwnership(dabAddress);
+        await dab.acceptDepositAgentOwnership();
+        await creditAgent.transferOwnership(dabAddress);
+        await dab.acceptCreditAgentOwnership();
+
+        await dab.activate();
     }
 
     return dab;
@@ -108,49 +142,67 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
 
 contract('DAB', (accounts) => {
     before(async() => {
-
-        let easyDABFormula = await EasyDABFormula.new();
+        easyDABFormula = await EasyDABFormula.new();
         easyDABFormulaAddress = easyDABFormula.address;
 
-        let depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
-        let creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
-        let subCreditToken = await SmartToken.new('SubCredit Token', 'SCT', 2);
-        let discreditToken = await SmartToken.new('Discredit Token', 'DCT', 2);
+
+        depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
+        creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
+        subCreditToken = await SmartToken.new('SubCredit Token', 'SCT', 2);
+        discreditToken = await SmartToken.new('Discredit Token', 'DCT', 2);
 
         depositTokenAddress = depositToken.address;
         creditTokenAddress = creditToken.address;
         subCreditTokenAddress = subCreditToken.address;
         discreditTokenAddress = discreditToken.address;
 
-        let depositTokenController = await SmartTokenController.new(depositTokenAddress);
-        let creditTokenController = await SmartTokenController.new(creditTokenAddress);
-        let subCreditTokenController = await SmartTokenController.new(subCreditTokenAddress);
-        let discreditTokenController = await SmartTokenController.new(discreditTokenAddress);
+        depositTokenController = await SmartTokenController.new(depositTokenAddress);
+        creditTokenController = await SmartTokenController.new(creditTokenAddress);
+        subCreditTokenController = await SmartTokenController.new(subCreditTokenAddress);
+        discreditTokenController = await SmartTokenController.new(discreditTokenAddress);
 
         depositTokenControllerAddress = depositTokenController.address;
         creditTokenControllerAddress = creditTokenController.address;
         subCreditTokenControllerAddress = subCreditTokenController.address;
         discreditTokenControllerAddress = discreditTokenController.address;
+
+        await depositToken.transferOwnership(depositTokenController.address);
+        await depositTokenController.acceptTokenOwnership();
+        await creditToken.transferOwnership(creditTokenController.address);
+        await creditTokenController.acceptTokenOwnership();
+        await subCreditToken.transferOwnership(subCreditTokenController.address);
+        await subCreditTokenController.acceptTokenOwnership();
+        await discreditToken.transferOwnership(discreditTokenController.address);
+        await discreditTokenController.acceptTokenOwnership();
+
+
+        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+
+        creditAgentAddress = creditAgent.address;
+
+        depositAgent =await DABDepositAgent.new(creditAgentAddress, easyDABFormulaAddress, depositTokenControllerAddress, beneficiaryAddress);
+
+        depositAgentAddress = depositAgent.address;
+
+        await depositTokenController.transferOwnership(depositAgent.address);
+        await depositAgent.acceptDepositTokenControllerOwnership();
+        await creditTokenController.transferOwnership(creditAgent.address);
+        await creditAgent.acceptCreditTokenControllerOwnership();
+        await subCreditTokenController.transferOwnership(creditAgent.address);
+        await creditAgent.acceptSubCreditTokenControllerOwnership();
+        await discreditTokenController.transferOwnership(creditAgent.address);
+        await creditAgent.acceptDiscreditTokenControllerOwnership();
+
     });
 
     it('verifies the base storage values after construction', async () => {
         let dab = await generateDefaultDAB();
-        let depositTokenController = await dab.depositTokenController.call();
-        assert.equal(depositTokenController, depositTokenControllerAddress);
-        let creditTokenController = await dab.creditTokenController.call();
-        assert.equal(creditTokenController, creditTokenControllerAddress);
-        let subCreditTokenController = await dab.subCreditTokenController.call();
-        assert.equal(subCreditTokenController, subCreditTokenControllerAddress);
-        let discreditTokenController = await dab.discreditTokenController.call();
-        assert.equal(discreditTokenController, discreditTokenControllerAddress);
+        let depositAgent = await dab.depositAgent.call();
+        assert.equal(depositAgent, depositAgentAddress);
 
-        let start = await dab.startTime.call();
-        assert.equal(start.toNumber(), startTime);
-        let endTime = await dab.endTime.call();
-        let duration = await dab.DURATION.call();
-        assert.equal(endTime.toNumber(), startTime + duration.toNumber());
-        let beneficiary = await dab.beneficiary.call();
-        assert.equal(beneficiary, beneficiaryAddress);
+        let creditAgent = await dab.creditAgent.call();
+        assert.equal(creditAgent, creditAgentAddress);
+
     });
 
 
