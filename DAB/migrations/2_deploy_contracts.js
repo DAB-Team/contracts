@@ -12,6 +12,7 @@ const DepositToken = artifacts.require("SmartToken.sol");
 const CreditToken = artifacts.require("SmartToken.sol");
 const SubCreditToken = artifacts.require("SmartToken.sol");
 const DiscreditToken = artifacts.require("SmartToken.sol");
+const SmartTokenController = artifacts.require('SmartTokenController.sol');
 const DepositTokenController = artifacts.require('SmartTokenController.sol');
 const CreditTokenController = artifacts.require('SmartTokenController.sol');
 const SubCreditTokenController = artifacts.require('SmartTokenController.sol');
@@ -35,11 +36,12 @@ module.exports =  async (deployer) =>{
   deployer.deploy(CreditToken, "Credit Token", "CDT", 8);
   deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 8);
   deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 8);
+  deployer.deploy(SmartTokenController, DepositToken.address);
   deployer.deploy(DepositTokenController, DepositToken.address);
   deployer.deploy(CreditTokenController, CreditToken.address);
   deployer.deploy(SubCreditTokenController, SubCreditToken.address);
   deployer.deploy(DiscreditTokenController, DiscreditToken.address);
-  deployer.deploy(DABOperationController, DepositTokenController.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1499650380);
-  deployer.deploy(DAB, EasyDABFormula.address, DepositTokenController.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1499650380);
+  deployer.deploy(DABOperationController, DepositTokenController.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1501119180);
+  deployer.deploy(DAB, EasyDABFormula.address, DepositTokenController.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd', 1501119180);
 
 };

@@ -46,7 +46,7 @@ let badContributionGasPrice = 100000000001;
 
 async function generateDefaultDAB() {
     return await DAB.new(easyDABFormulaAddress, depositTokenControllerAddress, creditTokenControllerAddress,
-        subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress, startTime);
+        subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress, startTime, { gas: 3000000});
 }
 
 

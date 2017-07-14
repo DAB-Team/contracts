@@ -1,9 +1,9 @@
 pragma solidity ^0.4.11;
 
-
+import './Owned.sol';
 import './Math.sol';
 import './SmartTokenController.sol';
-import './DABSmartTokenController.sol';
+import './DABAgent.sol';
 
 
 
@@ -15,7 +15,7 @@ import './DABSmartTokenController.sol';
     Note that 20% of the contributions are the Bancor token's reserve
 */
 
-contract DABOperationController is DABSmartTokenController, Math{
+contract DABOperationAgent is DABAgent{
 
 uint256 public constant DURATION = 14 days;                 // activation duration
 uint256 public constant CDT_ACTIVATION_LAG = 14 days;         // credit token activation lag
@@ -32,7 +32,6 @@ uint256 public cdtActivationTime = 0;                     // activation time of 
 address public beneficiary = 0x0;               // address to receive all ether contributions
 
 
-
 /**
     @dev constructor
 
@@ -40,37 +39,14 @@ address public beneficiary = 0x0;               // address to receive all ether 
     @param _beneficiary    address to receive all ether contributions
 */
 function DABOperationController(
-SmartTokenController _depositTokenController,
-SmartTokenController _creditTokenController,
-SmartTokenController _subCreditTokenController,
-SmartTokenController _discreditTokenController,
-address _beneficiary,
 uint256 _startTime
 )
 earlierThan(_startTime)
-validAddress(_beneficiary)
-DABSmartTokenController(_depositTokenController, _creditTokenController, _subCreditTokenController, _discreditTokenController)
-
 {
 startTime = _startTime;
 endTime = startTime + DURATION;
 dptActivationTime = endTime;
 cdtActivationTime = dptActivationTime + CDT_ACTIVATION_LAG;
-beneficiary = _beneficiary;
-
-
-}
-
-// validates an address - currently only checks that it isn't null
-modifier validAddress(address _address) {
-require(_address != 0x0);
-_;
-}
-
-// verifies that an amount is greater than zero
-modifier validAmount(uint256 _amount) {
-require(_amount > 0);
-_;
 }
 
 // ensures that it's earlier than the given time
@@ -109,4 +85,5 @@ modifier activeCDT() {
 assert(now > cdtActivationTime);
 _;
 }
+
 }

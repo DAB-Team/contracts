@@ -1,0 +1,273 @@
+{
+  "contract_name": "IDABFormula",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "cdtBalance",
+          "type": "uint256"
+        },
+        {
+          "name": "supply",
+          "type": "uint256"
+        },
+        {
+          "name": "sctAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "toDiscreditToken",
+      "outputs": [
+        {
+          "name": "dctAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "cdtPrice",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "repayETHAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "dctAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "toCreditToken",
+      "outputs": [
+        {
+          "name": "refundETHAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "cdtAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "refundDCTAmount",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "dptBalance",
+          "type": "uint256"
+        },
+        {
+          "name": "dptSupply",
+          "type": "uint256"
+        },
+        {
+          "name": "dptCirculation",
+          "type": "uint256"
+        },
+        {
+          "name": "ethAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [
+        {
+          "name": "token",
+          "type": "uint256"
+        },
+        {
+          "name": "remainEther",
+          "type": "uint256"
+        },
+        {
+          "name": "fcrr",
+          "type": "uint256"
+        },
+        {
+          "name": "dptPrice",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "circulation",
+          "type": "uint256"
+        },
+        {
+          "name": "ethAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "issue",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "cdtBalance",
+          "type": "uint256"
+        },
+        {
+          "name": "cdtSupply",
+          "type": "uint256"
+        },
+        {
+          "name": "cdtAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "cash",
+      "outputs": [
+        {
+          "name": "ethAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "cdtPrice",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "dptBalance",
+          "type": "uint256"
+        },
+        {
+          "name": "dptCirculation",
+          "type": "uint256"
+        },
+        {
+          "name": "dptAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [
+        {
+          "name": "ethAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "CRR",
+          "type": "uint256"
+        },
+        {
+          "name": "tokenPrice",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "repayETHAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "sctAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "repay",
+      "outputs": [
+        {
+          "name": "refundETHAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "cdtAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "refundSCTAmount",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "cdtAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "interestRate",
+          "type": "uint256"
+        }
+      ],
+      "name": "loan",
+      "outputs": [
+        {
+          "name": "ethAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "issueCDTAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "sctAmount",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1499956168338
+}

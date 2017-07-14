@@ -6,4 +6,5 @@
     5. transfer four SmartControllers' ownership to DAB
     6. transfer DAB's ownership to a DAO contract.
     7. DAO can update the formulas (DAB formula and Loan formulas)
+    8. set DAO's logic, by vote.
 

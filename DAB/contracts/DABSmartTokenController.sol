@@ -2,7 +2,7 @@ pragma solidity ^0.4.0;
 
 import './SmartTokenController.sol';
 
-contract DABSmartTokenController is TokenHolder{
+contract DABSmartTokenController is Owned{
     SmartTokenController public depositTokenController;
     SmartTokenController public creditTokenController;
     SmartTokenController public subCreditTokenController;
@@ -25,6 +25,17 @@ contract DABSmartTokenController is TokenHolder{
     discreditTokenController = _discreditTokenController;
     }
 
+// validates an address - currently only checks that it isn't null
+    modifier validAddress(address _address) {
+        require(_address != 0x0);
+        _;
+    }
+
+// verifies that the address is different than this contract address
+    modifier notThis(address _address) {
+        require(_address != address(this));
+        _;
+    }
 
 // ensures that the controller is the token's owner
     modifier activeDABController() {
@@ -152,6 +163,9 @@ contract DABSmartTokenController is TokenHolder{
     ownerOnly {
         discreditTokenController.acceptOwnership();
     }
+
+
+
 
 
 }
