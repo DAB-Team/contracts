@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 
-import './IERC20Token.sol';
+import './interfaces/IERC20Token.sol';
 import './SafeMath.sol';
 
 
@@ -82,10 +82,9 @@ contract ERC20Token is IERC20Token, SafeMath {
     function transferFrom(address _from, address _to, uint256 _value)
     public
     validAddress(_from)
-    // validAddress(_to)
+    validAddress(_to)
     returns (bool success)
     {
-        require(_to != 0x0);
         allowance[_from][msg.sender] = safeSub(allowance[_from][msg.sender], _value);
         balanceOf[_from] = safeSub(balanceOf[_from], _value);
         balanceOf[_to] = safeAdd(balanceOf[_to], _value);

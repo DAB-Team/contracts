@@ -1,0 +1,102 @@
+{
+  "contract_name": "TestSafeMath",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_x",
+          "type": "uint256"
+        },
+        {
+          "name": "_y",
+          "type": "uint256"
+        }
+      ],
+      "name": "testSafeDiv",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_x",
+          "type": "uint256"
+        },
+        {
+          "name": "_y",
+          "type": "uint256"
+        }
+      ],
+      "name": "testSafeMul",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_x",
+          "type": "uint256"
+        },
+        {
+          "name": "_y",
+          "type": "uint256"
+        }
+      ],
+      "name": "testSafeAdd",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_x",
+          "type": "uint256"
+        },
+        {
+          "name": "_y",
+          "type": "uint256"
+        }
+      ],
+      "name": "testSafeSub",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "payable": false,
+      "type": "constructor"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000c57fe5b5b5b5b5b5b610201806100206000396000f300606060405263ffffffff60e060020a6000350416635e47381d81146100425780639ee6ff701461006a578063de47864c14610092578063ec0da330146100ba575bfe5b341561004a57fe5b6100586004356024356100e2565b60408051918252519081900360200190f35b341561007257fe5b6100586004356024356100f7565b60408051918252519081900360200190f35b341561009a57fe5b61005860043560243561010c565b60408051918252519081900360200190f35b34156100c257fe5b610058600435602435610121565b60408051918252519081900360200190f35b60006100ee8383610136565b90505b92915050565b60006100ee8383610175565b90505b92915050565b60006100ee83836101a4565b90505b92915050565b60006100ee83836101be565b90505b92915050565b60008080831161014257fe5b828481151561014d57fe5b049050828481151561015b57fe5b06818402018414151561016a57fe5b8091505b5092915050565b6000828202831580610191575082848281151561018e57fe5b04145b151561016a57fe5b8091505b5092915050565b60008282018381101561016a57fe5b8091505b5092915050565b6000818310156101ca57fe5b508082035b929150505600a165627a7a72305820b4ab0ec9d0e2b5405954de862819ab84757484234617cb4f207f1ed6fd1300d00029",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1499954659942
+}

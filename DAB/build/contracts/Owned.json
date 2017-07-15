@@ -1,0 +1,151 @@
+{
+  "contract_name": "Owned",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "acceptOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "newOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "payable": false,
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_prevOwner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnerUpdate",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000c57fe5b5b60008054600160a060020a03191633600160a060020a03161790555b5b6101f8806100396000396000f300606060405263ffffffff60e060020a60003504166379ba509781146100425780638da5cb5b14610054578063d4ee1d9014610080578063f2fde38b146100ac575bfe5b341561004a57fe5b6100526100ca565b005b341561005c57fe5b61006461015a565b60408051600160a060020a039092168252519081900360200190f35b341561008857fe5b610064610169565b60408051600160a060020a039092168252519081900360200190f35b34156100b457fe5b610052600160a060020a0360043516610178565b005b60015433600160a060020a039081169116146100e65760006000fd5b60005460015460408051600160a060020a03938416815292909116602083015280517f343765429aea5a34b3ff6a3785a98a5abb2597aca87bfbb58632c173d585373a9281900390910190a16001805460008054600160a060020a0319908116600160a060020a038416179091551690555b565b600054600160a060020a031681565b600154600160a060020a031681565b60005433600160a060020a0390811691161461019057fe5b600054600160a060020a03828116911614156101ac5760006000fd5b60018054600160a060020a031916600160a060020a0383161790555b5b505600a165627a7a72305820cc1d9adef5eb2ff2eaf0d276d6875764c1574a6a9a8ddc1432269aad8a493c290029",
+  "networks": {
+    "1499946816055": {
+      "events": {
+        "0x343765429aea5a34b3ff6a3785a98a5abb2597aca87bfbb58632c173d585373a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_prevOwner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnerUpdate",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x26d2670d01ea8bc9e2f3138426e0f64278dcdade",
+      "updated_at": 1499955650016
+    },
+    "1500025415501": {
+      "events": {
+        "0x343765429aea5a34b3ff6a3785a98a5abb2597aca87bfbb58632c173d585373a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_prevOwner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnerUpdate",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x756b08377fc873f3e57fc0553c233245d5052ff5",
+      "updated_at": 1500025495923
+    },
+    "1500026482338": {
+      "events": {
+        "0x343765429aea5a34b3ff6a3785a98a5abb2597aca87bfbb58632c173d585373a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_prevOwner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnerUpdate",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x9615a3e7a373b09fc6ab2ad674339ce9a12f978a",
+      "updated_at": 1500027522041
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1500027522041
+}
