@@ -259,7 +259,7 @@ add doc
 
 @param _issueAmount  amount to issue (in the reserve token)
 
-@return buy return amount
+@return success
 */
     function issue(address _user, uint256 _ethAmount, uint256 _issueAmount)
     validAddress(_user)
@@ -287,6 +287,8 @@ add doc
     @dev cash out credit token
 
     @param _cashAmount amount to cash (in credit token)
+
+    @return success
 */
     function cash(address _user, uint256 _cashAmount)
     public
@@ -324,6 +326,8 @@ add doc
 @dev loan by credit token
 
 @param _loanAmount amount to loan (in credit token)
+
+@return success
 */
 
 
@@ -340,7 +344,7 @@ add doc
 
 //        var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(safeAdd(credit.supply, subCredit.supply), credit.supply);
 
-        uint256 interestRate;
+        uint256 interestRate = Decimal(30000000);
 
         var (ethAmount, issueCDTAmount, sctAmount) = formula.loan(_loanAmount, interestRate);
         assert(ethAmount > 0);

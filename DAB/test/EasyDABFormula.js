@@ -49,9 +49,10 @@ contract('EasyDABFormula', function(accounts){
     });
 
     var udptIssueExpectTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt), crr = num(crr);
 
         it("Should get correct expect issue of user's DPT", function(){
             return EasyDABFormula.deployed().then(
@@ -59,7 +60,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdtr, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdtr, fdptr, fcdtr, ethdptr, crrr] = retval;
                 udpt = (udpt/1).toPrecision(eprecision);
                 udptr = (udptr/1).toPrecision(eprecision);
                 assert(udptr == udpt,"User's DPT return "+udptr+" should be =="+udpt+". [circulation, ethamount] "+[circulation, ethamount]);
@@ -70,9 +71,10 @@ contract('EasyDABFormula', function(accounts){
     };
 
     var udptIssueExactTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt), crr = num(crr);
 
         it("Should get correct exact issue of user's DPT", function(){
             return EasyDABFormula.deployed().then(
@@ -80,7 +82,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdtr, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdtr, fdptr, fcdtr, ethdptr, crrr] = retval;
                 udpt = (udpt/1).toPrecision(eprecision);
                 udptr = (udptr/1).toPrecision(eprecision);
                 assert(udptr == udpt,"User's DPT return "+udptr+" should be =="+udpt+". [circulation, ethamount] "+[circulation, ethamount]);
@@ -93,9 +95,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var ucdtIssueExpectTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt), crr = num(crr);
 
         it("Should get correct expect issue of user's CDT", function(){
             return EasyDABFormula.deployed().then(
@@ -103,7 +106,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdtr, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdtr, fdptr, fcdtr, ethdptr, crrr] = retval;
                 ucdt = (ucdt/1).toPrecision(eprecision);
                 ucdtr = (ucdtr/1).toPrecision(eprecision);
                 assert(ucdtr == ucdt,"User's CDT return "+ucdtr+" should be =="+ucdt+". [circulation, ethamount] "+[circulation, ethamount]);
@@ -116,9 +119,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var ucdtIssueExactTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt), crr = num(crr);
 
         it("Should get correct exact issue of user's CDT", function(){
             return EasyDABFormula.deployed().then(
@@ -126,7 +130,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdtr, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdtr, fdptr, fcdtr, ethdptr, crrr] = retval;
                 ucdt = (ucdt/1).toPrecision(eprecision);
                 ucdtr = (ucdtr/1).toPrecision(eprecision);
                 assert(ucdtr == ucdt,"User's CDT return "+ucdtr+" should be =="+ucdt+". [circulation, ethamount] "+[circulation, ethamount]);
@@ -139,9 +143,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var fdptIssueExpectTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt), crr = num(crr);
 
         it("Should get correct expect issue of founder's DPT", function(){
             return EasyDABFormula.deployed().then(
@@ -149,7 +154,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdtr, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdtr, fdptr, fcdtr, ethdptr, crrr] = retval;
                 fdpt = (fdpt/1).toPrecision(eprecision);
                 fdptr = (fdptr/1).toPrecision(eprecision);
                 assert(fdptr == fdpt,"Founder's DPT return "+fdptr+" should be =="+fdpt+". [circulation, ethamount] "+[circulation, ethamount]);
@@ -163,9 +168,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var fdptIssueExactTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt), crr = num(crr);
 
         it("Should get correct exact issue of founder's DPT", function(){
             return EasyDABFormula.deployed().then(
@@ -173,7 +179,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdt, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdt, fdptr, fcdtr, ethdptr, crrr] = retval;
                 fdpt = (fdpt/1).toPrecision(eprecision);
                 fdptr = (fdptr/1).toPrecision(eprecision);
                 assert(fdptr == fdpt,"Founder's DPT return "+fdptr+" should be =="+fdpt+". [circulation, ethamount] "+[circulation, ethamount]);
@@ -187,9 +193,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var fcdtIssueExpectTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt), crr = num(crr);
 
         it("Should get correct expect issue of founder's CDT", function(){
             return EasyDABFormula.deployed().then(
@@ -197,7 +204,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdtr, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdtr, fdptr, fcdtr, ethdptr, crrr] = retval;
                 fcdt = (fcdt/1).toPrecision(eprecision);
                 fcdtr = (fcdtr/1).toPrecision(eprecision);
                 assert(fcdtr == fcdt,"Founder's CDT return "+fcdtr+" should be =="+fcdt+". [circulation, ethamount] "+[circulation, ethamount]);
@@ -211,9 +218,11 @@ contract('EasyDABFormula', function(accounts){
 
 
     var fcdtIssueExactTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt), crr = num(crr);
+
 
         it("Should get correct exact issue of founder's CDT", function(){
             return EasyDABFormula.deployed().then(
@@ -221,7 +230,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdtr, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdtr, fdptr, fcdtr, ethdptr, crrr] = retval;
                 fcdt = (fcdt/1).toPrecision(eprecision);
                 fcdtr = (fcdtr/1).toPrecision(eprecision);
                 assert(fcdtr == fcdt,"Founder's CDT return "+fcdtr+" should be =="+fcdt+". [circulation, ethamount] "+[circulation, ethamount]);
@@ -235,9 +244,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var crrIssueExpectTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt);
 
         it("Should get correct expect issue crr", function(){
             return EasyDABFormula.deployed().then(
@@ -245,7 +255,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdtr, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdtr, fdptr, fcdtr, ethdptr, crrr] = retval;
                 crr = (crr/1).toPrecision(2);
                 crrr = (crrr/1).toPrecision(2);
                 assert(crrr==crr,"crr return "+crrr+" should be =="+crr+". [circulation, ethamount] "+[circulation, ethamount]);
@@ -256,9 +266,10 @@ contract('EasyDABFormula', function(accounts){
     };
 
     var crrIssueExactTest = function(k){
-        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, crr] = k;
+        var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
 
         circulation = num(circulation), ethamount = num(ethamount), udpt = num(udpt), ucdt = num(ucdt), fdpt = num(fdpt), fcdt = num(fcdt);
+        ethdpt = num(ethdpt);
 
         it("Should get correct exact issue crr", function(){
             return EasyDABFormula.deployed().then(
@@ -266,7 +277,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.issue.call(circulation, ethamount);
                 }).then(function(retval){
-                var [udptr, ucdtr, fdptr, fcdtr, crrr] = retval;
+                var [udptr, ucdtr, fdptr, fcdtr, ethdptr, crrr] = retval;
                 crr = (crr/1).toPrecision(2);
                 crrr = (crrr/1).toPrecision(2);
                 assert(crrr == crr,"crr return "+crrr+" should be =="+crr+". [circulation, ethamount] "+[circulation, ethamount]);

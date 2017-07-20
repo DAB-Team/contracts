@@ -65,9 +65,9 @@ def generateTestData(outp):
 
         circulation *= formula.ether
         ethamount *= formula.ether
-        udpt_exact, ucdt_exact, fdpt_exact, fcdt_exact, crr_exact = formula.issue(circulation, ethamount)
-        outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % (
-        int(circulation), int(ethamount), int(udpt_exact), int(ucdt_exact), int(fdpt_exact), int(fcdt_exact),
+        udpt_exact, ucdt_exact, fdpt_exact, fcdt_exact, ethdpt_exact, crr_exact = formula.issue(circulation, ethamount)
+        outp.write("\t['%d','%d','%d','%d','%d','%d', '%d', '%d'],\n" % (
+        int(circulation), int(ethamount), int(udpt_exact), int(ucdt_exact), int(fdpt_exact), int(fcdt_exact), int(ethdpt_exact),
         int(crr_exact)))
         num += 1
         if num > test_num:
@@ -83,9 +83,9 @@ def generateTestData(outp):
         circulation *= formula.ether
         ethamount *= formula.ether
         try:
-            udpt_expect, ucdt_expect, fdpt_expect, fcdt_expect, crr_expect = formula._issue(circulation, ethamount)
-            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % (
-            int(circulation), int(ethamount), int(udpt_expect), int(ucdt_expect), int(fdpt_expect), int(fcdt_expect),
+            udpt_expect, ucdt_expect, fdpt_expect, fcdt_expect, ethdpt_expect, crr_expect = formula._issue(circulation, ethamount)
+            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d', '%d'],\n" % (
+            int(circulation), int(ethamount), int(udpt_expect), int(ucdt_expect), int(fdpt_expect), int(fcdt_expect), int(ethdpt_expect),
             int(crr_expect)))
             num += 1
             if num > test_num:
@@ -102,9 +102,9 @@ def generateTestData(outp):
 
         circulation *= formula.ether
         ethamount *= formula.ether
-        udpt_exact, ucdt_exact, fdpt_exact, fcdt_exact, crr_exact = formula.issue(circulation, ethamount)
-        outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % (
-        int(circulation), int(ethamount), int(udpt_exact), int(ucdt_exact), int(fdpt_exact), int(fcdt_exact),
+        udpt_exact, ucdt_exact, fdpt_exact, fcdt_exact, ethdpt_exact, crr_exact = formula.issue(circulation, ethamount)
+        outp.write("\t['%d','%d','%d','%d','%d','%d', '%d', '%d'],\n" % (
+        int(circulation), int(ethamount), int(udpt_exact), int(ucdt_exact), int(fdpt_exact), int(fcdt_exact), int(ethdpt_exact),
         int(crr_exact)))
         num += 1
         if num > test_num:
@@ -120,9 +120,9 @@ def generateTestData(outp):
         circulation *= formula.ether
         ethamount *= formula.ether
         try:
-            udpt_expect, ucdt_expect, fdpt_expect, fcdt_expect, crr_expect = formula._issue(circulation, ethamount)
-            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d'],\n" % (
-            int(circulation), int(ethamount), int(udpt_expect), int(ucdt_expect), int(fdpt_expect), int(fcdt_expect),
+            udpt_expect, ucdt_expect, fdpt_expect, fcdt_expect, ethdpt_expect, crr_expect = formula._issue(circulation, ethamount)
+            outp.write("\t['%d','%d','%d','%d','%d','%d', '%d', '%d'],\n" % (
+            int(circulation), int(ethamount), int(udpt_expect), int(ucdt_expect), int(fdpt_expect), int(fcdt_expect), int(ethdpt_expect),
             int(crr_expect)))
             num += 1
             if num > test_num:
