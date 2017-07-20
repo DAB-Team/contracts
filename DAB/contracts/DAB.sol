@@ -71,6 +71,7 @@ contract DAB is DABOperationManager{
     started
     activeDepositAgent
     validAmount(msg.value) {
+        depositAgent.transfer(msg.value);
         assert(depositAgent.deposit(msg.sender, msg.value));
     }
 

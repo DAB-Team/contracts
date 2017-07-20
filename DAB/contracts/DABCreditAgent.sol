@@ -72,8 +72,6 @@ contract DABCreditAgent is DABAgent{
         tokens[creditToken].price = 0;
         tokens[creditToken].balance = 0;
         tokens[creditToken].currentCRR = Decimal(3);
-        tokens[creditToken].isReserved = true;
-        tokens[creditToken].isPurchaseEnabled = false;
         tokens[creditToken].isSet = true;
         tokenSet.push(creditToken);
 
@@ -84,8 +82,6 @@ contract DABCreditAgent is DABAgent{
         tokens[subCreditToken].price = 0;
         tokens[subCreditToken].balance = 0;
         tokens[subCreditToken].currentCRR = Decimal(3);
-        tokens[subCreditToken].isReserved = false;
-        tokens[subCreditToken].isPurchaseEnabled = false;
         tokens[subCreditToken].isSet = true;
         tokenSet.push(subCreditToken);
 
@@ -98,8 +94,6 @@ contract DABCreditAgent is DABAgent{
         tokens[discreditToken].price = 0;
         tokens[discreditToken].balance = 0;
         tokens[discreditToken].currentCRR = 0;
-        tokens[discreditToken].isReserved = false;
-        tokens[discreditToken].isPurchaseEnabled = false;
         tokens[discreditToken].isSet = true;
         tokenSet.push(discreditToken);
     }
@@ -307,8 +301,8 @@ add doc
         assert(cdtPrice > 0);
 
     // assert(beneficiary.send(msg.value))
-        msg.sender.transfer(ethAmount);
-        creditTokenController.destroyTokens(msg.sender, _cashAmount);
+        _user.transfer(ethAmount);
+        creditTokenController.destroyTokens(_user, _cashAmount);
 
         creditReserve.balance = safeSub(creditReserve.balance, ethAmount);
         credit.circulation = safeSub(credit.circulation, _cashAmount);

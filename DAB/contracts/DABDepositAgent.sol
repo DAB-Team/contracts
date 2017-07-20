@@ -51,19 +51,17 @@ contract DABDepositAgent is DABAgent{
         tokens[depositToken].price = 0;
         tokens[depositToken].balance = 0;
         tokens[depositToken].currentCRR = Decimal(1);
-        tokens[depositToken].isReserved = true;
-        tokens[depositToken].isPurchaseEnabled = true;
         tokens[depositToken].isSet = true;
         tokenSet.push(depositToken);
     }
 
-// ensures that the controller is the token's owner
+// ensures that the agent is the token controllers' owner
     modifier activeDepositAgent() {
         assert(depositTokenController.owner() == address(this));
         _;
     }
 
-// ensures that the controller is the token's owner
+// ensures that the agent is the deposit controller's owner
     modifier activeDepositTokenController() {
         assert(depositTokenController.owner() == address(this));
         _;
@@ -105,18 +103,18 @@ contract DABDepositAgent is DABAgent{
 /**
 @dev buys the token by depositing one of its reserve tokens
 
-@param _issueAmount  amount to issue (in the reserve token)
+@param _ethAmount  amount to issue (in the reserve token)
 
 @return buy return amount
 */
-    function issue(address _user, uint256 _issueAmount)
+    function issue(address _user, uint256 _ethAmount)
     private
-    validAmount(_issueAmount)
+    validAmount(_ethAmount)
     returns (bool success) {
         Token storage deposit = tokens[depositToken];
     // Token storage credit = tokens[creditToken];
 
-        var (uDPTAmount, uCDTAmount, fDPTAmount, fCDTAmount, currentCRR) = formula.issue(deposit.circulation, _issueAmount);
+        var (uDPTAmount, uCDTAmount, fDPTAmount, fCDTAmount, ethDeposit, currentCRR) = formula.issue(deposit.circulation, _ethAmount);
 
         depositTokenController.issueTokens(msg.sender, uDPTAmount);
         depositTokenController.issueTokens(beneficiary, fDPTAmount);
@@ -126,16 +124,16 @@ contract DABDepositAgent is DABAgent{
         deposit.circulation = safeAdd(deposit.circulation, fDPTAmount);
         deposit.currentCRR = currentCRR;
 
-        depositReserve.balance = safeAdd(depositReserve.balance, safeMul(_issueAmount, currentCRR));
+        depositReserve.balance = safeAdd(depositReserve.balance, ethDeposit);
 
-        creditAgent.transfer(safeMul(_issueAmount, currentCRR));
+        creditAgent.transfer(safeSub(_ethAmount, ethDeposit));
 
-        assert(creditAgent.issue(_user, safeMul(_issueAmount, currentCRR), uCDTAmount));
+        assert(creditAgent.issue(_user, safeSub(_ethAmount, ethDeposit), uCDTAmount));
         assert(creditAgent.issue(beneficiary, 0, fCDTAmount));
 
     // event
-        Issue(msg.sender, _issueAmount, uDPTAmount);
-        Issue(beneficiary, _issueAmount, fDPTAmount);
+        Issue(msg.sender, ethDeposit, uDPTAmount);
+        Issue(beneficiary, 0, fDPTAmount);
 
 
     // issue new funds to the caller in the smart token

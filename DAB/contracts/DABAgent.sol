@@ -15,9 +15,6 @@ contract DABAgent is Owned, Math{
     uint256 price;          // price of token
     uint256 balance;    // virtual balance = (supply-circulation) * price
     uint256 currentCRR;  // current cash ratio of the token
-
-    bool isReserved;   // true if reserve is enabled, false if not
-    bool isPurchaseEnabled;         // is purchase of the smart token enabled with the reserve, can be set by the token owner
     bool isSet;                     // used to tell if the mapping element is defined
     }
 
@@ -66,6 +63,13 @@ contract DABAgent is Owned, Math{
 // validates an address - currently only checks that it isn't null
     modifier validAddress(address _address) {
         require(_address != 0x0);
+        _;
+    }
+
+
+// verifies that the address same with this contract address
+    modifier onlyAgent() {
+        require(msg.sender == address(this));
         _;
     }
 

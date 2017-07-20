@@ -33,11 +33,11 @@ module.exports =  async (deployer) =>{
   deployer.deploy(HalfAYearLoanPlanFormula);
   deployer.deploy(Owned);
   deployer.deploy(TokenHolder);
-  deployer.deploy(ERC20Token, "Token", "TKN1", 8);
-  deployer.deploy(DepositToken, "Deposit Token", "DPT", 8);
-  deployer.deploy(CreditToken, "Credit Token", "CDT", 8);
-  deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 8);
-  deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 8);
+  deployer.deploy(ERC20Token, "Token", "TKN1", 0);
+  deployer.deploy(DepositToken, "Deposit Token", "DPT", 0);
+  deployer.deploy(CreditToken, "Credit Token", "CDT", 0);
+  deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 0);
+  deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 0);
   await deployer.deploy(SmartTokenController, DepositToken.address);
   await deployer.deploy(DepositTokenController, DepositToken.address);
   await deployer.deploy(CreditTokenController, CreditToken.address);

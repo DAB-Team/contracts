@@ -48,18 +48,19 @@ contract EasyDABFormula is IDABFormula, Math {
 */
     function issue(uint256 _circulation, uint256 _ethAmount)
     public
-    returns (uint256, uint256, uint256, uint256, uint256){
+    returns (uint256, uint256, uint256, uint256, uint256, uint256){
         _circulation = EtherToFloat(_circulation);
         _ethAmount = EtherToFloat(_ethAmount);
         require(_circulation >= 0);
         require(_ethAmount > 0);
 
         uint256 fcrr = getCRR(_circulation);
-        uint256 fdpt = mul(div(_ethAmount, ip), fcrr);
+        uint256 ethDeposit = mul(_ethAmount, fcrr);
+        uint256 fdpt = div(ethDeposit, ip);
         uint256 fcdt = div(mul(sub(FLOAT_ONE, fcrr), _ethAmount), cdt_ip);
         _circulation = add(_circulation, fdpt);
         fcrr = getCRR(_circulation);
-        return (FloatToEther(mul(fdpt, U)), FloatToEther(mul(fcdt, U)), FloatToEther(mul(fdpt, F)), FloatToEther(mul(fcdt, F)), FloatToDecimal(fcrr));
+        return (FloatToEther(mul(fdpt, U)), FloatToEther(mul(fcdt, U)), FloatToEther(mul(fdpt, F)), FloatToEther(mul(fcdt, F)), FloatToEther(ethDeposit), FloatToDecimal(fcrr));
     }
 
 /*
