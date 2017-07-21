@@ -310,7 +310,7 @@ add doc
         creditReserve.balance = safeSub(creditReserve.balance, ethAmount);
         credit.supply = safeSub(credit.supply, _cashAmount);
         credit.circulation = safeSub(credit.circulation, _cashAmount);
-        credit.balance = creditTokenController.balanceOf(this);
+        credit.balance = creditToken.balanceOf(this);
         credit.price = cdtPrice;
 
         assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
@@ -358,24 +358,23 @@ add doc
 
         var (ethAmount, dptReserve, cdtAmount, sctAmount, loanDays, exemptDays) = getLoanProposal(safeAdd(credit.supply, subCredit.supply), credit.supply, _loanAmount, _loanPlanFormula);
 
-        _user.transfer(ethAmount);
-        depositAgent.transfer(dptReserve);
-
         DABLoanAgent loanAgent = new DABLoanAgent(owner, creditToken, subCreditToken, discreditToken, _user, loanDays, exemptDays);
 
+        _user.transfer(ethAmount);
+    // split the interest to deposit agent and credit agent
+    // get DPT from deposit agent, if there is insufficient DPT, which will issue the DPT and CDT to credit agent.
+        depositAgent.transfer(dptReserve);
 
-        assert(creditTokenController.transferTokensFrom(_user, this, _loanAmount));
-        creditTokenController.issueTokens(loanAgent, issueCDTAmount);
+        assert(creditToken.transferFrom(_user, this, _loanAmount));
+        creditTokenController.issueTokens(loanAgent, cdtAmount);
         subCreditTokenController.issueTokens(loanAgent, sctAmount);
 
-        // TODO split the interest to deposit agent and credit agent
-        // TODO get DPT from deposit agent, if there is insufficient DPT, which will issue the DPT and CDT to credit agent.
         creditReserve.balance = safeSub(creditReserve.balance, ethAmount);
         creditReserve.balance = safeSub(creditReserve.balance, dptReserve);
 
         credit.circulation = safeSub(credit.circulation, _loanAmount);
-        credit.balance = creditTokenController.balanceOf(this);
-        credit.supply = safeAdd(credit.supply, issueCDTAmount);
+        credit.balance = creditToken.balanceOf(this);
+        credit.supply = safeAdd(credit.supply, cdtAmount);
         assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
     // assert(depositReserve.balance == this.value);
 
@@ -405,14 +404,14 @@ add doc
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
 
-        uint256 sctAmount = subCreditTokenController.balanceOf(_user);
+        uint256 sctAmount = subCreditToken.balanceOf(_user);
         var (refundETHAmount, cdtAmount, refundSCTAmount) = formula.repay(_repayAmount, sctAmount);
 
         if (refundETHAmount > 0) {
             assert(refundSCTAmount == 0);
 
             _user.transfer(refundETHAmount);
-            assert(creditTokenController.transferTokens(_user, cdtAmount));
+            assert(creditToken.transfer(_user, cdtAmount));
             subCreditTokenController.destroyTokens(_user, sctAmount);
 
             creditReserve.balance = safeAdd(creditReserve.balance, safeSub(_repayAmount, refundETHAmount));
@@ -433,7 +432,7 @@ add doc
         else {
             assert(refundSCTAmount >= 0);
 
-            assert(creditTokenController.transferTokens(_user, cdtAmount));
+            assert(creditToken.transfer(_user, cdtAmount));
             subCreditTokenController.destroyTokens(_user, safeSub(sctAmount, refundSCTAmount));
 
             creditReserve.balance = safeAdd(creditReserve.balance, _repayAmount);
@@ -472,14 +471,14 @@ add doc
         Token storage credit = tokens[creditToken];
         Token storage discredit = tokens[discreditToken];
 
-        uint256 dctAmount = discreditTokenController.balanceOf(_user);
+        uint256 dctAmount = discreditToken.balanceOf(_user);
         var (refundETHAmount, cdtAmount, refundDCTAmount) = formula.toCreditToken(_payAmount, dctAmount);
 
         if (refundETHAmount > 0) {
             assert(refundDCTAmount == 0);
 
             _user.transfer(refundETHAmount);
-            assert(creditTokenController.transferTokens(_user, cdtAmount));
+            assert(creditToken.transfer(_user, cdtAmount));
             discreditTokenController.destroyTokens(_user, dctAmount);
 
             creditReserve.balance = safeAdd(creditReserve.balance, safeSub(_payAmount, refundETHAmount));
@@ -500,7 +499,7 @@ add doc
         else {
             assert(refundDCTAmount >= 0);
 
-            assert(creditTokenController.transferTokens(_user, cdtAmount));
+            assert(creditToken.transfer(_user, cdtAmount));
             discreditTokenController.destroyTokens(_user, safeSub(dctAmount, refundDCTAmount));
 
             creditReserve.balance = safeAdd(creditReserve.balance, _payAmount);
@@ -550,7 +549,7 @@ add doc
 
         credit.supply = safeSub(credit.supply, _sctAmount);
         credit.circulation = safeSub(credit.circulation, _sctAmount);
-        credit.balance = creditTokenController.balanceOf(this);
+        credit.balance = creditToken.balanceOf(this);
         credit.price = cdtPrice;
 
         assert(credit.balance == (safeSub(credit.supply, credit.circulation)));

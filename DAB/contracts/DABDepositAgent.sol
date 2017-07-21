@@ -158,8 +158,8 @@ contract DABDepositAgent is DABAgent{
             depositReserve.balance = safeAdd(depositReserve.balance, _ethAmount);
         // assert(depositReserve.balance == this.value);
             deposit.circulation = safeAdd(deposit.circulation, dptAmount);
-            assert(depositTokenController.transferTokens(_user, dptAmount));
-            deposit.balance = depositTokenController.balanceOf(this);
+            assert(depositToken.transfer(_user, dptAmount));
+            deposit.balance = depositToken.balanceOf(this);
             assert(deposit.balance == (safeSub(deposit.supply, deposit.circulation)));
             deposit.currentCRR = currentCRR;
             deposit.price = dptPrice;
@@ -193,11 +193,11 @@ contract DABDepositAgent is DABAgent{
         assert(ethAmount > 0);
 
         _user.transfer(ethAmount);
-        assert(depositTokenController.transferTokensFrom(_user, this, _withdrawAmount));
+        assert(depositToken.transferTokensFrom(_user, this, _withdrawAmount));
 
         depositReserve.balance = safeSub(depositReserve.balance, ethAmount);
         deposit.circulation = safeSub(deposit.circulation, _withdrawAmount);
-        deposit.balance = depositTokenController.balanceOf(this);
+        deposit.balance = depositToken.balanceOf(this);
         deposit.currentCRR = currentCRR;
         deposit.price = dptPrice;
 

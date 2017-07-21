@@ -55,50 +55,89 @@ contract DABLoanAgent is Owned, SafeMath{
 
     function deposit()
     public
-    validAmount(msg.value)
-    {
+    validAmount(msg.value) {
         balance = safeAdd(balance, msg.value);
     }
 
-    function withdraw(uint256 _value)
-k   public
+    function withdraw(uint256 _amount)
+    public
     ownerOnly
-    validAmount(_value){
-        balance = safeSub(balance, _value);
-        msg.sender.transfer(_value);
+    validAmount(_amount){
+        balance = safeSub(balance, _amount);
+        msg.sender.transfer(_amount);
     }
 
-    function repay()
+    function withdrawAll()
+    public
+    ownerOnly {
+        msg.sender.transfer(balance);
+        balance = 0;
+    }
+
+    function repay(uint256 _amount)
     public
     ownerOnly
     repayBetween
-    {
-        dab.repay.value(balance)();
+    validAmount(_amount) {
+        balance = safeSub(balance, _amount);
+        dab.repay.value(_amount)();
     }
 
-    function toDiscreditToken()
+    function repayAll()
+    public
+    ownerOnly
+    repayBetween
+    validAmount(_amount) {
+        dab.repay.value(balance)();
+        balance = 0;
+    }
+
+    function toDiscreditToken(uint256 _amount)
     public
     ownerOnly
     afterRepayStart
-    {
+    validAmount(_amount) {
+        dab.toDiscreditToken(_amount);
+    }
+
+    function toDiscreditTokenAll()
+    public
+    ownerOnly
+    afterRepayStart {
         uint256 balanceOfSCT = subcreditToken.balanceOf(this);
         dab.toDiscreditToken(balanceOfSCT);
     }
 
-    function toCreditToken()
+    function toCreditToken(uint256 _amount)
     public
     ownerOnly
     afterRepayEnd{
+        balance = safeSub(balance, _amount);
+        dab.toCreditToken.value(_amount)();
+    }
+
+    function toCreditTokenAll()
+    public
+    ownerOnly
+    afterRepayEnd {
         dab.toCreditToken.value(balance)();
+        balance = 0;
     }
 
     function withdrawCreditToken(uint256 _amount)
     public
     ownerOnly
     afterRepayStart
-    validAmount(_amount)
-    {
+    validAmount(_amount) {
         assert(creditToken.transfer(msg.sender, _amount));
+    }
+
+    function withdrawAllCreditToken()
+    public
+    ownerOnly
+    afterRepayStart {
+        uint256 balanceOfCDT = creditToken.balanceOf(this);
+        assert(creditToken.transfer(msg.sender, balanceOfCDT));
     }
 
     function withdrawDiscreditToken(uint256 _amount)
@@ -107,6 +146,14 @@ k   public
     afterRepayEnd
     validAmount(_amount){
         assert(discreditToken.transfer(msg.sender, _amount));
+    }
+
+    function withdrawAllDiscreditToken()
+    public
+    ownerOnly
+    afterRepayEnd {
+        uint256 balanceOfDCT = discreditToken.balanceOf(this);
+        assert(discreditToken.transfer(msg.sender, balanceOfDCT));
     }
 
     function payable{
