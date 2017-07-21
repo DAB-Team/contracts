@@ -20,8 +20,6 @@ contract DABAgent is Owned, Math{
 
     string public version = '0.1';
 
-    uint256 maxStream = 100 ether;
-
     bool public isActive = false;
 
     address[] public tokenSet;

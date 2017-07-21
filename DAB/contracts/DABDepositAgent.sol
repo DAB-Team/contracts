@@ -112,11 +112,10 @@ contract DABDepositAgent is DABAgent{
     validAmount(_ethAmount)
     returns (bool success) {
         Token storage deposit = tokens[depositToken];
-    // Token storage credit = tokens[creditToken];
 
         var (uDPTAmount, uCDTAmount, fDPTAmount, fCDTAmount, ethDeposit, currentCRR) = formula.issue(deposit.circulation, _ethAmount);
 
-        depositTokenController.issueTokens(msg.sender, uDPTAmount);
+        depositTokenController.issueTokens(_user, uDPTAmount);
         depositTokenController.issueTokens(beneficiary, fDPTAmount);
         deposit.supply = safeAdd(deposit.supply, uDPTAmount);
         deposit.supply = safeAdd(deposit.supply, fDPTAmount);
@@ -132,7 +131,7 @@ contract DABDepositAgent is DABAgent{
         assert(creditAgent.issue(beneficiary, 0, fCDTAmount));
 
     // event
-        Issue(msg.sender, ethDeposit, uDPTAmount);
+        Issue(_user, ethDeposit, uDPTAmount);
         Issue(beneficiary, 0, fDPTAmount);
 
 
@@ -193,7 +192,6 @@ contract DABDepositAgent is DABAgent{
         var (ethAmount, currentCRR, dptPrice) = formula.withdraw(depositReserve.balance, safeSub(deposit.supply, deposit.balance), _withdrawAmount);
         assert(ethAmount > 0);
 
-    // assert(beneficiary.send(msg.value))
         _user.transfer(ethAmount);
         assert(depositTokenController.transferTokensFrom(_user, this, _withdrawAmount));
 
@@ -207,7 +205,7 @@ contract DABDepositAgent is DABAgent{
     // assert(depositReserve.balance == this.value);
 
     // event
-        Withdraw(msg.sender, _withdrawAmount, ethAmount);
+        Withdraw(_user, _withdrawAmount, ethAmount);
         return true;
 
     }

@@ -1,11 +1,14 @@
 /* global artifacts, contract, before, it, assert, web3 */
 /* eslint-disable prefer-reflect */
 
+
 const EasyDABFormula = artifacts.require('EasyDABFormula.sol');
 const SmartToken = artifacts.require('SmartToken.sol');
 const SmartTokenController = artifacts.require('SmartTokenController.sol');
 const DABDepositAgent = artifacts.require('DABDepositAgent.sol');
 const DABCreditAgent = artifacts.require('DABCreditAgent.sol');
+const DAB = artifacts.require('DAB.sol');
+const TestDAB= artifacts.require('./helpers/TestDAB.sol');
 const utils = require('./helpers/Utils');
 
 
@@ -39,6 +42,10 @@ let creditAgent;
 let depositAgentAddress;
 
 let creditAgentAddress;
+
+let dab;
+
+let dabAddress;
 
 let beneficiaryAddress = '0x69aa30b306805bd17488ce957d03e3c0213ee9e6';
 
@@ -135,7 +142,7 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
 }
 
 
-contract('DAB', (accounts) => {
+contract('DABCreditAgent', (accounts) => {
     before(async() => {
         easyDABFormula = await EasyDABFormula.new();
         easyDABFormulaAddress = easyDABFormula.address;
@@ -194,12 +201,55 @@ contract('DAB', (accounts) => {
 
     it('verifies the base storage values after construction', async () => {
         let dab = await generateDefaultDAB();
-        let depositAgent = await dab.depositAgent.call();
-        assert.equal(depositAgent, depositAgentAddress);
+        let _easyDABFormulaAddress = await creditAgent.formula.call();
+        assert.equal(_easyDABFormulaAddress, easyDABFormulaAddress);
 
-        let creditAgent = await dab.creditAgent.call();
-        assert.equal(creditAgent, creditAgentAddress);
+        let _creditTokenControllerAddress = await creditAgent.creditTokenController.call();
+        assert.equal(_creditTokenControllerAddress, creditTokenControllerAddress);
+
+        let _subCreditTokenControllerAddress = await creditAgent.subCreditTokenController.call();
+        assert.equal(_subCreditTokenControllerAddress, subCreditTokenControllerAddress);
+
+        let _discreditTokenControllerAddress = await creditAgent.discreditTokenController.call();
+        assert.equal(_discreditTokenControllerAddress, discreditTokenControllerAddress);
+
+        let _creditTokenAddress = await creditAgent.creditToken.call();
+        assert.equal(_creditTokenAddress, creditTokenAddress);
+
+        let _subCreditTokenAddress = await creditAgent.subCreditToken.call();
+        assert.equal(_subCreditTokenAddress, subCreditTokenAddress);
+
+        let _discreditTokenAddress = await creditAgent.discreditToken.call();
+        assert.equal(_discreditTokenAddress, discreditTokenAddress);
         
     });
+
+    it('should throw when a non owner attempts to issue new tokens', async () => {
+        let dab = await generateDefaultDAB();
+        let _easyDABFormulaAddress = await creditAgent.formula.call();
+
+        try {
+            await creditAgent.issue(accounts[3], 100000000000, 100000000000, { from: accounts[1] });
+            assert(false, "didn't throw");
+        }
+        catch (error) {
+            return utils.ensureException(error);
+        }
+    });
+
+    it('should throw when a non owner attempts to cash', async () => {
+        let dab = await generateDefaultDAB();
+        let _easyDABFormulaAddress = await creditAgent.formula.call();
+
+        try {
+            await creditAgent.cash(accounts[3], 100000000000, { from: accounts[1] });
+            assert(false, "didn't throw");
+        }
+        catch (error) {
+            return utils.ensureException(error);
+        }
+    });
+
+
 
 });

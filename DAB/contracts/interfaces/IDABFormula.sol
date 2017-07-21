@@ -29,7 +29,7 @@ contract IDABFormula {
     public returns (uint256 ethAmount, uint256 cdtPrice);
 
     function loan(uint256 cdtAmount, uint256 interestRate)
-    public returns (uint256 ethAmount, uint256 issueCDTAmount, uint256 sctAmount);
+    public returns (uint256 ethAmount, uint256 dptReserve, uint256 issueCDTAmount, uint256 sctAmount);
 
     function repay(uint256 repayETHAmount, uint256 sctAmount)
     public returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundSCTAmount);

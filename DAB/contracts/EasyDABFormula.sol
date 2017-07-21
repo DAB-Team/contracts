@@ -158,19 +158,21 @@ contract EasyDABFormula is IDABFormula, Math {
 
     function loan(uint256 _cdtAmount, uint256 _interestRate)
     public
-    returns (uint256 ethAmount, uint256 issueCDTAmount, uint256 sctAmount){
+    returns (uint256 ethAmount, uint256 dptReserve, uint256 issueCDTAmount, uint256 sctAmount){
         require(_cdtAmount > 0);
 
         _cdtAmount = EtherToFloat(_cdtAmount);
         _interestRate = DecimalToFloat(_interestRate);
 
         ethAmount = mul(_cdtAmount, cdtLoanRate);
-        uint256 earn = mul(ethAmount, _interestRate);
-        issueCDTAmount = div(div(mul(earn, cdtReserveRate), Float(2)), cdt_ip);
-        ethAmount = sub(ethAmount, earn);
+        uint256 interest = mul(ethAmount, _interestRate);
+        uint256 cdtReserve = mul(interest, cdtReserveRate);
+        uint256 dptReserve = sub(interest, cdtReserve);
+        issueCDTAmount = div(div(cdtReserve, Float(2)), cdt_ip);
+        ethAmount = sub(ethAmount, interest);
         sctAmount = _cdtAmount;
 
-        return (FloatToEther(ethAmount), FloatToEther(issueCDTAmount), FloatToEther(sctAmount));
+        return (FloatToEther(ethAmount),FloatToEther(dptReserve), FloatToEther(issueCDTAmount), FloatToEther(sctAmount));
     }
 
 /*

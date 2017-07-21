@@ -17,6 +17,7 @@ const DepositTokenController = artifacts.require('SmartTokenController.sol');
 const CreditTokenController = artifacts.require('SmartTokenController.sol');
 const SubCreditTokenController = artifacts.require('SmartTokenController.sol');
 const DiscreditTokenController = artifacts.require('SmartTokenController.sol');
+const DABLoanAgent = artifacts.require('DABLoanAgent.sol');
 const DABDepositAgent = artifacts.require('DABDepositAgent.sol');
 const DABCreditAgent = artifacts.require('DABCreditAgent.sol');
 const DABOperationManager = artifacts.require('DABOperationManager.sol');
