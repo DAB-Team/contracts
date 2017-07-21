@@ -167,7 +167,7 @@ contract EasyDABFormula is IDABFormula, Math {
         ethAmount = mul(_cdtAmount, cdtLoanRate);
         uint256 interest = mul(ethAmount, _interestRate);
         uint256 cdtReserve = mul(interest, cdtReserveRate);
-        uint256 dptReserve = sub(interest, cdtReserve);
+        dptReserve = sub(interest, cdtReserve);
         issueCDTAmount = div(div(cdtReserve, Float(2)), cdt_ip);
         ethAmount = sub(ethAmount, interest);
         sctAmount = _cdtAmount;

@@ -55,21 +55,7 @@ contract DABDepositAgent is DABAgent{
         tokenSet.push(depositToken);
     }
 
-// ensures that the agent is the token controllers' owner
-    modifier activeDepositAgent() {
-        assert(depositTokenController.owner() == address(this));
-        _;
-    }
-
-// ensures that the agent is the deposit controller's owner
-    modifier activeDepositTokenController() {
-        assert(depositTokenController.owner() == address(this));
-        _;
-    }
-
-
     function activate()
-    activeDepositAgent
     ownerOnly
     public{
         depositTokenController.disableTokenTransfers(false);
@@ -84,7 +70,6 @@ contract DABDepositAgent is DABAgent{
     @param _newOwner    new token owner
 */
     function transferDepositTokenControllerOwnership(address _newOwner) public
-    activeDepositTokenController
     ownerOnly {
         depositTokenController.transferOwnership(_newOwner);
     }
@@ -145,10 +130,9 @@ contract DABDepositAgent is DABAgent{
 */
     function deposit(address _user, uint256 _ethAmount)
     public
-    activeDepositTokenController
+    ownerOnly
     validAddress(_user)
     validAmount(_ethAmount)
-    ownerOnly
     returns (bool success){
         Token storage deposit = tokens[depositToken];
 
@@ -182,10 +166,9 @@ contract DABDepositAgent is DABAgent{
 */
     function withdraw(address _user, uint256 _withdrawAmount)
     public
-    activeDepositTokenController
+    ownerOnly
     validAddress(_user)
     validAmount(_withdrawAmount)
-    ownerOnly
     returns (bool success){
         Token storage deposit = tokens[depositToken];
 
@@ -193,7 +176,7 @@ contract DABDepositAgent is DABAgent{
         assert(ethAmount > 0);
 
         _user.transfer(ethAmount);
-        assert(depositToken.transferTokensFrom(_user, this, _withdrawAmount));
+        assert(depositToken.transferFrom(_user, this, _withdrawAmount));
 
         depositReserve.balance = safeSub(depositReserve.balance, ethAmount);
         deposit.circulation = safeSub(deposit.circulation, _withdrawAmount);

@@ -55,6 +55,7 @@ contract DABLoanAgent is Owned, SafeMath{
 
     function deposit()
     public
+    payable
     validAmount(msg.value) {
         balance = safeAdd(balance, msg.value);
     }
@@ -86,8 +87,7 @@ contract DABLoanAgent is Owned, SafeMath{
     function repayAll()
     public
     ownerOnly
-    repayBetween
-    validAmount(_amount) {
+    repayBetween {
         dab.repay.value(balance)();
         balance = 0;
     }
@@ -104,7 +104,7 @@ contract DABLoanAgent is Owned, SafeMath{
     public
     ownerOnly
     afterRepayStart {
-        uint256 balanceOfSCT = subcreditToken.balanceOf(this);
+        uint256 balanceOfSCT = subCreditToken.balanceOf(this);
         dab.toDiscreditToken(balanceOfSCT);
     }
 
@@ -156,7 +156,7 @@ contract DABLoanAgent is Owned, SafeMath{
         assert(discreditToken.transfer(msg.sender, balanceOfDCT));
     }
 
-    function payable{
+    function() payable{
         deposit();
     }
 

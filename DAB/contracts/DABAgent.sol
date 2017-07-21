@@ -65,13 +65,6 @@ contract DABAgent is Owned, Math{
     }
 
 
-// verifies that the address same with this contract address
-    modifier onlyAgent() {
-        require(msg.sender == address(this));
-        _;
-    }
-
-
 // verifies that the address is different than this contract address
     modifier notThis(address _address) {
         require(_address != address(this));

@@ -111,40 +111,7 @@ contract DABCreditAgent is DABAgent{
         _;
     }
 
-
-// ensures that the controller is the token's owner
-    modifier activeDABCreditAgent() {
-        assert(creditTokenController.owner() == address(this) && subCreditTokenController.owner() == address(this) && discreditTokenController.owner() == address(this));
-        _;
-    }
-
-// ensures that the controller is not the token's owner
-    modifier inactiveDABCreditContractAgent() {
-        assert((creditTokenController.owner() != address(this)) || (subCreditTokenController.owner() != address(this)) || (discreditTokenController.owner() != address(this)));
-        _;
-    }
-
-
-// ensures that the controller is the token's owner
-    modifier activeCreditTokenController() {
-        assert(creditTokenController.owner() == address(this));
-        _;
-    }
-
-// ensures that the controller is the token's owner
-    modifier activeSubCreditTokenController() {
-        assert(subCreditTokenController.owner() == address(this));
-        _;
-    }
-
-// ensures that the controller is the token's owner
-    modifier activeDiscreditTokenController() {
-        assert(discreditTokenController.owner() == address(this));
-        _;
-    }
-
     function activate()
-    activeDABCreditAgent
     ownerOnly
     public {
         creditTokenController.disableTokenTransfers(false);
@@ -195,7 +162,6 @@ add doc
     @param _newOwner    new token owner
 */
     function transferCreditTokenControllerOwnership(address _newOwner) public
-    activeCreditTokenController
     ownerOnly {
         creditTokenController.transferOwnership(_newOwner);
     }
@@ -218,7 +184,6 @@ add doc
     @param _newOwner    new token owner
 */
     function transferSubCreditTokenControllerOwnership(address _newOwner) public
-    activeSubCreditTokenController
     ownerOnly {
         subCreditTokenController.transferOwnership(_newOwner);
     }
@@ -240,7 +205,6 @@ add doc
     @param _newOwner    new token owner
 */
     function transferDiscreditTokenControllerOwnership(address _newOwner) public
-    activeDiscreditTokenController
     ownerOnly {
         discreditTokenController.transferOwnership(_newOwner);
     }
@@ -264,11 +228,11 @@ add doc
 */
     function issue(address _user, uint256 _ethAmount, uint256 _issueAmount)
     public
+    DepositAgentOnly
     active
     validAddress(_user)
     validAmount(_ethAmount)
     validAmount(_issueAmount)
-    DepositAgentOnly
     returns (bool success) {
         Token storage credit = tokens[creditToken];
 
@@ -294,10 +258,10 @@ add doc
 */
     function cash(address _user, uint256 _cashAmount)
     public
+    ownerOnly
     active
     validAddress(_user)
     validAmount(_cashAmount)
-    ownerOnly
     returns (bool success){
         Token storage credit = tokens[creditToken];
         var (ethAmount, cdtPrice) = formula.cash(creditReserve.balance, safeSub(credit.supply, credit.balance), _cashAmount);
@@ -322,18 +286,45 @@ add doc
     }
 
 
-
-    function getLoanProposal(uint256 _supply, uint256 _circulation, uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
+    function getLoan(address _user, ILoanPlanFormula _loanPlanFormula)
     private
-    returns (uint256, uint256, uint256, uint256, uint256, uint256){
-        var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(_supply, _circulation);
-
-        var (ethAmount, dptReserve, cdtAmount, sctAmount) = formula.loan(_loanAmount, interestRate);
-
-        return (ethAmount, dptReserve, cdtAmount, sctAmount, loanDays, exemptDays);
+    returns (DABLoanAgent, uint256){
+        Token storage credit = tokens[creditToken];
+        Token storage subCredit = tokens[subCreditToken];
+        var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(safeAdd(credit.supply, subCredit.supply), credit.supply);
+        DAB dab = DAB(owner);
+        DABLoanAgent loanAgent = new DABLoanAgent(dab, creditToken, subCreditToken, discreditToken, _user, loanDays, exemptDays);
+        return (loanAgent, interestRate);
     }
 
+    function loanTransact(DABLoanAgent _loanAgent,address _user, uint256 _loanAmount, uint256 _ethAmount, uint256 _dptReserve, uint256 _cdtAmount, uint256 _sctAmount)
+    private
+    {
+        _user.transfer(_ethAmount);
+    // split the interest to deposit agent and credit agent
+    // get DPT from deposit agent, if there is insufficient DPT, which will issue the DPT and CDT to credit agent.
+        depositAgent.transfer(_dptReserve);
+        assert(creditToken.transferFrom(_user, this, _loanAmount));
+        creditTokenController.issueTokens(_loanAgent, _cdtAmount);
+        subCreditTokenController.issueTokens(_loanAgent, _sctAmount);
 
+    }
+
+    function loanAccount(uint256 _loanAmount, uint256 _ethAmount, uint256 _dptReserve, uint256 _cdtAmount, uint256 _sctAmount)
+    private{
+        Token storage credit = tokens[creditToken];
+        Token storage subCredit = tokens[subCreditToken];
+        creditReserve.balance = safeSub(creditReserve.balance, _ethAmount);
+        creditReserve.balance = safeSub(creditReserve.balance, _dptReserve);
+
+        credit.circulation = safeSub(credit.circulation, _loanAmount);
+        credit.balance = creditToken.balanceOf(this);
+        credit.supply = safeAdd(credit.supply, _cdtAmount);
+        assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
+    // assert(depositReserve.balance == this.value);
+
+        subCredit.supply = safeAdd(subCredit.supply, _sctAmount);
+    }
 
 
 /**
@@ -347,41 +338,19 @@ add doc
 
     function loan(address _user, uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
     public
+    ownerOnly
     active
     validAddress(_user)
     validAmount(_loanAmount)
     validLoanPlanFormula(_loanPlanFormula)
-    ownerOnly
     returns (bool success) {
-        Token storage credit = tokens[creditToken];
-        Token storage subCredit = tokens[subCreditToken];
 
-        var (ethAmount, dptReserve, cdtAmount, sctAmount, loanDays, exemptDays) = getLoanProposal(safeAdd(credit.supply, subCredit.supply), credit.supply, _loanAmount, _loanPlanFormula);
-
-        DABLoanAgent loanAgent = new DABLoanAgent(owner, creditToken, subCreditToken, discreditToken, _user, loanDays, exemptDays);
-
-        _user.transfer(ethAmount);
-    // split the interest to deposit agent and credit agent
-    // get DPT from deposit agent, if there is insufficient DPT, which will issue the DPT and CDT to credit agent.
-        depositAgent.transfer(dptReserve);
-
-        assert(creditToken.transferFrom(_user, this, _loanAmount));
-        creditTokenController.issueTokens(loanAgent, cdtAmount);
-        subCreditTokenController.issueTokens(loanAgent, sctAmount);
-
-        creditReserve.balance = safeSub(creditReserve.balance, ethAmount);
-        creditReserve.balance = safeSub(creditReserve.balance, dptReserve);
-
-        credit.circulation = safeSub(credit.circulation, _loanAmount);
-        credit.balance = creditToken.balanceOf(this);
-        credit.supply = safeAdd(credit.supply, cdtAmount);
-        assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
-    // assert(depositReserve.balance == this.value);
-
-        subCredit.supply = safeAdd(subCredit.supply, sctAmount);
-
+        var (loanAgent, interestRate) = getLoan(_user, _loanPlanFormula);
+        var (ethAmount, dptReserve, cdtAmount, sctAmount) = formula.loan(_loanAmount, interestRate);
+        loanTransact(loanAgent, _user, _loanAmount, ethAmount, dptReserve, cdtAmount, sctAmount);
+        loanAccount(_loanAmount, ethAmount, dptReserve, cdtAmount, sctAmount);
     // event
-        Loan(_user, _loanAgent, _loanAmount, ethAmount, sctAmount);
+        Loan(_user, loanAgent, _loanAmount, ethAmount, sctAmount);
         return true;
     }
 
@@ -396,10 +365,10 @@ add doc
 
     function repay(address _user, uint256 _repayAmount)
     public
+    ownerOnly
     active
     validAddress(_user)
     validAmount(_repayAmount)
-    ownerOnly
     returns (bool success) {
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
@@ -463,10 +432,10 @@ add doc
 
     function toCreditToken(address _user, uint256 _payAmount)
     public
+    ownerOnly
     active
     validAddress(_user)
     validAmount(_payAmount)
-    ownerOnly
     returns (bool success) {
         Token storage credit = tokens[creditToken];
         Token storage discredit = tokens[discreditToken];
@@ -533,10 +502,10 @@ add doc
 
     function toDiscreditToken(address _user, uint256 _sctAmount)
     public
+    ownerOnly
     active
     validAddress(_user)
     validAmount(_sctAmount)
-    ownerOnly
     returns (bool success) {
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
