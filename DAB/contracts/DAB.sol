@@ -61,6 +61,14 @@ contract DAB is DABOperationManager{
         isActive = true;
     }
 
+    function freeze()
+    ownerOnly
+    public{
+        depositAgent.freeze();
+        creditAgent.freeze();
+        isActive = false;
+    }
+
 /**
     @dev deposit ethereum
 */
@@ -173,6 +181,6 @@ contract DAB is DABOperationManager{
     }
 
     function() payable {
-        deposit();
+        throw;
     }
 }

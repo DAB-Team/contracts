@@ -17,11 +17,11 @@ contract DABDepositAgent is DABAgent{
 
     address public beneficiary = 0x0;              // address to receive all ether contributions
 
-    event Issue(address _to, uint256 _amountOfETH, uint256 _amountOfDPT);
+    event LogIssue(address _to, uint256 _amountOfETH, uint256 _amountOfDPT);
 
-    event Deposit(address _to, uint256 _amountOfETH, uint256 _amountOfDPT);
+    event LogDeposit(address _to, uint256 _amountOfETH, uint256 _amountOfDPT);
 
-    event Withdraw(address _to, uint256 _amountOfDPT, uint256 _amountOfETH);
+    event LogWithdraw(address _to, uint256 _amountOfDPT, uint256 _amountOfETH);
 
 
     function DABDepositAgent(
@@ -60,6 +60,13 @@ contract DABDepositAgent is DABAgent{
     public{
         depositTokenController.disableTokenTransfers(false);
         isActive = true;
+    }
+
+    function freeze()
+    ownerOnly
+    public{
+        depositTokenController.disableTokenTransfers(true);
+        isActive = false;
     }
 
 /**
@@ -116,8 +123,8 @@ contract DABDepositAgent is DABAgent{
         assert(creditAgent.issue(beneficiary, 0, fCDTAmount));
 
     // event
-        Issue(_user, ethDeposit, uDPTAmount);
-        Issue(beneficiary, 0, fDPTAmount);
+        LogIssue(_user, ethDeposit, uDPTAmount);
+        LogIssue(beneficiary, 0, fDPTAmount);
 
 
     // issue new funds to the caller in the smart token
@@ -131,6 +138,7 @@ contract DABDepositAgent is DABAgent{
     function deposit(address _user, uint256 _ethAmount)
     public
     ownerOnly
+    active
     validAddress(_user)
     validAmount(_ethAmount)
     returns (bool success){
@@ -148,7 +156,7 @@ contract DABDepositAgent is DABAgent{
             deposit.currentCRR = currentCRR;
             deposit.price = dptPrice;
         // event
-            Deposit(_user, _ethAmount, dptAmount);
+            LogDeposit(_user, _ethAmount, dptAmount);
 
         }
 
@@ -167,6 +175,7 @@ contract DABDepositAgent is DABAgent{
     function withdraw(address _user, uint256 _withdrawAmount)
     public
     ownerOnly
+    active
     validAddress(_user)
     validAmount(_withdrawAmount)
     returns (bool success){
@@ -175,11 +184,12 @@ contract DABDepositAgent is DABAgent{
         var (ethAmount, currentCRR, dptPrice) = formula.withdraw(depositReserve.balance, safeSub(deposit.supply, deposit.balance), _withdrawAmount);
         assert(ethAmount > 0);
 
+        depositReserve.balance = safeSub(depositReserve.balance, ethAmount);
+        deposit.circulation = safeSub(deposit.circulation, _withdrawAmount);
+
         _user.transfer(ethAmount);
         assert(depositToken.transferFrom(_user, this, _withdrawAmount));
 
-        depositReserve.balance = safeSub(depositReserve.balance, ethAmount);
-        deposit.circulation = safeSub(deposit.circulation, _withdrawAmount);
         deposit.balance = depositToken.balanceOf(this);
         deposit.currentCRR = currentCRR;
         deposit.price = dptPrice;
@@ -188,7 +198,7 @@ contract DABDepositAgent is DABAgent{
     // assert(depositReserve.balance == this.value);
 
     // event
-        Withdraw(_user, _withdrawAmount, ethAmount);
+        LogWithdraw(_user, _withdrawAmount, ethAmount);
         return true;
 
     }
