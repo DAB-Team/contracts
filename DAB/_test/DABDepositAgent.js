@@ -50,7 +50,7 @@ let dabAddress;
 let beneficiaryAddress = '0x69aa30b306805bd17488ce957d03e3c0213ee9e6';
 
 let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale hasn't started
-let startTimeInProgress = Math.floor(Date.now() / 1000) - 15 * 60 * 60; // ongoing crowdsale
+let startTimeInProgress = Math.floor(Date.now() / 1000) - 12 * 60 * 60; // ongoing crowdsale
 let startTimeFinished = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 
 
@@ -141,7 +141,7 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
 }
 
 
-contract('DAB', (accounts) => {
+contract('DABDepositAgent', (accounts) => {
     before(async() => {
         easyDABFormula = await EasyDABFormula.new();
         easyDABFormulaAddress = easyDABFormula.address;
@@ -200,21 +200,42 @@ contract('DAB', (accounts) => {
 
     it('verifies the base storage values after construction', async () => {
         let dab = await generateDefaultDAB();
-        let depositAgent = await dab.depositAgent.call();
-        assert.equal(depositAgent, depositAgentAddress);
+        let _easyDABFormulaAddress = await depositAgent.formula.call();
+        assert.equal(_easyDABFormulaAddress, easyDABFormulaAddress);
 
-        let creditAgent = await dab.creditAgent.call();
-        assert.equal(creditAgent, creditAgentAddress);
-        
+        let _depositTokenController = await depositAgent.depositTokenController.call();
+        assert.equal(_depositTokenController, depositTokenControllerAddress);
+
+        let _depositToken = await depositAgent.depositToken.call();
+        assert.equal(_depositToken, depositTokenAddress);
+
+        let _beneficiaryAddress = await depositAgent.beneficiary.call();
+        assert.equal(_beneficiaryAddress, beneficiaryAddress);
     });
 
-    it('verifies issue the correct amount of deposit token', async () => {
+
+    it('should throw when a non owner attempts to deposit new tokens', async () => {
         let dab = await initDAB(accounts, true);
-        // await dab.transfer(100);
-        // await dab.pay({from:web3.eth.accounts[0], value:1000000});
-        await dab.deposit({from:web3.eth.accounts[0], value:1000});
+
+        try {
+            await depositAgent.deposit(accounts[3], 100000000000,{ from: accounts[1] });
+            assert(false, "didn't throw");
+        }
+        catch (error) {
+            return utils.ensureException(error);
+        }
     });
 
+    it('should throw when a non owner attempts to withdraw new tokens', async () => {
+        let dab = await initDAB(accounts, true);
 
+        try {
+            await depositAgent.withdraw(accounts[3], 100000000000, { from: accounts[1] });
+            assert(false, "didn't throw");
+        }
+        catch (error) {
+            return utils.ensureException(error);
+        }
+    });
 
 });

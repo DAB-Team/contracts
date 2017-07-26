@@ -18,4 +18,5 @@ contract TestDAB is DAB {
         startTime = _startTimeOverride;
         endTime = startTime + DURATION;
     }
+
 }

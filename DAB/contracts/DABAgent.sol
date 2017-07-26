@@ -5,9 +5,6 @@ import './Math.sol';
 import './interfaces/IDABFormula.sol';
 
 contract DABAgent is Owned, Math{
-    struct Reserve {
-    uint256 balance;
-    }
 
     struct Token {
     uint256 supply;         // total supply = issue - destroy
@@ -22,10 +19,13 @@ contract DABAgent is Owned, Math{
 
     mapping (address => Token) public tokens;   //  token addresses -> token data
 
+    uint256 public balance;
+
     IDABFormula public formula;
 
     function DABAgent(IDABFormula _formula){
         formula = _formula;
+        balance = 0;
     }
 
 

@@ -31,13 +31,13 @@ contract DAB is DABOperationManager{
 
 // verifies that an amount is greater than zero
     modifier active() {
-        require(isActive == true);
+        assert(isActive == true);
         _;
     }
 
 // verifies that an amount is greater than zero
     modifier inactive() {
-        require(isActive == false);
+        assert(isActive == false);
         _;
     }
 
@@ -78,8 +78,9 @@ contract DAB is DABOperationManager{
     active
     started
     validAmount(msg.value) {
-        depositAgent.transfer(msg.value);
-        assert(depositAgent.deposit(msg.sender, msg.value));
+//        depositAgent.transfer(msg.value);
+        assert(depositAgent.deposit.value(msg.value)(msg.sender));
+
     }
 
 
@@ -120,14 +121,14 @@ contract DAB is DABOperationManager{
 */
 
 
-    function loan(uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
-    public
-    active
-    activeCreditAgent
-    validAmount(_loanAmount)
-    {
-        assert(creditAgent.loan(msg.sender, _loanAmount, _loanPlanFormula));
-    }
+//    function loan(uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
+//    public
+//    active
+//    activeCreditAgent
+//    validAmount(_loanAmount)
+//    {
+//        assert(creditAgent.loan(msg.sender, _loanAmount, _loanPlanFormula));
+//    }
 
 
 
@@ -143,8 +144,7 @@ contract DAB is DABOperationManager{
     active
     activeCreditAgent
     validAmount(msg.value){
-        creditAgent.transfer(msg.value);
-        assert(creditAgent.repay(msg.sender, msg.value));
+        assert(creditAgent.repay.value(msg.value)(msg.sender));
     }
 
 
@@ -160,8 +160,7 @@ contract DAB is DABOperationManager{
     active
     activeCreditAgent
     validAmount(msg.value){
-        creditAgent.transfer(msg.value);
-        assert(creditAgent.toCreditToken(msg.sender, msg.value));
+        assert(creditAgent.toCreditToken.value(msg.value)(msg.sender));
     }
 
 
@@ -181,7 +180,14 @@ contract DAB is DABOperationManager{
         assert(creditAgent.toDiscreditToken(msg.sender, _sctAmount));
     }
 
-    function() payable {
+    function() payable
+    validAmount(msg.value){
         throw;
+    }
+
+    function pay()
+    payable
+    validAmount(msg.value){
+
     }
 }

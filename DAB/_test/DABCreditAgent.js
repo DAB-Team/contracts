@@ -53,7 +53,6 @@ let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale 
 let startTimeInProgress = Math.floor(Date.now() / 1000) - 12 * 60 * 60; // ongoing crowdsale
 let startTimeFinished = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 
-let badContributionGasPrice = 100000000001;
 
 
 async function generateDefaultDAB() {
@@ -128,7 +127,7 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
         await discreditTokenController.transferOwnership(creditAgent.address);
         await creditAgent.acceptDiscreditTokenControllerOwnership();
 
-        creditAgent.setDepositAgent(depositAgentAddress);
+        await creditAgent.setDepositAgent(depositAgentAddress);
 
         await depositAgent.transferOwnership(dabAddress);
         await dab.acceptDepositAgentOwnership();
@@ -199,6 +198,7 @@ contract('DABCreditAgent', (accounts) => {
 
     });
 
+
     it('verifies the base storage values after construction', async () => {
         let dab = await generateDefaultDAB();
         let _easyDABFormulaAddress = await creditAgent.formula.call();
@@ -221,12 +221,12 @@ contract('DABCreditAgent', (accounts) => {
 
         let _discreditTokenAddress = await creditAgent.discreditToken.call();
         assert.equal(_discreditTokenAddress, discreditTokenAddress);
-        
+
     });
 
+
     it('should throw when a non owner attempts to issue new tokens', async () => {
-        let dab = await generateDefaultDAB();
-        let _easyDABFormulaAddress = await creditAgent.formula.call();
+        let dab = await initDAB(accounts, true);
 
         try {
             await creditAgent.issue(accounts[3], 100000000000, 100000000000, { from: accounts[1] });
@@ -238,8 +238,7 @@ contract('DABCreditAgent', (accounts) => {
     });
 
     it('should throw when a non owner attempts to cash', async () => {
-        let dab = await generateDefaultDAB();
-        let _easyDABFormulaAddress = await creditAgent.formula.call();
+        let dab = await initDAB(accounts, true);
 
         try {
             await creditAgent.cash(accounts[3], 100000000000, { from: accounts[1] });
@@ -250,6 +249,44 @@ contract('DABCreditAgent', (accounts) => {
         }
     });
 
+
+    it('should throw when a non owner attempts to repay', async () => {
+        let dab = await initDAB(accounts, true);
+
+        try {
+            await creditAgent.repay(accounts[3], 100000000000, { from: accounts[1] });
+            assert(false, "didn't throw");
+        }
+        catch (error) {
+            return utils.ensureException(error);
+        }
+    });
+
+
+    it('should throw when a non owner attempts to convert to creditToken', async () => {
+        let dab = await initDAB(accounts, true);
+
+        try {
+            await creditAgent.toCreditToken(accounts[3], 100000000000, { from: accounts[1] });
+            assert(false, "didn't throw");
+        }
+        catch (error) {
+            return utils.ensureException(error);
+        }
+    });
+
+
+    it('should throw when a non owner attempts to convert to discreditToken', async () => {
+        let dab = await initDAB(accounts, true);
+
+        try {
+            await creditAgent.toDiscreditToken(accounts[3], 100000000000, { from: accounts[1] });
+            assert(false, "didn't throw");
+        }
+        catch (error) {
+            return utils.ensureException(error);
+        }
+    });
 
 
 });

@@ -6,12 +6,12 @@ import './SafeMath.sol';
 import './DAB.sol';
 
 contract DABLoanAgent is Owned, SafeMath{
-    uint balance;
+    uint256 public balance;
     uint256 public repayStartTime;
     uint256 public repayEndTime;
-    ISmartToken creditToken;
-    ISmartToken subCreditToken;
-    ISmartToken discreditToken;
+    ISmartToken public creditToken;
+    ISmartToken public subCreditToken;
+    ISmartToken public discreditToken;
     DAB public dab;
 
     function DABLoanAgent(
