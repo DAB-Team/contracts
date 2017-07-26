@@ -34,7 +34,7 @@ a = 0.6
 b = 0.2
 l = 300000
 d = l/4
-top = l*2
+top = l*4
 
 # CRR Curve
 y = [ 0 for i in range(0, top)]

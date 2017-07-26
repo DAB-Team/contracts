@@ -15,15 +15,10 @@ contract DABAgent is Owned, Math{
     uint256 price;          // price of token
     uint256 balance;    // virtual balance = (supply-circulation) * price
     uint256 currentCRR;  // current cash ratio of the token
-
-    bool isReserved;   // true if reserve is enabled, false if not
-    bool isPurchaseEnabled;         // is purchase of the smart token enabled with the reserve, can be set by the token owner
     bool isSet;                     // used to tell if the mapping element is defined
     }
 
     string public version = '0.1';
-
-    uint256 maxStream = 100 ether;
 
     bool public isActive = false;
 

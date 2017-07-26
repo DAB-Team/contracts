@@ -53,7 +53,6 @@ let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale 
 let startTimeInProgress = Math.floor(Date.now() / 1000) - 12 * 60 * 60; // ongoing crowdsale
 let startTimeFinished = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 
-let badContributionGasPrice = 100000000001;
 
 
 async function generateDefaultDAB() {

@@ -72,7 +72,8 @@ class EasyDABFormula(object):
         circulation /= self.ether
         ethamount /= self.ether
         crr = self.get_crr(circulation)
-        dpt = (ethamount / self.DPTIP ) * crr
+        ethdpt = ethamount * crr
+        dpt = ethdpt / self.DPTIP
         cdt = (1 - crr) * ethamount / self.CDTIP
         crr = self.get_crr( circulation)
         # Split the new issued tokens to User and Founder
@@ -80,7 +81,7 @@ class EasyDABFormula(object):
         fcdt = cdt * self.F
         udpt = dpt * self.U
         ucdt = cdt * self.U
-        return udpt.real * self.ether, ucdt.real * self.ether, fdpt.real * self.ether, fcdt.real * self.ether, crr.real * self.decimal
+        return udpt.real * self.ether, ucdt.real * self.ether, fdpt.real * self.ether, fcdt.real * self.ether, ethdpt.real * self.ether,crr.real * self.decimal
 
     def _issue(self, circulation, ethamount):
         #  check over flow and change unit
@@ -89,7 +90,8 @@ class EasyDABFormula(object):
         circulation = math.ethertofloat(circulation)
         ethamount = math.ethertofloat(ethamount)
         crr = self._get_crr(circulation)
-        dpt = math.mul(math.div(ethamount, math.decimaltofloat(self.DPTIP * self.decimal)), crr)
+        ethdpt = math.mul(ethamount, crr)
+        dpt = math.div(ethdpt, math.decimaltofloat(self.DPTIP * self.decimal))
         cdt = math.div(math.mul(math.sub(math.float(1), crr), ethamount), math.decimaltofloat(self.CDTIP * self.decimal))
         crr = self._get_crr(circulation)
         # Split the new issued tokens to User and Founder
@@ -97,7 +99,7 @@ class EasyDABFormula(object):
         ucdt = math.mul(cdt, math.decimaltofloat(self.U * self.decimal))
         fdpt = math.mul(dpt, math.decimaltofloat(self.F * self.decimal))
         fcdt = math.mul(cdt, math.decimaltofloat(self.F * self.decimal))
-        return math.floattoether(udpt), math.floattoether(ucdt), math.floattoether(fdpt), math.floattoether(fcdt), math.floattodecimal(crr)
+        return math.floattoether(udpt), math.floattoether(ucdt), math.floattoether(fdpt), math.floattoether(fcdt), math.floattoether(ethdpt),math.floattodecimal(crr)
 
 
 

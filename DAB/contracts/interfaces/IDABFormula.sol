@@ -17,7 +17,7 @@ input:supply, circulation, uDPTAmount, uCDTAmount, fDPTAmount, fCDTAmount
 contract IDABFormula {
 
     function issue(uint256 circulation, uint256 ethAmount)
-    public returns (uint256, uint256, uint256, uint256, uint256);
+    public returns (uint256, uint256, uint256, uint256, uint256, uint256);
 
     function deposit(uint256 dptBalance, uint256 dptSupply, uint256 dptCirculation, uint256 ethAmount)
     public returns (uint256 token, uint256 remainEther, uint256 fcrr, uint256 dptPrice);
@@ -29,7 +29,7 @@ contract IDABFormula {
     public returns (uint256 ethAmount, uint256 cdtPrice);
 
     function loan(uint256 cdtAmount, uint256 interestRate)
-    public returns (uint256 ethAmount, uint256 issueCDTAmount, uint256 sctAmount);
+    public returns (uint256 ethAmount, uint256 dptReserve, uint256 issueCDTAmount, uint256 sctAmount);
 
     function repay(uint256 repayETHAmount, uint256 sctAmount)
     public returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundSCTAmount);

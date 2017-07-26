@@ -101,40 +101,6 @@ contract SmartTokenController is TokenHolder {
         token.destroy(_from, _amount);
     }
 
-    function transferTokens(address _to, uint256 _value) public
-    active
-    ownerOnly
-    returns (bool success)
-    {
-        return token.transfer(_to, _value);
-    }
-
-    function transferTokensFrom(address _from, address _to, uint256 _value) public
-    active
-    ownerOnly
-    returns (bool success){
-        return token.transferFrom(_from, _to, _value);
-
-    }
-
-    function totalSupply() public active returns(uint256 value){
-        return token.totalSupply();
-    }
-
-
-    function balanceOf(address _address) public
-    active
-    returns(uint256 value){
-        return token.balanceOf(_address);
-    }
-
-    function allowance(address _from, address _to) public
-    active
-    returns(uint256 value){
-        return token.allowance(_from, _to);
-    }
-
-
     /**
     @dev withdraws tokens held by the token and sends them to an account
     can only be called by the owner
