@@ -34,22 +34,22 @@ contract DABLoanAgent is Owned, SafeMath{
     }
 
     modifier repayBetween(){
-        assert(now >= repayStartTime && now <= repayEndTime);
+        require(now >= repayStartTime && now <= repayEndTime);
         _;
     }
 
     modifier afterRepayStart(){
-        assert(now >= repayStartTime);
+        require(now >= repayStartTime);
         _;
     }
 
     modifier afterRepayEnd(){
-        assert(now >= repayEndTime);
+        require(now >= repayEndTime);
         _;
     }
 
     modifier validAmount(uint256 _amount){
-        assert(_amount > 0);
+        require(_amount > 0);
         _;
     }
 

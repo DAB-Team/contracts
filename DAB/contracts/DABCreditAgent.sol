@@ -101,7 +101,7 @@ contract DABCreditAgent is DABAgent{
 
 // validates an address - currently only checks that it isn't null
     modifier DepositAgentOnly() {
-        assert(msg.sender == depositAgent);
+        require(msg.sender == depositAgent);
         _;
     }
 

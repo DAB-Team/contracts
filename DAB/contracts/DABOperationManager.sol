@@ -42,38 +42,38 @@ creditAgentActivationTime = depositAgentActivationTime + CDT_AGENT_ACTIVATION_LA
 
 // ensures that it's earlier than the given time
 modifier earlierThan(uint256 _time) {
-assert(now < _time);
+require(now < _time);
 _;
 }
 
 // ensures that the current time is between _startTime (inclusive) and _endTime (exclusive)
 modifier between(uint256 _startTime, uint256 _endTime) {
-assert(now >= _startTime && now < _endTime);
+require(now >= _startTime && now < _endTime);
 _;
 }
 
 // ensures that it's earlier than the given time
 modifier laterThan(uint256 _time) {
-assert(now > _time);
+require(now > _time);
 _;
 }
 
 
 // ensures that deposit contract activated
 modifier started() {
-assert(now > startTime);
+require(now > startTime);
 _;
 }
 
 // ensures that deposit contract activated
 modifier activeDepositAgent() {
-assert(now > depositAgentActivationTime);
+require(now > depositAgentActivationTime);
 _;
 }
 
 // ensures that credit contract activated
 modifier activeCreditAgent() {
-assert(now > creditAgentActivationTime);
+require(now > creditAgentActivationTime);
 _;
 }
 
