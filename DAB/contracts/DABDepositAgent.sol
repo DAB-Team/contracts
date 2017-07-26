@@ -9,6 +9,12 @@ contract DABDepositAgent is DABAgent{
 
     Reserve public depositReserve;
 
+    uint256 depositBalance;
+
+    uint256 depositPrice;
+
+    uint256 depositCurrentCRR;
+
     ISmartToken public depositToken;
 
     SmartTokenController public depositTokenController;
@@ -46,18 +52,17 @@ contract DABDepositAgent is DABAgent{
 
     // add deposit token
 
-        tokens[depositToken].supply = 0;
-        tokens[depositToken].circulation = 0;
-        tokens[depositToken].price = 0;
-        tokens[depositToken].balance = 0;
-        tokens[depositToken].currentCRR = Decimal(1);
-        tokens[depositToken].isSet = true;
+
         tokenSet.push(depositToken);
     }
 
     function activate()
     ownerOnly
     public{
+        tokens[depositToken].supply = depositToken.totalSupply();
+        tokens[depositToken].isSet = true;
+        depositBalance = depositToken.balanceOf(this);
+
         depositTokenController.disableTokenTransfers(false);
         isActive = true;
     }
@@ -105,15 +110,13 @@ contract DABDepositAgent is DABAgent{
     returns (bool success) {
         Token storage deposit = tokens[depositToken];
 
-        var (uDPTAmount, uCDTAmount, fDPTAmount, fCDTAmount, ethDeposit, currentCRR) = formula.issue(deposit.circulation, _ethAmount);
+        var (uDPTAmount, uCDTAmount, fDPTAmount, fCDTAmount, ethDeposit, currentCRR) = formula.issue(safeSub(deposit.supply, depositBalance), _ethAmount);
 
         depositTokenController.issueTokens(_user, uDPTAmount);
         depositTokenController.issueTokens(beneficiary, fDPTAmount);
         deposit.supply = safeAdd(deposit.supply, uDPTAmount);
         deposit.supply = safeAdd(deposit.supply, fDPTAmount);
-        deposit.circulation = safeAdd(deposit.circulation, uDPTAmount);
-        deposit.circulation = safeAdd(deposit.circulation, fDPTAmount);
-        deposit.currentCRR = currentCRR;
+        depositCurrentCRR = currentCRR;
 
         creditAgent.transfer(safeSub(_ethAmount, ethDeposit));
 
@@ -144,16 +147,14 @@ contract DABDepositAgent is DABAgent{
     returns (bool success){
         Token storage deposit = tokens[depositToken];
 
-        var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(safeSub(depositReserve.balance, _ethAmount), deposit.supply, safeSub(deposit.supply, deposit.balance), _ethAmount);
+        var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(safeSub(depositReserve.balance, _ethAmount), deposit.supply, safeSub(deposit.supply, depositBalance), _ethAmount);
 
         if (dptAmount > 0) {
         // assert(depositReserve.balance == this.value);
-            deposit.circulation = safeAdd(deposit.circulation, dptAmount);
             assert(depositToken.transfer(_user, dptAmount));
-            deposit.balance = depositToken.balanceOf(this);
-            assert(deposit.balance == (safeSub(deposit.supply, deposit.circulation)));
-            deposit.currentCRR = currentCRR;
-            deposit.price = dptPrice;
+            depositBalance = depositToken.balanceOf(this);
+            depositCurrentCRR = currentCRR;
+            depositPrice = dptPrice;
         // event
             LogDeposit(_user, _ethAmount, dptAmount);
 
@@ -180,20 +181,18 @@ contract DABDepositAgent is DABAgent{
     returns (bool success){
         Token storage deposit = tokens[depositToken];
 
-        var (ethAmount, currentCRR, dptPrice) = formula.withdraw(depositReserve.balance, safeSub(deposit.supply, deposit.balance), _withdrawAmount);
+        var (ethAmount, currentCRR, dptPrice) = formula.withdraw(depositReserve.balance, safeSub(deposit.supply, depositBalance), _withdrawAmount);
         assert(ethAmount > 0);
 
         depositReserve.balance = safeSub(depositReserve.balance, ethAmount);
-        deposit.circulation = safeSub(deposit.circulation, _withdrawAmount);
 
         assert(depositToken.transferFrom(_user, this, _withdrawAmount));
         _user.transfer(ethAmount);
 
-        deposit.balance = depositToken.balanceOf(this);
-        deposit.currentCRR = currentCRR;
-        deposit.price = dptPrice;
+        depositBalance = depositToken.balanceOf(this);
+        depositCurrentCRR = currentCRR;
+        depositPrice = dptPrice;
 
-        assert(deposit.balance == (safeSub(deposit.supply, deposit.circulation)));
     // assert(depositReserve.balance == this.value);
 
     // event

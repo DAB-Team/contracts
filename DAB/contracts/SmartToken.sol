@@ -103,14 +103,6 @@ contract SmartToken is ISmartToken, ERC20Token, Owned, TokenHolder {
     */
     function transfer(address _to, uint256 _value) public transfersAllowed returns (bool success) {
         assert(super.transfer(_to, _value));
-
-        // transferring to the contract address destroys tokens
-        if (_to == address(this)) {
-            balanceOf[_to] -= _value;
-            totalSupply -= _value;
-            Destruction(_value);
-        }
-
         return true;
     }
 
@@ -127,14 +119,6 @@ contract SmartToken is ISmartToken, ERC20Token, Owned, TokenHolder {
     */
     function transferFrom(address _from, address _to, uint256 _value) public transfersAllowed returns (bool success) {
         assert(super.transferFrom(_from, _to, _value));
-
-        // transferring to the contract address destroys tokens
-        if (_to == address(this)) {
-            balanceOf[_to] -= _value;
-            totalSupply -= _value;
-            Destruction(_value);
-        }
-
         return true;
     }
 }

@@ -11,10 +11,6 @@ contract DABAgent is Owned, Math{
 
     struct Token {
     uint256 supply;         // total supply = issue - destroy
-    uint256 circulation;    // supply minus those in contract
-    uint256 price;          // price of token
-    uint256 balance;    // virtual balance = (supply-circulation) * price
-    uint256 currentCRR;  // current cash ratio of the token
     bool isSet;                     // used to tell if the mapping element is defined
     }
 

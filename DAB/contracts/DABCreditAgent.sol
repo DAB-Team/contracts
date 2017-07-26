@@ -15,6 +15,10 @@ contract DABCreditAgent is DABAgent{
 
     Reserve public creditReserve;
 
+    uint256 public creditBalance;
+
+    uint256 public creditPrice;
+
     address[] public loanPlanAddresses;
 
     address public depositAgent= 0x0;
@@ -60,42 +64,20 @@ contract DABCreditAgent is DABAgent{
         subCreditToken = _subCreditTokenController.token();
         discreditToken = _discreditTokenController.token();
 
-
     // set token controller
         creditTokenController = _creditTokenController;
         subCreditTokenController = _subCreditTokenController;
         discreditTokenController = _discreditTokenController;
 
     // add credit token
-
-        tokens[creditToken].supply = 0;
-        tokens[creditToken].circulation = 0;
-        tokens[creditToken].price = 0;
-        tokens[creditToken].balance = 0;
-        tokens[creditToken].currentCRR = Decimal(3);
-        tokens[creditToken].isSet = true;
         tokenSet.push(creditToken);
 
     // add subCredit token
 
-        tokens[subCreditToken].supply = 0;
-        tokens[subCreditToken].circulation = 0;
-        tokens[subCreditToken].price = 0;
-        tokens[subCreditToken].balance = 0;
-        tokens[subCreditToken].currentCRR = Decimal(3);
-        tokens[subCreditToken].isSet = true;
         tokenSet.push(subCreditToken);
 
     // add subCredit token
-    // always change
-        tokens[discreditToken].supply = 0;
-    // always change
-        tokens[discreditToken].circulation = 0;
-    // always 0
-        tokens[discreditToken].price = 0;
-        tokens[discreditToken].balance = 0;
-        tokens[discreditToken].currentCRR = 0;
-        tokens[discreditToken].isSet = true;
+
         tokenSet.push(discreditToken);
     }
 
@@ -114,6 +96,17 @@ contract DABCreditAgent is DABAgent{
     function activate()
     ownerOnly
     public {
+        tokens[creditToken].supply = creditToken.totalSupply();
+        tokens[creditToken].isSet = true;
+
+        creditBalance = creditToken.balanceOf(this);
+
+        tokens[subCreditToken].supply = subCreditToken.totalSupply();
+        tokens[subCreditToken].isSet = true;
+
+        tokens[discreditToken].supply = discreditToken.totalSupply();
+        tokens[discreditToken].isSet = true;
+
         creditTokenController.disableTokenTransfers(false);
         subCreditTokenController.disableTokenTransfers(false);
         discreditTokenController.disableTokenTransfers(false);
@@ -247,7 +240,6 @@ add doc
 
         creditTokenController.issueTokens(_user, _issueAmount);
         credit.supply = safeAdd(credit.supply, _issueAmount);
-        credit.circulation = safeAdd(credit.circulation, _issueAmount);
 
     // event
         LogIssue(_user, _ethAmount, _issueAmount);
@@ -271,7 +263,7 @@ add doc
     validAmount(_cashAmount)
     returns (bool success){
         Token storage credit = tokens[creditToken];
-        var (ethAmount, cdtPrice) = formula.cash(creditReserve.balance, safeSub(credit.supply, credit.balance), _cashAmount);
+        var (ethAmount, cdtPrice) = formula.cash(creditReserve.balance, safeSub(credit.supply, creditBalance), _cashAmount);
         assert(ethAmount > 0);
         assert(cdtPrice > 0);
 
@@ -280,11 +272,8 @@ add doc
 
         creditReserve.balance = safeSub(creditReserve.balance, ethAmount);
         credit.supply = safeSub(credit.supply, _cashAmount);
-        credit.circulation = safeSub(credit.circulation, _cashAmount);
-        credit.balance = creditToken.balanceOf(this);
-        credit.price = cdtPrice;
+        creditPrice = cdtPrice;
 
-        assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
     // assert(depositReserve.balance == this.value);
 
     // event
@@ -315,7 +304,7 @@ add doc
         creditTokenController.issueTokens(_loanAgent, _cdtAmount);
         subCreditTokenController.issueTokens(_loanAgent, _sctAmount);
         DAB dab = DAB(owner);
-        assert(dab.deposit.value(_dptReserve)());
+        depositAgent.transfer(_dptReserve);
         _loanAgent.transfer(_ethAmount);
     }
 
@@ -326,10 +315,7 @@ add doc
         creditReserve.balance = safeSub(creditReserve.balance, _ethAmount);
         creditReserve.balance = safeSub(creditReserve.balance, _dptReserve);
 
-        credit.circulation = safeSub(credit.circulation, _loanAmount);
-        credit.balance = creditToken.balanceOf(this);
         credit.supply = safeAdd(credit.supply, _cdtAmount);
-        assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
     // assert(depositReserve.balance == this.value);
 
         subCredit.supply = safeAdd(subCredit.supply, _sctAmount);
@@ -393,15 +379,13 @@ add doc
             assert(creditToken.transfer(_user, cdtAmount));
 
             creditReserve.balance = safeSub(creditReserve.balance, refundETHAmount);
-            credit.circulation = safeAdd(credit.circulation, cdtAmount);
-            credit.balance = safeSub(credit.balance, cdtAmount);
-            assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
+            creditBalance = safeSub(creditBalance, cdtAmount);
             subCredit.supply = safeSub(subCredit.supply, sctAmount);
 
         // assert(depositReserve.balance == this.value);
 
         // event
-            Repay(_user, safeSub(_repayAmount, refundETHAmount), sctAmount, cdtAmount);
+            LogRepay(_user, safeSub(_repayAmount, refundETHAmount), sctAmount, cdtAmount);
             return true;
         }
         else {
@@ -410,9 +394,7 @@ add doc
             subCreditTokenController.destroyTokens(_user, safeSub(sctAmount, refundSCTAmount));
             assert(creditToken.transfer(_user, cdtAmount));
 
-            credit.circulation = safeAdd(credit.circulation, cdtAmount);
-            credit.balance = safeSub(credit.balance, cdtAmount);
-            assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
+            creditBalance = safeSub(creditBalance, cdtAmount);
             subCredit.supply = safeSub(subCredit.supply, safeSub(sctAmount, refundSCTAmount));
 
         // assert(depositReserve.balance == this.value);
@@ -453,15 +435,13 @@ add doc
             assert(creditToken.transfer(_user, cdtAmount));
 
             creditReserve.balance = safeSub(creditReserve.balance, refundETHAmount);
-            credit.circulation = safeAdd(credit.circulation, cdtAmount);
-            credit.balance = safeSub(credit.balance, cdtAmount);
-            assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
+            creditBalance = safeSub(creditBalance, cdtAmount);
             discredit.supply = safeSub(discredit.supply, dctAmount);
 
         // assert(depositReserve.balance == this.value);
 
         // event
-            ToCreditToken(_user, safeSub(_payAmount, refundETHAmount), dctAmount, cdtAmount);
+            LogToCreditToken(_user, safeSub(_payAmount, refundETHAmount), dctAmount, cdtAmount);
             return true;
         }
         else {
@@ -470,9 +450,7 @@ add doc
             discreditTokenController.destroyTokens(_user, safeSub(dctAmount, refundDCTAmount));
             assert(creditToken.transfer(_user, cdtAmount));
 
-            credit.circulation = safeAdd(credit.circulation, cdtAmount);
-            credit.balance = safeSub(credit.balance, cdtAmount);
-            assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
+            creditBalance = safeSub(creditBalance, cdtAmount);
             discredit.supply = safeSub(discredit.supply, safeSub(dctAmount, refundDCTAmount));
 
         // assert(depositReserve.balance == this.value);
@@ -512,11 +490,8 @@ add doc
         discreditTokenController.issueTokens(_user, dctAmount);
 
         credit.supply = safeSub(credit.supply, _sctAmount);
-        credit.circulation = safeSub(credit.circulation, _sctAmount);
-        credit.balance = creditToken.balanceOf(this);
-        credit.price = cdtPrice;
-
-        assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
+        creditBalance = creditToken.balanceOf(this);
+        creditPrice = cdtPrice;
 
         subCredit.supply = safeSub(subCredit.supply, _sctAmount);
 
