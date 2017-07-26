@@ -249,8 +249,6 @@ add doc
         credit.supply = safeAdd(credit.supply, _issueAmount);
         credit.circulation = safeAdd(credit.circulation, _issueAmount);
 
-        creditReserve.balance = safeAdd(creditReserve.balance, _ethAmount);
-
     // event
         LogIssue(_user, _ethAmount, _issueAmount);
 
@@ -277,8 +275,8 @@ add doc
         assert(ethAmount > 0);
         assert(cdtPrice > 0);
 
-        _user.transfer(ethAmount);
         creditTokenController.destroyTokens(_user, _cashAmount);
+        _user.transfer(ethAmount);
 
         creditReserve.balance = safeSub(creditReserve.balance, ethAmount);
         credit.supply = safeSub(credit.supply, _cashAmount);
@@ -394,7 +392,7 @@ add doc
             _user.transfer(refundETHAmount);
             assert(creditToken.transfer(_user, cdtAmount));
 
-            creditReserve.balance = safeAdd(creditReserve.balance, safeSub(_repayAmount, refundETHAmount));
+            creditReserve.balance = safeSub(creditReserve.balance, refundETHAmount);
             credit.circulation = safeAdd(credit.circulation, cdtAmount);
             credit.balance = safeSub(credit.balance, cdtAmount);
             assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
@@ -409,10 +407,9 @@ add doc
         else {
             assert(refundSCTAmount >= 0);
 
-            assert(creditToken.transfer(_user, cdtAmount));
             subCreditTokenController.destroyTokens(_user, safeSub(sctAmount, refundSCTAmount));
+            assert(creditToken.transfer(_user, cdtAmount));
 
-            creditReserve.balance = safeAdd(creditReserve.balance, _repayAmount);
             credit.circulation = safeAdd(credit.circulation, cdtAmount);
             credit.balance = safeSub(credit.balance, cdtAmount);
             assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
@@ -452,10 +449,10 @@ add doc
             assert(refundDCTAmount == 0);
 
             _user.transfer(refundETHAmount);
-            assert(creditToken.transfer(_user, cdtAmount));
             discreditTokenController.destroyTokens(_user, dctAmount);
+            assert(creditToken.transfer(_user, cdtAmount));
 
-            creditReserve.balance = safeAdd(creditReserve.balance, safeSub(_payAmount, refundETHAmount));
+            creditReserve.balance = safeSub(creditReserve.balance, refundETHAmount);
             credit.circulation = safeAdd(credit.circulation, cdtAmount);
             credit.balance = safeSub(credit.balance, cdtAmount);
             assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
@@ -470,10 +467,9 @@ add doc
         else {
             assert(refundDCTAmount >= 0);
 
-            assert(creditToken.transfer(_user, cdtAmount));
             discreditTokenController.destroyTokens(_user, safeSub(dctAmount, refundDCTAmount));
+            assert(creditToken.transfer(_user, cdtAmount));
 
-            creditReserve.balance = safeAdd(creditReserve.balance, _payAmount);
             credit.circulation = safeAdd(credit.circulation, cdtAmount);
             credit.balance = safeSub(credit.balance, cdtAmount);
             assert(credit.balance == (safeSub(credit.supply, credit.circulation)));
@@ -533,5 +529,7 @@ add doc
         return true;
     }
 
-
+    function() payable{
+        creditReserve.balance = safeAdd(creditReserve.balance, msg.value);
+    }
 }

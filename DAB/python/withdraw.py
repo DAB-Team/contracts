@@ -661,11 +661,12 @@ for i in range(0, 3000000):
 
 
         n = 0
-        p = [0 for i in range(100000)]
-        s = [0 for i in range(100000)]
-        while erc20.DPTB.real > 10:
+        p = [0 for i in range(1000000)]
+        s = [0 for i in range(1000000)]
+        while erc20.DPTB.real > 1:
             a = random.random()
-            amount = random.randint(1, int(erc20.max_withdraw * a) + 1)
+            # amount = random.randint(1, int(erc20.max_withdraw * a) + 1)
+            amount = 1
             erc20.withdraw(amount)
             p[n] = erc20.DPTP
             s[n] = erc20.DPTS - erc20.DPTSI

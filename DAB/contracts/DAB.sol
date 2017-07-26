@@ -77,7 +77,6 @@ contract DAB is DABOperationManager{
     payable
     active
     started
-    activeDepositAgent
     validAmount(msg.value) {
         depositAgent.transfer(msg.value);
         assert(depositAgent.deposit(msg.sender, msg.value));
@@ -144,6 +143,7 @@ contract DAB is DABOperationManager{
     active
     activeCreditAgent
     validAmount(msg.value){
+        creditAgent.transfer(msg.value);
         assert(creditAgent.repay(msg.sender, msg.value));
     }
 
@@ -160,6 +160,7 @@ contract DAB is DABOperationManager{
     active
     activeCreditAgent
     validAmount(msg.value){
+        creditAgent.transfer(msg.value);
         assert(creditAgent.toCreditToken(msg.sender, msg.value));
     }
 

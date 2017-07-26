@@ -115,9 +115,9 @@ contract DABDepositAgent is DABAgent{
         deposit.circulation = safeAdd(deposit.circulation, fDPTAmount);
         deposit.currentCRR = currentCRR;
 
-        depositReserve.balance = safeAdd(depositReserve.balance, ethDeposit);
-
         creditAgent.transfer(safeSub(_ethAmount, ethDeposit));
+
+        depositReserve.balance = safeSub(depositReserve.balance, safeSub(_ethAmount, ethDeposit));
 
         assert(creditAgent.issue(_user, safeSub(_ethAmount, ethDeposit), uCDTAmount));
         assert(creditAgent.issue(beneficiary, 0, fCDTAmount));
@@ -144,10 +144,9 @@ contract DABDepositAgent is DABAgent{
     returns (bool success){
         Token storage deposit = tokens[depositToken];
 
-        var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(depositReserve.balance, deposit.supply, safeSub(deposit.supply, deposit.balance), _ethAmount);
+        var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(safeSub(depositReserve.balance, _ethAmount), deposit.supply, safeSub(deposit.supply, deposit.balance), _ethAmount);
 
         if (dptAmount > 0) {
-            depositReserve.balance = safeAdd(depositReserve.balance, _ethAmount);
         // assert(depositReserve.balance == this.value);
             deposit.circulation = safeAdd(deposit.circulation, dptAmount);
             assert(depositToken.transfer(_user, dptAmount));
@@ -187,8 +186,8 @@ contract DABDepositAgent is DABAgent{
         depositReserve.balance = safeSub(depositReserve.balance, ethAmount);
         deposit.circulation = safeSub(deposit.circulation, _withdrawAmount);
 
-        _user.transfer(ethAmount);
         assert(depositToken.transferFrom(_user, this, _withdrawAmount));
+        _user.transfer(ethAmount);
 
         deposit.balance = depositToken.balanceOf(this);
         deposit.currentCRR = currentCRR;
@@ -201,6 +200,10 @@ contract DABDepositAgent is DABAgent{
         LogWithdraw(_user, _withdrawAmount, ethAmount);
         return true;
 
+    }
+
+    function() payable{
+        depositReserve.balance = safeAdd(depositReserve.balance, msg.value);
     }
 
 }
