@@ -37,13 +37,14 @@ contract DABDepositAgent is DABAgent{
     {
     // set DABCreditController
         creditAgent = _creditAgent;
-
-        depositToken = _depositTokenController.token();
-
         depositTokenController = _depositTokenController;
+
+        depositToken = depositTokenController.token();
+
 
     // add deposit token
         tokenSet.push(depositToken);
+
 
     }
 
@@ -51,7 +52,7 @@ contract DABDepositAgent is DABAgent{
     ownerOnly
     public{
         tokens[depositToken].supply = depositToken.totalSupply();
-        tokens[depositToken].isSet = true;
+        tokens[depositToken].isValid = true;
         depositBalance = depositToken.balanceOf(this);
 
         depositTokenController.disableTokenTransfers(false);
@@ -190,6 +191,7 @@ contract DABDepositAgent is DABAgent{
         return true;
 
     }
+
 
 
 }

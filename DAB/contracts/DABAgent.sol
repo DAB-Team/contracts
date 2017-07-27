@@ -8,7 +8,7 @@ contract DABAgent is Owned, Math{
 
     struct Token {
     uint256 supply;         // total supply = issue - destroy
-    bool isSet;                     // used to tell if the mapping element is defined
+    bool isValid;                     // used to tell if the mapping element is defined
     }
 
     string public version = '0.1';
@@ -40,7 +40,7 @@ contract DABAgent is Owned, Math{
 
 // validates a token address - verifies that the address belongs to one of the changeable tokens
     modifier validToken(address _address) {
-        require(tokens[_address].isSet);
+        require(tokens[_address].isValid);
         _;
     }
 

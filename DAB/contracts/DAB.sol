@@ -4,6 +4,9 @@ pragma solidity ^0.4.11;
 import './DABOperationManager.sol';
 import './DABDepositAgent.sol';
 import './DABCreditAgent.sol';
+import './DABWallet.sol';
+import './interfaces/ILoanPlanFormula.sol';
+
 
 /*
     DAB v0.1
@@ -14,8 +17,25 @@ contract DAB is DABOperationManager{
     string public version = '0.1';
     bool public isActive = false;
 
+    struct LoanPlanFormula{
+        bool isValid;
+    }
+
+    struct Wallet{
+        bool isValid;
+    }
+
+    mapping (address => LoanPlanFormula) public loanPlanFormulas;
+
+    mapping (address => Wallet) public wallets;
+
     DABDepositAgent public depositAgent;
     DABCreditAgent public creditAgent;
+
+    ISmartToken public depositToken;
+    ISmartToken public creditToken;
+    ISmartToken public subCreditToken;
+    ISmartToken public discreditToken;
 
     function DAB(
     DABDepositAgent _depositAgent,
@@ -27,6 +47,11 @@ contract DAB is DABOperationManager{
     {
         depositAgent = _depositAgent;
         creditAgent = _creditAgent;
+
+        depositToken = depositAgent.depositToken();
+        creditToken = creditAgent.creditToken();
+        subCreditToken = creditAgent.subCreditToken();
+        discreditToken = creditAgent.discreditToken();
     }
 
 // verifies that an amount is greater than zero
@@ -38,6 +63,18 @@ contract DAB is DABOperationManager{
 // verifies that an amount is greater than zero
     modifier inactive() {
         assert(isActive == false);
+        _;
+    }
+
+// validates a loan plan formula
+    modifier validLoanPlanFormula(address _address) {
+        require(loanPlanFormulas[_address].isValid);
+        _;
+    }
+
+// validates a DAB wallet
+    modifier validWallet(address _address) {
+        require(wallets[_address].isValid);
         _;
     }
 
@@ -68,6 +105,24 @@ contract DAB is DABOperationManager{
         creditAgent.freeze();
         isActive = false;
     }
+
+/**
+    @dev defines a new loan plan
+    can only be called by the owner
+
+    @param _loanPlanFormula         address of the loan plan
+*/
+
+    function addLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
+    public
+    validAddress(_loanPlanFormula)
+    notThis(_loanPlanFormula)
+    ownerOnly
+    {
+        require(!loanPlanFormulas[_loanPlanFormula].isValid); // validate input
+        loanPlanFormulas[_loanPlanFormula].isValid = true;
+    }
+
 
 /**
     @dev deposit ethereum
@@ -116,7 +171,6 @@ contract DAB is DABOperationManager{
     }
 
 
-
 /**
 @dev loan by credit token
 
@@ -124,14 +178,15 @@ contract DAB is DABOperationManager{
 */
 
 
-//    function loan(uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
-//    public
-//    active
-//    activeCreditAgent
-//    validAmount(_loanAmount)
-//    {
-//        assert(creditAgent.loan(msg.sender, _loanAmount, _loanPlanFormula));
-//    }
+    function loan(uint256 _loanAmount)
+    public
+    active
+    activeCreditAgent
+    validAmount(_loanAmount)
+    validWallet(msg.sender)
+    {
+        assert(creditAgent.loan(msg.sender, _loanAmount));
+    }
 
 
 
@@ -139,7 +194,6 @@ contract DAB is DABOperationManager{
 @dev repay by ether
 
 */
-
 
     function repay()
     public
@@ -183,7 +237,34 @@ contract DAB is DABOperationManager{
         assert(creditAgent.toDiscreditToken(msg.sender, _sctAmount));
     }
 
-    function() payable
+
+/**
+@dev create a new DAB wallet with a loan plan
+
+
+@return success
+*/
+    function newDABWallet(ILoanPlanFormula _loanPlanFormula)
+    public
+    active
+    validLoanPlanFormula(_loanPlanFormula){
+        DABWallet wallet = new DABWallet(this, _loanPlanFormula, depositToken, creditToken, subCreditToken, discreditToken, msg.sender);
+        wallets[wallet].isValid = true;
+    }
+
+/**
+@dev set DAB wallet with a loan plan formula
+
+*/
+    function setWalletLoanPlanFormula(DABWallet _wallet, ILoanPlanFormula _loanPlanFormula)
+    public
+    active
+    validWallet(_wallet)
+    validLoanPlanFormula(_loanPlanFormula){
+        _wallet.setLoanPlanFormula(msg.sender, _loanPlanFormula);
+    }
+
+function() payable
     validAmount(msg.value){
         throw;
     }

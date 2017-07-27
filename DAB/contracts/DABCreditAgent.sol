@@ -6,22 +6,15 @@ import './interfaces/ISmartToken.sol';
 import './SmartTokenController.sol';
 import './DABAgent.sol';
 import './Math.sol';
-import './DABLoanAgent.sol';
+import './DABWallet.sol';
 
 contract DABCreditAgent is DABAgent{
-    struct LoanPlan{
-    bool isEnabled;
-    }
 
     uint256 public creditBalance;
 
     uint256 public creditPrice;
 
-    address[] public loanPlanAddresses;
-
     address public depositAgent= 0x0;
-
-    mapping (address => LoanPlan) public loanPlans;
 
     ISmartToken public creditToken;
 
@@ -39,7 +32,7 @@ contract DABCreditAgent is DABAgent{
 
     event LogCash(address _to, uint256 _amountOfCDT, uint256 _amountOfETH);
 
-    event LogLoan(address _to, address _loanAgent, uint256 _amountOfCDT, uint256 _amountOfETH, uint256 _amountOfSCT);
+    event LogLoan(address _loanAgent, uint256 _amountOfCDT, uint256 _amountOfETH, uint256 _amountOfIssueCDT, uint256 _amountOfSCT);
 
     event LogRepay(address _to, uint256 _amountOfETH, uint256 _amountOfSCT, uint256 _amountOfCDT);
 
@@ -85,25 +78,19 @@ contract DABCreditAgent is DABAgent{
         _;
     }
 
-// validates a reserve token address - verifies that the address belongs to one of the reserve tokens
-    modifier validLoanPlanFormula(address _address) {
-        require(loanPlans[_address].isEnabled);
-        _;
-    }
-
     function activate()
     ownerOnly
     public {
         tokens[creditToken].supply = creditToken.totalSupply();
-        tokens[creditToken].isSet = true;
+        tokens[creditToken].isValid = true;
 
         creditBalance = creditToken.balanceOf(this);
 
         tokens[subCreditToken].supply = subCreditToken.totalSupply();
-        tokens[subCreditToken].isSet = true;
+        tokens[subCreditToken].isValid = true;
 
         tokens[discreditToken].supply = discreditToken.totalSupply();
-        tokens[discreditToken].isSet = true;
+        tokens[discreditToken].isValid = true;
 
         creditTokenController.disableTokenTransfers(false);
         subCreditTokenController.disableTokenTransfers(false);
@@ -120,24 +107,6 @@ contract DABCreditAgent is DABAgent{
         isActive = false;
     }
 
-
-/**
-    @dev defines a new loan plan
-    can only be called by the owner
-
-    @param _loanPlanFormula         address of the loan plan
-*/
-
-    function addLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
-    public
-    validAddress(_loanPlanFormula)
-    notThis(_loanPlanFormula)
-    ownerOnly
-    {
-        require(!loanPlans[_loanPlanFormula].isEnabled); // validate input
-        loanPlans[_loanPlanFormula].isEnabled = true;
-        loanPlanAddresses.push(_loanPlanFormula);
-    }
 
 /**
 add doc
@@ -269,9 +238,6 @@ add doc
     returns (bool success){
         Token storage credit = tokens[creditToken];
         var (ethAmount, cdtPrice) = formula.cash(balance, safeSub(credit.supply, creditBalance), _cashAmount);
-        assert(ethAmount > 0);
-        assert(cdtPrice > 0);
-
         creditTokenController.destroyTokens(_user, _cashAmount);
         _user.transfer(ethAmount);
 
@@ -284,84 +250,34 @@ add doc
         return true;
     }
 
-
-    function getLoan(address _user, ILoanPlanFormula _loanPlanFormula)
-    private
-    returns (DABLoanAgent, uint256){
-        Token storage credit = tokens[creditToken];
-        Token storage subCredit = tokens[subCreditToken];
-        var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(safeAdd(credit.supply, subCredit.supply), credit.supply);
-        DAB dab = DAB(owner);
-        DABLoanAgent loanAgent = new DABLoanAgent(dab, creditToken, subCreditToken, discreditToken, _user, loanDays, exemptDays);
-        return (loanAgent, interestRate);
-    }
-
-//    function loanTransact(DABLoanAgent _loanAgent,address _user, uint256 _loanAmount, uint256 _ethAmount, uint256 _dptReserve, uint256 _cdtAmount, uint256 _sctAmount)
-//    private
-//    {
-//    // split the interest to deposit agent and credit agent
-//        assert(creditToken.transferFrom(_user, this, _loanAmount));
-//        creditTokenController.issueTokens(_loanAgent, _cdtAmount);
-//        subCreditTokenController.issueTokens(_loanAgent, _sctAmount);
-//        depositAgent.transfer(_dptReserve);
-//        _loanAgent.transfer(_ethAmount);
-//    }
-
-    function loanAccount(uint256 _ethAmount, uint256 _dptReserve, uint256 _cdtAmount, uint256 _sctAmount)
-    private{
-        Token storage credit = tokens[creditToken];
-        Token storage subCredit = tokens[subCreditToken];
-        balance = safeSub(balance, _ethAmount);
-        balance = safeSub(balance, _dptReserve);
-
-        credit.supply = safeAdd(credit.supply, _cdtAmount);
-        subCredit.supply = safeAdd(subCredit.supply, _sctAmount);
-    }
-
-
-/**
-@dev loan by credit token
-
-@param _loanAmount amount to loan (in credit token)
-
-@return success
-*/
-
-
-    function loan(address _user, uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
+    function loan(address _wallet, uint256 _loanAmount)
     public
     ownerOnly
     active
-    validAddress(_user)
     validAmount(_loanAmount)
-    validLoanPlanFormula(_loanPlanFormula)
-    returns (bool success) {
-
-        var (loanAgent, interestRate) = getLoan(_user, _loanPlanFormula);
+    returns (bool success){
+        DABWallet wallet = DABWallet(_wallet);
+        Token storage credit = tokens[creditToken];
+        Token storage subCredit = tokens[subCreditToken];
+        uint256 interestRate = wallet.interestRate();
 
         var (ethAmount, dptReserve, cdtAmount, sctAmount) = formula.loan(_loanAmount, interestRate);
 
-        assert(creditToken.transferFrom(_user, this, _loanAmount));
-        creditTokenController.issueTokens(loanAgent, cdtAmount);
-        subCreditTokenController.issueTokens(loanAgent, sctAmount);
+        balance = safeSub(balance, ethAmount);
+        balance = safeSub(balance, dptReserve);
+
+        assert(creditToken.transferFrom(wallet, this, _loanAmount));
+        creditTokenController.issueTokens(wallet, cdtAmount);
+        subCreditTokenController.issueTokens(wallet, sctAmount);
         depositAgent.transfer(dptReserve);
-        loanAgent.transfer(ethAmount);
+        wallet.transfer(ethAmount);
 
-//        Token storage credit = tokens[creditToken];
-//        Token storage subCredit = tokens[subCreditToken];
-//        balance = safeSub(balance, ethAmount);
-//        balance = safeSub(balance, dptReserve);
-//        credit.supply = safeAdd(credit.supply, cdtAmount);
-//        subCredit.supply = safeAdd(subCredit.supply, sctAmount);
-
-//        loanTransact(loanAgent, _user, _loanAmount, ethAmount, dptReserve, cdtAmount, sctAmount);
-        loanAccount(ethAmount, dptReserve, cdtAmount, sctAmount);
+        credit.supply = safeAdd(credit.supply, cdtAmount);
+        subCredit.supply = safeAdd(subCredit.supply, sctAmount);
     // event
-        LogLoan(_user, loanAgent, _loanAmount, ethAmount, sctAmount);
+        LogLoan(wallet, _loanAmount, ethAmount, cdtAmount, sctAmount);
         return true;
     }
-
-
 
 /**
 @dev repay by ether

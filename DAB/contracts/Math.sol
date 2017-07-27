@@ -302,7 +302,7 @@ contract Math is SafeMath {
     fixedExp is a 'protected' version of `fixedExpUnsafe`, which
     asserts instead of overflows
 */
-    function fixedExp(uint256 _x) constant returns (uint256) {
+    function fixedExp(uint256 _x) internal constant returns (uint256) {
         assert(_x <= 0x386bfdba29);
         return fixedExpUnsafe(_x);
     }
@@ -413,7 +413,7 @@ contract Math is SafeMath {
  TO complete doc
 */
     function sigmoid(uint256 _a, uint256 _b, uint256 _l, uint256 _d, uint256 _x)
-    constant
+    internal constant
     returns (uint256){
 
         require(0 <= _b);
