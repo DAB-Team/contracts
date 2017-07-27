@@ -238,4 +238,19 @@ contract('DABDepositAgent', (accounts) => {
         }
     });
 
+    it('verifies issue the correct amount of deposit token', async () => {
+        let dab = await initDAB(accounts, true);
+        await dab.deposit({from: web3.eth.accounts[0], value:56200000000000000000, gasLimit: 4000000});
+    });
+
+    it('verifies withdraw the correct amount of deposit token', async () => {
+        let dab = await initDAB(accounts, true);
+        for(var i=0; i<10; i++){
+            await dab.deposit({from: web3.eth.accounts[0], value:56200000000000000000, gasLimit: 4000000});
+        }
+        await depositToken.approve(depositAgentAddress, 1000000000000000000000);
+        await dab.withdraw(100000000000000000000, {from: web3.eth.accounts[0], gasLimit: 4000000});
+    });
+
+
 });

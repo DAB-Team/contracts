@@ -35,7 +35,7 @@ contract DABCreditAgent is DABAgent{
 
     SmartTokenController public discreditTokenController;
 
-    event LogIssue(address _to, uint256 _amountOfETH, uint256 _amountOfCDT);
+    event LogCDTIssue(address _to, uint256 _amountOfETH, uint256 _amountOfCDT);
 
     event LogCash(address _to, uint256 _amountOfCDT, uint256 _amountOfETH);
 
@@ -247,8 +247,8 @@ add doc
         balance = safeAdd(balance, msg.value);
 
     // event
-        LogIssue(_user, msg.value, _uCDTAmount);
-        LogIssue(beneficiary, 0, _fCDTAmount);
+        LogCDTIssue(_user, msg.value, _uCDTAmount);
+        LogCDTIssue(beneficiary, 0, _fCDTAmount);
 
         return true;
     }
