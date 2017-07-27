@@ -43,10 +43,10 @@ module.exports =  async (deployer) =>{
   await deployer.deploy(CreditTokenController, CreditToken.address);
   await deployer.deploy(SubCreditTokenController, SubCreditToken.address);
   await deployer.deploy(DiscreditTokenController, DiscreditToken.address);
-  await deployer.deploy(DABCreditAgent, EasyDABFormula.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address);
+  await deployer.deploy(DABCreditAgent, EasyDABFormula.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
   await deployer.deploy(DABDepositAgent, DABCreditAgent.address, EasyDABFormula.address, DepositTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
 
-  await deployer.deploy(DABOperationManager,  1501119180);
-  await deployer.deploy(DAB, DABDepositAgent.address, DABCreditAgent.address, 1501119180);
+  await deployer.deploy(DABOperationManager,  1501378380);
+  await deployer.deploy(DAB, DABDepositAgent.address, DABCreditAgent.address, 1501378380);
 
 };

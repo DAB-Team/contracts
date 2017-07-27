@@ -23,8 +23,6 @@ contract DABAgent is Owned, Math{
 
     mapping (address => Token) public tokens;   //  token addresses -> token data
 
-
-
     IDABFormula public formula;
 
     function DABAgent(
@@ -75,7 +73,6 @@ contract DABAgent is Owned, Math{
         require(_address != address(this));
         _;
     }
-
 
 /*
     @dev allows the owner to update the formula contract address

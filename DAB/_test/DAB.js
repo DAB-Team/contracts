@@ -3,6 +3,8 @@
 
 
 const EasyDABFormula = artifacts.require('EasyDABFormula.sol');
+const AYearLoanPlanFormula = artifacts.require('AYearLoanPlanFormula.sol');
+const DABWallet = artifacts.require('DABWallet.sol');
 const SmartToken = artifacts.require('SmartToken.sol');
 const SmartTokenController = artifacts.require('SmartTokenController.sol');
 const DABDepositAgent = artifacts.require('DABDepositAgent.sol');
@@ -29,6 +31,9 @@ let discreditTokenController;
 
 let easyDABFormula;
 let easyDABFormulaAddress;
+
+let loanPlanFormula;
+let loanPlanFormulaAddress;
 
 let depositTokenControllerAddress;
 let creditTokenControllerAddress;
@@ -75,6 +80,8 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
     easyDABFormula = await EasyDABFormula.new();
     easyDABFormulaAddress = easyDABFormula.address;
 
+    loanPlanFormula = await AYearLoanPlanFormula.new();
+    loanPlanFormulaAddress = loanPlanFormula.address;
 
     depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
     creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
@@ -146,6 +153,8 @@ contract('DAB', (accounts) => {
         easyDABFormula = await EasyDABFormula.new();
         easyDABFormulaAddress = easyDABFormula.address;
 
+        loanPlanFormula = await AYearLoanPlanFormula.new();
+        loanPlanFormulaAddress = loanPlanFormula.address;
 
         depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
         creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
@@ -206,15 +215,6 @@ contract('DAB', (accounts) => {
         let creditAgent = await dab.creditAgent.call();
         assert.equal(creditAgent, creditAgentAddress);
         
-    });
-
-
-    it('verifies cash the correct amount of credit token', async () => {
-        let dab = await initDAB(accounts, true);
-        for(var i=0; i<10; i++){
-            await dab.deposit({from: web3.eth.accounts[0], value:56200000000000000000, gasLimit: 4000000});
-        }
-        await dab.cash(100000000000000000000, {from: web3.eth.accounts[0], gasLimit: 4000000});
     });
 
 });

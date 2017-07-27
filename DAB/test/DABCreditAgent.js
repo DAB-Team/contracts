@@ -3,6 +3,8 @@
 
 
 const EasyDABFormula = artifacts.require('EasyDABFormula.sol');
+const AYearLoanPlanFormula = artifacts.require('AYearLoanPlanFormula.sol');
+const DABWallet = artifacts.require('DABWallet.sol');
 const SmartToken = artifacts.require('SmartToken.sol');
 const SmartTokenController = artifacts.require('SmartTokenController.sol');
 const DABDepositAgent = artifacts.require('DABDepositAgent.sol');
@@ -30,6 +32,9 @@ let discreditTokenController;
 let easyDABFormula;
 let easyDABFormulaAddress;
 
+let loanPlanFormula;
+let loanPlanFormulaAddress;
+
 let depositTokenControllerAddress;
 let creditTokenControllerAddress;
 let subCreditTokenControllerAddress;
@@ -50,7 +55,7 @@ let dabAddress;
 let beneficiaryAddress = '0x69aa30b306805bd17488ce957d03e3c0213ee9e6';
 
 let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale hasn't started
-let startTimeInProgress = Math.floor(Date.now() / 1000) - 12 * 60 * 60; // ongoing crowdsale
+let startTimeInProgress = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 let startTimeFinished = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 
 
@@ -75,6 +80,8 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
     easyDABFormula = await EasyDABFormula.new();
     easyDABFormulaAddress = easyDABFormula.address;
 
+    loanPlanFormula = await AYearLoanPlanFormula.new();
+    loanPlanFormulaAddress = loanPlanFormula.address;
 
     depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
     creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
@@ -96,7 +103,7 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
     subCreditTokenControllerAddress = subCreditTokenController.address;
     discreditTokenControllerAddress = discreditTokenController.address;
 
-    creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+    creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress);
 
     creditAgentAddress = creditAgent.address;
 
@@ -146,6 +153,8 @@ contract('DABCreditAgent', (accounts) => {
         easyDABFormula = await EasyDABFormula.new();
         easyDABFormulaAddress = easyDABFormula.address;
 
+        loanPlanFormula = await AYearLoanPlanFormula.new();
+        loanPlanFormulaAddress = loanPlanFormula.address;
 
         depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
         creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
@@ -177,7 +186,7 @@ contract('DABCreditAgent', (accounts) => {
         await discreditTokenController.acceptTokenOwnership();
 
 
-        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress);
 
         creditAgentAddress = creditAgent.address;
 
@@ -198,9 +207,18 @@ contract('DABCreditAgent', (accounts) => {
 
     });
 
-
     it('verifies the base storage values after construction', async () => {
         let dab = await generateDefaultDAB();
+        let depositAgent = await dab.depositAgent.call();
+        assert.equal(depositAgent, depositAgentAddress);
+
+        let creditAgent = await dab.creditAgent.call();
+        assert.equal(creditAgent, creditAgentAddress);
+
+    });
+
+    it('verifies the base storage values after construction', async () => {
+        let dab = await initDAB(accounts, true);
         let _easyDABFormulaAddress = await creditAgent.formula.call();
         assert.equal(_easyDABFormulaAddress, easyDABFormulaAddress);
 
@@ -288,5 +306,24 @@ contract('DABCreditAgent', (accounts) => {
         }
     });
 
+
+    it('verifies cash the correct amount of credit token', async () => {
+        let dab = await initDAB(accounts, true);
+        for(var i=0; i<10; i++){
+            await dab.deposit({from: web3.eth.accounts[0], value:56200000000000000000});
+        }
+        await dab.cash(100000000000000000000, {from: web3.eth.accounts[0]});
+    });
+
+    it('verifies loan the correct amount of credit token', async () => {
+        let dab = await initDAB(accounts, true);
+        for(var i=0; i<10; i++){
+            await dab.deposit({from: web3.eth.accounts[0], value:56200000000000000000});
+        }
+        let dabWallet = await dab.newDABWallet();
+        console.log(dabWallet);
+        // await creditToken.transfer(dabWallet.address, 100000000000000000000);
+        // await dabWallet.cash(100000000000000000000);
+    });
 
 });

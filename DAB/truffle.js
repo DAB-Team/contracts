@@ -1,19 +1,22 @@
 module.exports = {
   networks: {
-    testnet: {
-      network_id: '*',
+    rinkeby: {
       host: "localhost",
-      port: 8545   // Different than the default below
+      port: 8545,
+      network_id: 4,
+      from: "0xa91ffe3ff91c784d871a800c291395d9ebb02f59"
     },
+
     main: {
-      network_id: 1,
       host: "localhost",
-      port: 8545   // Different than the default below
+      port: 8545,
+      network_id: 1
     },
+
     testrpc: {
       host: "localhost",
       port: 8545,
-      network_id: "10", // Match any network id
+      network_id: 10,
       gasPrice: 24000000000
     }
   }

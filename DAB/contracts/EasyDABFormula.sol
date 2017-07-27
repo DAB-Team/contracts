@@ -161,6 +161,8 @@ contract EasyDABFormula is IDABFormula, Math {
         _cdtAmount = EtherToFloat(_cdtAmount);
         _interestRate = DecimalToFloat(_interestRate);
         require(_cdtAmount > 0);
+        require(_interestRate > 0);
+        require(_interestRate < Decimal(1));
 
         ethAmount = mul(_cdtAmount, cdtLoanRate);
         uint256 interest = mul(ethAmount, _interestRate);

@@ -5,6 +5,8 @@ import './interfaces/ILoanPlanFormula.sol';
 import './Owned.sol';
 import './SafeMath.sol';
 import './DAB.sol';
+import './DABDepositAgent.sol';
+import './DABCreditAgent.sol';
 
 contract DABWallet is Owned, SafeMath{
     uint256 public balance;
@@ -22,6 +24,8 @@ contract DABWallet is Owned, SafeMath{
 
     DAB public dab;
     ILoanPlanFormula public formula;
+    DABDepositAgent public depositAgent;
+    DABCreditAgent public creditAgent;
     ISmartToken public depositToken;
     ISmartToken public creditToken;
     ISmartToken public subCreditToken;
@@ -31,6 +35,8 @@ contract DABWallet is Owned, SafeMath{
 
     function DABWallet(
     DAB _dab,
+    DABDepositAgent _depositAgent,
+    DABCreditAgent _creditAgent,
     ILoanPlanFormula _formula,
     ISmartToken _depositToken,
     ISmartToken _creditToken,
@@ -38,6 +44,8 @@ contract DABWallet is Owned, SafeMath{
     ISmartToken _discreditToken,
     address _user){
         dab = _dab;
+        depositAgent = _depositAgent;
+        creditAgent = _creditAgent;
         formula = _formula;
         depositToken = _depositToken;
         creditToken = _creditToken;
@@ -90,7 +98,7 @@ contract DABWallet is Owned, SafeMath{
     }
 
     modifier userOnly(){
-        assert(msg.sender == user);
+        require(msg.sender == user);
         _;
     }
 
@@ -113,8 +121,8 @@ contract DABWallet is Owned, SafeMath{
 
     function acceptWalletOwnership()
     public {
+        require(msg.sender == newUser);
         address oldUser = user;
-        assert(msg.sender == newUser);
         user = newUser;
         newUser = 0x0;
         LogTransferWalletOwnership(oldUser, user);
@@ -128,32 +136,6 @@ contract DABWallet is Owned, SafeMath{
         formula = _formula;
     }
 
-    function renewLoanPlan()
-    public
-    userOnly
-    renewable{
-        uint256 cdtSupply = creditToken.totalSupply();
-        uint256 sctSupply = subCreditToken.totalSupply();
-        var (_interestRate, _loanDays, _exemptDays) = formula.getLoanPlan(safeAdd(cdtSupply, sctSupply), cdtSupply);
-        interestRate = _interestRate;
-        loanDays = _loanDays;
-        exemptDays = _exemptDays;
-        needRenew = false;
-        lastRenew = now;
-    }
-
-    function loan(uint256 _loanAmount)
-    public
-    userOnly
-    newLoan
-    validAmount(_loanAmount){
-        uint256 balanceOfCDT = creditToken.balanceOf(this);
-        require(_loanAmount <= balanceOfCDT);
-        needRenew = true;
-        repayStartTime = now + loanDays;
-        repayEndTime = repayStartTime + exemptDays;
-        dab.loan(_loanAmount);
-    }
 
     function depositETH()
     public
@@ -192,6 +174,7 @@ contract DABWallet is Owned, SafeMath{
     validAmount(_amount){
         uint256 balancOfDPT = depositToken.balanceOf(this);
         require(balancOfDPT >= _amount);
+        approve();
         dab.withdraw(_amount);
     }
 
@@ -204,12 +187,59 @@ contract DABWallet is Owned, SafeMath{
         assert(depositToken.transfer(msg.sender, _amount));
     }
 
+    function cash(uint256 _amount)
+    public
+    userOnly
+    validAmount(_amount){
+        uint256 balancOfCDT = creditToken.balanceOf(this);
+        require(balancOfCDT >= _amount);
+        approve();
+        dab.cash(_amount);
+    }
+
+    function cashAll()
+    public
+    userOnly {
+        uint256 balancOfCDT = creditToken.balanceOf(this);
+        approve();
+        dab.cash(balancOfCDT);
+    }
+
+    function renewLoanPlan()
+    public
+    userOnly
+    renewable{
+        uint256 cdtSupply = creditToken.totalSupply();
+        uint256 sctSupply = subCreditToken.totalSupply();
+        var (_interestRate, _loanDays, _exemptDays) = formula.getLoanPlan(safeAdd(cdtSupply, sctSupply), cdtSupply);
+        interestRate = _interestRate;
+        loanDays = _loanDays;
+        exemptDays = _exemptDays;
+        needRenew = false;
+        lastRenew = now;
+    }
+
+    function loan(uint256 _loanAmount)
+    public
+    userOnly
+    newLoan
+    validAmount(_loanAmount){
+        uint256 balanceOfCDT = creditToken.balanceOf(this);
+        require(_loanAmount <= balanceOfCDT);
+        needRenew = true;
+        repayStartTime = now + loanDays;
+        repayEndTime = repayStartTime + exemptDays;
+        approve();
+        dab.loan(_loanAmount);
+    }
+
     function repay(uint256 _amount)
     public
     userOnly
     repayBetween
     validAmount(_amount) {
         balance = safeSub(balance, _amount);
+        approve();
         dab.repay.value(_amount)();
     }
 
@@ -219,6 +249,7 @@ contract DABWallet is Owned, SafeMath{
     repayBetween {
         uint256 amountToRepay = balance;
         balance = 0;
+        approve();
         dab.repay.value(amountToRepay)();
     }
 
@@ -227,6 +258,7 @@ contract DABWallet is Owned, SafeMath{
     userOnly
     afterRepayEnd {
         uint256 balanceOfSCT = subCreditToken.balanceOf(this);
+        approve();
         dab.toDiscreditToken(balanceOfSCT);
     }
 
@@ -235,6 +267,7 @@ contract DABWallet is Owned, SafeMath{
     userOnly {
         uint256 amountToCredit = balance;
         balance = 0;
+        approve();
         dab.toCreditToken.value(amountToCredit)();
     }
 
@@ -253,15 +286,16 @@ contract DABWallet is Owned, SafeMath{
     }
 
     function approve()
-    public
-    userOnly{
+    private {
+        depositToken.approve(depositAgent, 0);
         creditToken.approve(creditAgent, 0);
         subCreditToken.approve(creditAgent, 0);
         discreditToken.approve(creditAgent, 0);
+        uint256 balanceOfDPT = depositToken.balanceOf(this);
         uint256 balanceOfCDT = creditToken.balanceOf(this);
         uint256 balanceOfSCT = subCreditToken.balanceOf(this);
         uint256 balanceOfDCT = discreditToken.balanceOf(this);
-        address creditAgent = dab.creditAgent();
+        depositToken.approve(depositAgent, balanceOfDPT);
         creditToken.approve(creditAgent, balanceOfCDT);
         subCreditToken.approve(creditAgent, balanceOfSCT);
         discreditToken.approve(creditAgent, balanceOfDCT);

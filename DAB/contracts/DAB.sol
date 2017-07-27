@@ -247,9 +247,12 @@ contract DAB is DABOperationManager{
     function newDABWallet(ILoanPlanFormula _loanPlanFormula)
     public
     active
-    validLoanPlanFormula(_loanPlanFormula){
-        DABWallet wallet = new DABWallet(this, _loanPlanFormula, depositToken, creditToken, subCreditToken, discreditToken, msg.sender);
+    validLoanPlanFormula(_loanPlanFormula)
+    returns (DABWallet){
+        DABWallet wallet = new DABWallet(this, depositAgent, creditAgent, _loanPlanFormula, depositToken, creditToken, subCreditToken, discreditToken, msg.sender);
+        wallet.renewLoanPlan();
         wallets[wallet].isValid = true;
+        return wallet;
     }
 
 /**
