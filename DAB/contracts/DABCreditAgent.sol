@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.11;
 
 import './interfaces/ILoanPlanFormula.sol';
 import './interfaces/IDABFormula.sol';
@@ -284,17 +284,17 @@ add doc
         return true;
     }
 
-//
-//    function getLoan(address _user, ILoanPlanFormula _loanPlanFormula)
-//    private
-//    returns (DABLoanAgent, uint256){
-//        Token storage credit = tokens[creditToken];
-//        Token storage subCredit = tokens[subCreditToken];
-//        var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(safeAdd(credit.supply, subCredit.supply), credit.supply);
-//        DAB dab = DAB(owner);
-//        DABLoanAgent loanAgent = new DABLoanAgent(dab, creditToken, subCreditToken, discreditToken, _user, loanDays, exemptDays);
-//        return (loanAgent, interestRate);
-//    }
+
+    function getLoan(address _user, ILoanPlanFormula _loanPlanFormula)
+    private
+    returns (DABLoanAgent, uint256){
+        Token storage credit = tokens[creditToken];
+        Token storage subCredit = tokens[subCreditToken];
+        var (interestRate, loanDays, exemptDays) = _loanPlanFormula.getLoanPlan(safeAdd(credit.supply, subCredit.supply), credit.supply);
+        DAB dab = DAB(owner);
+        DABLoanAgent loanAgent = new DABLoanAgent(dab, creditToken, subCreditToken, discreditToken, _user, loanDays, exemptDays);
+        return (loanAgent, interestRate);
+    }
 
 //    function loanTransact(DABLoanAgent _loanAgent,address _user, uint256 _loanAmount, uint256 _ethAmount, uint256 _dptReserve, uint256 _cdtAmount, uint256 _sctAmount)
 //    private
@@ -306,17 +306,17 @@ add doc
 //        depositAgent.transfer(_dptReserve);
 //        _loanAgent.transfer(_ethAmount);
 //    }
-//
-//    function loanAccount(uint256 _ethAmount, uint256 _dptReserve, uint256 _cdtAmount, uint256 _sctAmount)
-//    private{
-//        Token storage credit = tokens[creditToken];
-//        Token storage subCredit = tokens[subCreditToken];
-//        balance = safeSub(balance, _ethAmount);
-//        balance = safeSub(balance, _dptReserve);
-//
-//        credit.supply = safeAdd(credit.supply, _cdtAmount);
-//        subCredit.supply = safeAdd(subCredit.supply, _sctAmount);
-//    }
+
+    function loanAccount(uint256 _ethAmount, uint256 _dptReserve, uint256 _cdtAmount, uint256 _sctAmount)
+    private{
+        Token storage credit = tokens[creditToken];
+        Token storage subCredit = tokens[subCreditToken];
+        balance = safeSub(balance, _ethAmount);
+        balance = safeSub(balance, _dptReserve);
+
+        credit.supply = safeAdd(credit.supply, _cdtAmount);
+        subCredit.supply = safeAdd(subCredit.supply, _sctAmount);
+    }
 
 
 /**
@@ -328,23 +328,38 @@ add doc
 */
 
 
-//    function loan(address _user, uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
-//    public
-//    ownerOnly
-//    active
-//    validAddress(_user)
-//    validAmount(_loanAmount)
-//    validLoanPlanFormula(_loanPlanFormula)
-//    returns (bool success) {
-//
-//        var (loanAgent, interestRate) = getLoan(_user, _loanPlanFormula);
-//        var (ethAmount, dptReserve, cdtAmount, sctAmount) = formula.loan(_loanAmount, interestRate);
+    function loan(address _user, uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
+    public
+    ownerOnly
+    active
+    validAddress(_user)
+    validAmount(_loanAmount)
+    validLoanPlanFormula(_loanPlanFormula)
+    returns (bool success) {
+
+        var (loanAgent, interestRate) = getLoan(_user, _loanPlanFormula);
+
+        var (ethAmount, dptReserve, cdtAmount, sctAmount) = formula.loan(_loanAmount, interestRate);
+
+        assert(creditToken.transferFrom(_user, this, _loanAmount));
+        creditTokenController.issueTokens(loanAgent, cdtAmount);
+        subCreditTokenController.issueTokens(loanAgent, sctAmount);
+        depositAgent.transfer(dptReserve);
+        loanAgent.transfer(ethAmount);
+
+//        Token storage credit = tokens[creditToken];
+//        Token storage subCredit = tokens[subCreditToken];
+//        balance = safeSub(balance, ethAmount);
+//        balance = safeSub(balance, dptReserve);
+//        credit.supply = safeAdd(credit.supply, cdtAmount);
+//        subCredit.supply = safeAdd(subCredit.supply, sctAmount);
+
 //        loanTransact(loanAgent, _user, _loanAmount, ethAmount, dptReserve, cdtAmount, sctAmount);
-//        loanAccount(ethAmount, dptReserve, cdtAmount, sctAmount);
-//    // event
-//        LogLoan(_user, loanAgent, _loanAmount, ethAmount, sctAmount);
-//        return true;
-//    }
+        loanAccount(ethAmount, dptReserve, cdtAmount, sctAmount);
+    // event
+        LogLoan(_user, loanAgent, _loanAmount, ethAmount, sctAmount);
+        return true;
+    }
 
 
 

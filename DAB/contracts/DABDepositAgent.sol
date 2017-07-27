@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.11;
 
 import './interfaces/IDABFormula.sol';
 import './SmartTokenController.sol';

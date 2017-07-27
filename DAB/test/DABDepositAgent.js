@@ -50,7 +50,7 @@ let dabAddress;
 let beneficiaryAddress = '0x69aa30b306805bd17488ce957d03e3c0213ee9e6';
 
 let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale hasn't started
-let startTimeInProgress = Math.floor(Date.now() / 1000) - 12 * 60 * 60; // ongoing crowdsale
+let startTimeInProgress = Math.floor(Date.now() / 1000) - 18 * 24 * 60 * 60; // ongoing crowdsale
 let startTimeFinished = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 
 
