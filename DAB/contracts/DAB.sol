@@ -78,8 +78,11 @@ contract DAB is DABOperationManager{
     active
     started
     validAmount(msg.value) {
-//        depositAgent.transfer(msg.value);
-        assert(depositAgent.deposit.value(msg.value)(msg.sender));
+        if(now > depositAgentActivationTime){
+            assert(depositAgent.deposit.value(msg.value)(msg.sender, true));
+        }else{
+            assert(depositAgent.deposit.value(msg.value)(msg.sender, false));
+        }
 
     }
 
@@ -183,11 +186,5 @@ contract DAB is DABOperationManager{
     function() payable
     validAmount(msg.value){
         throw;
-    }
-
-    function pay()
-    payable
-    validAmount(msg.value){
-
     }
 }

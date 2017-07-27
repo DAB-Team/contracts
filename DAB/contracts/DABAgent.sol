@@ -15,17 +15,26 @@ contract DABAgent is Owned, Math{
 
     bool public isActive = false;
 
+    uint256 public balance;
+
+    address public beneficiary = 0x0;              // address to receive all ether contributions
+
     address[] public tokenSet;
 
     mapping (address => Token) public tokens;   //  token addresses -> token data
 
-    uint256 public balance;
+
 
     IDABFormula public formula;
 
-    function DABAgent(IDABFormula _formula){
+    function DABAgent(
+    IDABFormula _formula,
+    address _beneficiary)
+    validAddress(_formula)
+    validAddress(_beneficiary){
         formula = _formula;
         balance = 0;
+        beneficiary = _beneficiary;
     }
 
 

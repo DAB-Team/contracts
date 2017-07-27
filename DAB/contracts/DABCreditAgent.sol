@@ -51,11 +51,12 @@ contract DABCreditAgent is DABAgent{
     IDABFormula _formula,
     SmartTokenController _creditTokenController,
     SmartTokenController _subCreditTokenController,
-    SmartTokenController _discreditTokenController)
+    SmartTokenController _discreditTokenController,
+    address _beneficiary)
     validAddress(_creditTokenController)
     validAddress(_subCreditTokenController)
     validAddress(_discreditTokenController)
-    DABAgent(_formula){
+    DABAgent(_formula, _beneficiary){
 
     // set token
         creditToken = _creditTokenController.token();
@@ -76,7 +77,6 @@ contract DABCreditAgent is DABAgent{
     // add subCredit token
         tokenSet.push(discreditToken);
 
-        balance = 0;
     }
 
 // validates an address - currently only checks that it isn't null
@@ -222,27 +222,33 @@ add doc
 /**
 @dev buys the token by depositing one of its reserve tokens
 
-@param _issueAmount  amount to issue (in the reserve token)
+@param _uCDTAmount  amount to issue to user (in the reserve token)
+
+@param _fCDTAmount  amount to issue to beneficiary (in the reserve token)
 
 @return success
 */
-    function issue(address _user, uint256 _ethAmount, uint256 _issueAmount)
+    function issue(address _user, uint256 _uCDTAmount, uint256 _fCDTAmount)
     public
     payable
     DepositAgentOnly
     active
     validAddress(_user)
-    validAmount(_ethAmount)
-    validAmount(_issueAmount)
+    validAmount(_uCDTAmount)
+    validAmount(_fCDTAmount)
+    validAmount(msg.value)
     returns (bool success) {
         Token storage credit = tokens[creditToken];
 
-        creditTokenController.issueTokens(_user, _issueAmount);
-        credit.supply = safeAdd(credit.supply, _issueAmount);
+        creditTokenController.issueTokens(_user, _uCDTAmount);
+        creditTokenController.issueTokens(beneficiary, _fCDTAmount);
+        credit.supply = safeAdd(credit.supply, _uCDTAmount);
+        credit.supply = safeAdd(credit.supply, _fCDTAmount);
         balance = safeAdd(balance, msg.value);
 
     // event
-        LogIssue(_user, _ethAmount, _issueAmount);
+        LogIssue(_user, msg.value, _uCDTAmount);
+        LogIssue(beneficiary, 0, _fCDTAmount);
 
         return true;
     }

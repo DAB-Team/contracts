@@ -50,7 +50,7 @@ let dabAddress;
 let beneficiaryAddress = '0x69aa30b306805bd17488ce957d03e3c0213ee9e6';
 
 let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale hasn't started
-let startTimeInProgress = Math.floor(Date.now() / 1000) - 15 * 60 * 60; // ongoing crowdsale
+let startTimeInProgress = Math.floor(Date.now() / 1000) - 7 * 60 * 60; // ongoing crowdsale
 let startTimeFinished = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 
 
@@ -96,7 +96,7 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
     subCreditTokenControllerAddress = subCreditTokenController.address;
     discreditTokenControllerAddress = discreditTokenController.address;
 
-    creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+    creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress);
 
     creditAgentAddress = creditAgent.address;
 
@@ -177,7 +177,7 @@ contract('DAB', (accounts) => {
         await discreditTokenController.acceptTokenOwnership();
 
 
-        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress);
 
         creditAgentAddress = creditAgent.address;
 
@@ -210,9 +210,7 @@ contract('DAB', (accounts) => {
 
     it('verifies issue the correct amount of deposit token', async () => {
         let dab = await initDAB(accounts, true);
-        // await dab.transfer(100);
-        // await dab.pay({from:web3.eth.accounts[0], value:1000000});
-        await dab.deposit({from:web3.eth.accounts[0], value:1000});
+        await dab.deposit({from:web3.eth.accounts[0], value:56200000000000000000, gasLimit: 4000000});
     });
 
 

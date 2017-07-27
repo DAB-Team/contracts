@@ -96,7 +96,7 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
     subCreditTokenControllerAddress = subCreditTokenController.address;
     discreditTokenControllerAddress = discreditTokenController.address;
 
-    creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+    creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress);
 
     creditAgentAddress = creditAgent.address;
 
@@ -177,7 +177,7 @@ contract('DABDepositAgent', (accounts) => {
         await discreditTokenController.acceptTokenOwnership();
 
 
-        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress);
 
         creditAgentAddress = creditAgent.address;
 

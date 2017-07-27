@@ -13,8 +13,6 @@ contract DABDepositAgent is DABAgent{
 
     uint256 public depositCurrentCRR;
 
-    address public beneficiary = 0x0;              // address to receive all ether contributions
-
     ISmartToken public depositToken;
 
     SmartTokenController public depositTokenController;
@@ -34,10 +32,8 @@ contract DABDepositAgent is DABAgent{
     SmartTokenController _depositTokenController,
     address _beneficiary)
     validAddress(_creditAgent)
-    validAddress(_formula)
     validAddress(_depositTokenController)
-    validAddress(_beneficiary)
-    DABAgent(_formula)
+    DABAgent(_formula, _beneficiary)
     {
     // set DABCreditController
         creditAgent = _creditAgent;
@@ -45,8 +41,6 @@ contract DABDepositAgent is DABAgent{
         depositToken = _depositTokenController.token();
 
         depositTokenController = _depositTokenController;
-
-        beneficiary = _beneficiary;
 
     // add deposit token
         tokenSet.push(depositToken);
@@ -114,16 +108,13 @@ contract DABDepositAgent is DABAgent{
         deposit.supply = safeAdd(deposit.supply, uDPTAmount);
         deposit.supply = safeAdd(deposit.supply, fDPTAmount);
         depositCurrentCRR = currentCRR;
-
         balance = safeSub(balance, safeSub(_ethAmount, ethDeposit));
 
-        assert(creditAgent.issue.value(safeSub(_ethAmount, ethDeposit))(_user, safeSub(_ethAmount, ethDeposit), uCDTAmount));
-        assert(creditAgent.issue(beneficiary, 0, fCDTAmount));
+        assert(creditAgent.issue.value(safeSub(_ethAmount, ethDeposit))(_user, uCDTAmount, fCDTAmount));
 
     // event
         LogIssue(_user, ethDeposit, uDPTAmount);
         LogIssue(beneficiary, 0, fDPTAmount);
-
 
     // issue new funds to the caller in the smart token
         return true;
@@ -133,7 +124,7 @@ contract DABDepositAgent is DABAgent{
 /**
     @dev deposit ethereum
 */
-    function deposit(address _user)
+    function deposit(address _user, bool _dptActive)
     public
     payable
     ownerOnly
@@ -141,26 +132,36 @@ contract DABDepositAgent is DABAgent{
     validAddress(_user)
     validAmount(msg.value)
     returns (bool success){
-        Token storage deposit = tokens[depositToken];
 
-        var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(balance, deposit.supply, safeSub(deposit.supply, depositBalance), msg.value);
+        if(_dptActive){
+            Token storage deposit = tokens[depositToken];
 
-        balance = safeAdd(balance, msg.value);
+            var (dptAmount, remainEther, currentCRR, dptPrice) = formula.deposit(balance, deposit.supply, safeSub(deposit.supply, depositBalance), msg.value);
 
-        if (dptAmount > 0) {
-            assert(depositToken.transfer(_user, dptAmount));
-            depositBalance = depositToken.balanceOf(this);
-            depositCurrentCRR = currentCRR;
-            depositPrice = dptPrice;
-        // event
-            LogDeposit(_user, msg.value, dptAmount);
+            balance = safeAdd(balance, msg.value);
 
+            if (dptAmount > 0) {
+                assert(depositToken.transfer(_user, dptAmount));
+                depositBalance = depositToken.balanceOf(this);
+                depositCurrentCRR = currentCRR;
+                depositPrice = dptPrice;
+            // event
+                LogDeposit(_user, msg.value, dptAmount);
+
+            }
+
+            if (remainEther > 0) {
+                assert(issue(_user, remainEther));
+            }
+            return true;
+        }else{
+            balance = safeAdd(balance, msg.value);
+            assert(issue(_user, msg.value));
+            return true;
         }
 
-        if (remainEther > 0) {
-            assert(issue(_user, remainEther));
-        }
-        return true;
+        return false;
+
     }
 
 
