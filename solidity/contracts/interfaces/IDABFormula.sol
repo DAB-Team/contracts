@@ -2,7 +2,7 @@ pragma solidity ^0.4.11;
 
 
 /*
-Interface of DAB Formula
+Interface of solidity Formula
 contain a,b,l,d and formula
 receives supply of DPT returns CRR
 

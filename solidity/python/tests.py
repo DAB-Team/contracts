@@ -1,8 +1,8 @@
 import os
 import random
 
-from DAB.python.dabformula import EasyDABFormula as Formula
-from DAB.python.loanplanformula import HalfAYearLoanPlanFormula
+from solidity.python.dabformula import EasyDABFormula as Formula
+from solidity.python.loanplanformula import HalfAYearLoanPlanFormula
 
 formula = Formula()
 

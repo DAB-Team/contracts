@@ -1,7 +1,7 @@
-from DAB.python.dabformula import EasyDABFormula as Formula
-from DAB.python.dabformula import _sigmoid as _sigmoid
-from DAB.python.dabformula import sigmoid as sigmoid
-import DAB.python.solmath as math
+from solidity.python.dabformula import EasyDABFormula as Formula
+from solidity.python.dabformula import _sigmoid as _sigmoid
+from solidity.python.dabformula import sigmoid as sigmoid
+import solidity.python.solmath as math
 import cmath
 formula = Formula()
 # udpt_expect, ucdt_expect, fdpt_expect, fcdt_expect, crr_expect = formula._issue(30000000000000000570425344,30000000000000000000)

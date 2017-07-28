@@ -491,17 +491,17 @@ def plot_dpt(e):
     y1 = [1 for i in range(e.issuer)]
     # plot deposit log
     p1 = plot.plot(x, crr)
-    # p2 = plot.plot(x, ratio)
+    p2 = plot.plot(x, ratio)
     p3 = plot.plot(x, y1)
     p4 = plot.plot(x, ip)
     p5 = plot.plot(x, p)
-    # p6 = plot.plot(x, value1)
-    # plot.show(p1)
-    # plot.show(p2)
-    # plot.show(p3)
-    # plot.show(p4)
-    # plot.show(p5)
-    # plot.show(p6)
+    p6 = plot.plot(x, value1)
+    plot.show(p1)
+    plot.show(p2)
+    plot.show(p3)
+    plot.show(p4)
+    plot.show(p5)
+    plot.show(p6)
 
 
 def test_constant_deposit_withdraw(e, a):
@@ -538,7 +538,7 @@ def random_deposit(e, a):
     :param a: random action seed
     :return:
     """
-    amount = random.randint(1, int(e.max_deposit) * a+1)
+    amount = random.randint(1, int(e.max_deposit)+1)
     e.deposit(amount)
 
 
@@ -549,7 +549,7 @@ def random_withdraw(e, a):
     :param a: random action seed
     :return:
     """
-    amount = random.randint(1, int(e.max_withdraw) * a+1)
+    amount = random.randint(1, int(e.max_withdraw)+1)
     e.withdraw(amount)
 
 
@@ -617,7 +617,7 @@ def random_cdt(e, a, loan, interest):
     if e.CDTS.real < 1000:
         exit(0)
 
-# create DAB contract
+# create solidity contract
 erc20 = ERC20()
 # start deposit
 erc20.start_deposit()
@@ -658,25 +658,9 @@ for i in range(0, 3000000):
         # activate CDT if not being activated
         if not erc20.is_cdt_active:
             erc20.activate_cdt()
-
-
-        n = 0
-        p = [0 for i in range(1000000)]
-        s = [0 for i in range(1000000)]
-        while erc20.DPTB.real > 1:
-            a = random.random()
-            # amount = random.randint(1, int(erc20.max_withdraw * a) + 1)
-            amount = 1
-            erc20.withdraw(amount)
-            p[n] = erc20.DPTP
-            s[n] = erc20.DPTS - erc20.DPTSI
-            n += 1
-        p = [p[i] for i in range(n)]
-        s = [s[i] for i in range(n)]
         plot_dpt(erc20)
-        a = plot.plot(s, p)
-        plot.show(a)
         break
+
     else:
         # random initial issue process and 2 weeks after activation of DPT contract
         random_dpt(erc20, random.random(), 1 / 3)

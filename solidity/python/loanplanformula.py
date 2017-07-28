@@ -1,5 +1,5 @@
 import cmath
-import DAB.python.solmath as math
+import solidity.python.solmath as math
 
 
 def sigmoid(a, b, l, d, x):

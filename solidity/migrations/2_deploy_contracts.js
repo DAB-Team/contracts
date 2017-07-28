@@ -49,28 +49,26 @@ module.exports =  async (deployer, network) =>{
     await DepositToken.deployed().then(function(instance) {
         instance.transferOwnership(DepositTokenController.address);
     });
-    await DepositTokenController.deployed().then(function(instance) {
-        instance.acceptTokenOwnership();
-    });
-
     await CreditToken.deployed().then(function(instance) {
         instance.transferOwnership(CreditTokenController.address);
     });
-    await CreditTokenController.deployed().then(function(instance) {
-        instance.acceptTokenOwnership();
-    });
-
     await SubCreditToken.deployed().then(function(instance) {
         instance.transferOwnership(SubCreditTokenController.address);
     });
-    await SubCreditTokenController.deployed().then(function(instance) {
-        instance.acceptTokenOwnership();
-    });
-
     await DiscreditToken.deployed().then(function(instance) {
         instance.transferOwnership(DiscreditTokenController.address);
     });
-    await DiscreditTokenController.deployed().then(function(instance) {
+
+    DepositTokenController.deployed().then(function(instance) {
+        instance.acceptTokenOwnership();
+    });
+    CreditTokenController.deployed().then(function(instance) {
+        instance.acceptTokenOwnership();
+    });
+    SubCreditTokenController.deployed().then(function(instance) {
+        instance.acceptTokenOwnership();
+    });
+    DiscreditTokenController.deployed().then(function(instance) {
         instance.acceptTokenOwnership();
     });
 
@@ -78,28 +76,26 @@ module.exports =  async (deployer, network) =>{
     await DepositTokenController.deployed().then(function(instance) {
         instance.transferOwnership(DABDepositAgent.address);
     });
-    await DABDepositAgent.deployed().then(function(instance) {
-        instance.acceptDepositTokenControllerOwnership();
-    });
-
     await CreditTokenController.deployed().then(function(instance) {
         instance.transferOwnership(DABCreditAgent.address);
     });
-    await DABCreditAgent.deployed().then(function(instance) {
-        instance.acceptCreditTokenControllerOwnership();
-    });
-
     await SubCreditTokenController.deployed().then(function(instance) {
         instance.transferOwnership(DABCreditAgent.address);
     });
-    await DABCreditAgent.deployed().then(function(instance) {
-        instance.acceptSubCreditTokenControllerOwnership();
-    });
-
     await DiscreditTokenController.deployed().then(function(instance) {
         instance.transferOwnership(DABCreditAgent.address);
     });
-    await DABCreditAgent.deployed().then(function(instance) {
+
+    DABDepositAgent.deployed().then(function(instance) {
+        instance.acceptDepositTokenControllerOwnership();
+    });
+    DABCreditAgent.deployed().then(function(instance) {
+        instance.acceptCreditTokenControllerOwnership();
+    });
+    DABCreditAgent.deployed().then(function(instance) {
+        instance.acceptSubCreditTokenControllerOwnership();
+    });
+    DABCreditAgent.deployed().then(function(instance) {
         instance.acceptDiscreditTokenControllerOwnership();
     });
 
@@ -114,18 +110,18 @@ module.exports =  async (deployer, network) =>{
         await DABDepositAgent.deployed().then(function(instance) {
             instance.transferOwnership(DAB.address);
         });
-        await DAB.deployed().then(function(instance) {
+        DAB.deployed().then(function(instance) {
             instance.acceptDepositAgentOwnership();
         });
 
         await DABCreditAgent.deployed().then(function(instance) {
             instance.transferOwnership(DAB.address);
         });
-        await DAB.deployed().then(function(instance) {
+        DAB.deployed().then(function(instance) {
             instance.acceptCreditAgentOwnership();
         });
 
-        await DAB.deployed().then(function(instance) {
+        DAB.deployed().then(function(instance) {
             instance.activate();
         });
 
@@ -137,18 +133,18 @@ module.exports =  async (deployer, network) =>{
         await DABDepositAgent.deployed().then(function(instance) {
             instance.transferOwnership(TestDAB.address);
         });
-        await TestDAB.deployed().then(function(instance) {
+        TestDAB.deployed().then(function(instance) {
             instance.acceptDepositAgentOwnership();
         });
 
         await DABCreditAgent.deployed().then(function(instance) {
             instance.transferOwnership(TestDAB.address);
         });
-        await TestDAB.deployed().then(function(instance) {
+        TestDAB.deployed().then(function(instance) {
             instance.acceptCreditAgentOwnership();
         });
 
-        await TestDAB.deployed().then(function(instance) {
+        TestDAB.deployed().then(function(instance) {
             instance.activate();
         });
     }

@@ -82,6 +82,8 @@ class ERC20(object):
         self.ratio = [1 for i in range(self.size)]          # Log Profit Ratio for Each Issuer just after Issuing
         self.crr = [ 0 for i in range(self.size) ]          # Log CRR Curve in the Process
         self.dpt = [ 0 for i in range(self.size) ]          # Log the amount of DPT Issued to Issuers
+        self.dptb = [ 0 for i in range(self.size) ]          # Log the reserve ETH balance of DPT
+        self.dpts = [ 0 for i in range(self.size) ]          # Log the supply of DPT
         self.cdt = [ 0 for i in range(self.size) ]          # Log the amount fo CDT Issued to Issuers
         self.e = [ 0 for i in range(self.size) ]            # Log the amount of ether for each Issuer
         self.issuer = 0      # Issuer Index
@@ -144,6 +146,8 @@ class ERC20(object):
             self.x[self.issuer] = self.DPTS - dpt/2
             self.crr[self.issuer] = (self.DPT_CRR + crrpre )/2
             self.dpt[self.issuer] = udpt
+            self.dptb[self.issuer] = self.DPTB
+            self.dpts[self.issuer] = self.DPTS
             self.cdt[self.issuer] = ucdt
             self.e[self.issuer] = ether
             self.issuer += 1
@@ -479,7 +483,7 @@ def plot_dpt(e):
     :return:
     """
     ip = [  e.ip[i] / e.DPTIP for i in range(e.issuer)]
-    p = [ e.p[i] / e.DPTIP for i in range(e.issuer)]
+    p = [ e.dptb[i] / (e.dpts[i] * e.crr[i]) for i in range(e.issuer)]
     ratio = [ e.ratio[i] for i in range(e.issuer)]
     value1 = [ (e.dpt[0]*e.p[i]+e.cdt[0]*e.CDTIP)/e.e[0] for i in range(e.issuer)]
     crr = [ e.crr[i] for i in range(e.issuer)]
@@ -487,17 +491,17 @@ def plot_dpt(e):
     y1 = [1 for i in range(e.issuer)]
     # plot deposit log
     p1 = plot.plot(x, crr)
-    p2 = plot.plot(x, ratio)
+    # p2 = plot.plot(x, ratio)
     p3 = plot.plot(x, y1)
     p4 = plot.plot(x, ip)
     p5 = plot.plot(x, p)
-    p6 = plot.plot(x, value1)
-    plot.show(p1)
-    plot.show(p2)
-    plot.show(p3)
-    plot.show(p4)
-    plot.show(p5)
-    plot.show(p6)
+    # p6 = plot.plot(x, value1)
+    # plot.show(p1)
+    # plot.show(p2)
+    # plot.show(p3)
+    # plot.show(p4)
+    # plot.show(p5)
+    # plot.show(p6)
 
 
 def test_constant_deposit_withdraw(e, a):
@@ -534,7 +538,7 @@ def random_deposit(e, a):
     :param a: random action seed
     :return:
     """
-    amount = random.randint(1, int(e.max_deposit)+1)
+    amount = random.randint(1, int(e.max_deposit) * a+1)
     e.deposit(amount)
 
 
@@ -545,7 +549,7 @@ def random_withdraw(e, a):
     :param a: random action seed
     :return:
     """
-    amount = random.randint(1, int(e.max_withdraw)+1)
+    amount = random.randint(1, int(e.max_withdraw) * a+1)
     e.withdraw(amount)
 
 
@@ -613,16 +617,16 @@ def random_cdt(e, a, loan, interest):
     if e.CDTS.real < 1000:
         exit(0)
 
-# create DAB contract
+# create solidity contract
 erc20 = ERC20()
 # start deposit
 erc20.start_deposit()
 # random DPT action after activation of DPT contract, simulate 2 weeks afer activation of DPT contract
-run = 50000
+run = 500000
 # steps of random CDT action after activation of CDT contract
 run_test = 15000
 # set log switch
-erc20.log = erc20.log_cdt
+erc20.log = 0
 
 
 def test_cdt(e, a):
@@ -654,18 +658,28 @@ for i in range(0, 3000000):
         # activate CDT if not being activated
         if not erc20.is_cdt_active:
             erc20.activate_cdt()
-        # has remaining test step for CDT contract
-        if run_test > 0:
-            test_cdt(erc20, random.random())
-            # time.sleep(2)
-            run_test -= 1
-        else:
-            break
 
+
+        n = 0
+        p = [0 for i in range(1000000)]
+        s = [0 for i in range(1000000)]
+        while erc20.DPTB.real > 1:
+            a = random.random()
+            # amount = random.randint(1, int(erc20.max_withdraw * a) + 1)
+            amount = 1
+            erc20.withdraw(amount)
+            p[n] = erc20.DPTP
+            s[n] = erc20.DPTS - erc20.DPTSI
+            n += 1
+        p = [p[i] for i in range(n)]
+        s = [s[i] for i in range(n)]
+        plot_dpt(erc20)
+        a = plot.plot(s, p)
+        plot.show(a)
+        break
     else:
         # random initial issue process and 2 weeks after activation of DPT contract
         random_dpt(erc20, random.random(), 1 / 3)
-        # log DPT and CDT
         # log_dpt(erc20)
         # log_cdt(erc20)
         run -= 1

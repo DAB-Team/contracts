@@ -10,7 +10,7 @@ import './interfaces/ILoanPlanFormula.sol';
 
 
 /*
-    DAB v0.1
+    solidity v0.1
 
 */
 contract DAB is DABOperationManager{
@@ -73,7 +73,7 @@ contract DAB is DABOperationManager{
         _;
     }
 
-// validates a DAB wallet
+// validates a solidity wallet
     modifier validWallet(address _address) {
         require(wallets[_address].isValid);
         _;
@@ -287,7 +287,7 @@ contract DAB is DABOperationManager{
 
 
 /**
-@dev create a new DAB wallet with a loan plan
+@dev create a new solidity wallet with a loan plan
 
 
 @return success
@@ -304,7 +304,7 @@ contract DAB is DABOperationManager{
     }
 
 /**
-@dev set DAB wallet with a loan plan formula
+@dev set solidity wallet with a loan plan formula
 
 */
     function setWalletLoanPlanFormula(DABWallet _wallet, ILoanPlanFormula _loanPlanFormula)

@@ -35,25 +35,23 @@ contract DABDepositAgent is DABAgent{
     validAddress(_depositTokenController)
     DABAgent(_formula, _beneficiary)
     {
-    // set DABCreditController
         creditAgent = _creditAgent;
+
         depositTokenController = _depositTokenController;
 
         depositToken = depositTokenController.token();
 
-
     // add deposit token
+        tokens[depositToken].supply = 0;
+        tokens[depositToken].isValid = true;
         tokenSet.push(depositToken);
-
-
     }
 
     function activate()
     ownerOnly
     public{
-        tokens[depositToken].supply = depositToken.totalSupply();
-        tokens[depositToken].isValid = true;
         depositBalance = depositToken.balanceOf(this);
+        tokens[depositToken].supply = depositToken.totalSupply();
 
         depositTokenController.disableTokenTransfers(false);
         isActive = true;

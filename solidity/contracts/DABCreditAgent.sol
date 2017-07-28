@@ -62,12 +62,18 @@ contract DABCreditAgent is DABAgent{
         discreditTokenController = _discreditTokenController;
 
     // add credit token
+        tokens[creditToken].supply = 0;
+        tokens[creditToken].isValid = true;
         tokenSet.push(creditToken);
 
     // add subCredit token
+        tokens[subCreditToken].supply = 0;
+        tokens[subCreditToken].isValid = true;
         tokenSet.push(subCreditToken);
 
     // add subCredit token
+        tokens[discreditToken].supply = 0;
+        tokens[discreditToken].isValid = true;
         tokenSet.push(discreditToken);
 
     }
@@ -81,16 +87,11 @@ contract DABCreditAgent is DABAgent{
     function activate()
     ownerOnly
     public {
-        tokens[creditToken].supply = creditToken.totalSupply();
-        tokens[creditToken].isValid = true;
-
         creditBalance = creditToken.balanceOf(this);
 
+        tokens[creditToken].supply = creditToken.totalSupply();
         tokens[subCreditToken].supply = subCreditToken.totalSupply();
-        tokens[subCreditToken].isValid = true;
-
         tokens[discreditToken].supply = discreditToken.totalSupply();
-        tokens[discreditToken].isValid = true;
 
         creditTokenController.disableTokenTransfers(false);
         subCreditTokenController.disableTokenTransfers(false);
