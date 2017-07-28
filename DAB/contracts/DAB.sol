@@ -78,10 +78,36 @@ contract DAB is DABOperationManager{
         _;
     }
 
+/**
+    @dev allows transferring the token agent ownership
+    the new owner still need to accept the transfer
+    can only be called by the contract owner
+
+    @param _newOwner    new token owner
+*/
+    function transferDepositAgentOwnership(address _newOwner)
+    public
+    ownerOnly {
+        depositAgent.transferOwnership(_newOwner);
+    }
+
     function acceptDepositAgentOwnership()
     public
     ownerOnly {
         depositAgent.acceptOwnership();
+    }
+
+/**
+    @dev allows transferring the token agent ownership
+    the new owner still need to accept the transfer
+    can only be called by the contract owner
+
+    @param _newOwner    new token owner
+*/
+    function transferCreditAgentOwnership(address _newOwner)
+    public
+    ownerOnly {
+        creditAgent.transferOwnership(_newOwner);
     }
 
     function acceptCreditAgentOwnership()
@@ -121,6 +147,24 @@ contract DAB is DABOperationManager{
     {
         require(!loanPlanFormulas[_loanPlanFormula].isValid); // validate input
         loanPlanFormulas[_loanPlanFormula].isValid = true;
+    }
+
+
+/**
+    @dev defines a new loan plan
+    can only be called by the owner
+
+    @param _loanPlanFormula         address of the loan plan
+*/
+
+    function disableLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
+    public
+    validAddress(_loanPlanFormula)
+    notThis(_loanPlanFormula)
+    validLoanPlanFormula(_loanPlanFormula)
+    ownerOnly
+    {
+        loanPlanFormulas[_loanPlanFormula].isValid = false;
     }
 
 
@@ -185,6 +229,9 @@ contract DAB is DABOperationManager{
     validAmount(_loanAmount)
     validWallet(msg.sender)
     {
+        DABWallet wallet = DABWallet(msg.sender);
+        ILoanPlanFormula _formula = wallet.formula();
+        require(loanPlanFormulas[_formula].isValid);
         assert(creditAgent.loan(msg.sender, _loanAmount));
     }
 
@@ -250,7 +297,6 @@ contract DAB is DABOperationManager{
     validLoanPlanFormula(_loanPlanFormula)
     returns (DABWallet){
         DABWallet wallet = new DABWallet(this, depositAgent, creditAgent, _loanPlanFormula, depositToken, creditToken, subCreditToken, discreditToken, msg.sender);
-        wallet.renewLoanPlan();
         wallets[wallet].isValid = true;
         return wallet;
     }

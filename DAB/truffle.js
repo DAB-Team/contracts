@@ -7,10 +7,16 @@ module.exports = {
       gasPrice: 20000000000
     },
 
-    main: {
+    live: {
       host: "localhost",
       port: 8545,
       network_id: 1
+    },
+
+    dev: {
+      host: "localhost",
+      port: 8545,
+      network_id: "*"
     },
 
     testrpc: {

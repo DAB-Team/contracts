@@ -5,8 +5,14 @@
 const EasyDABFormula = artifacts.require('EasyDABFormula.sol');
 const AYearLoanPlanFormula = artifacts.require('AYearLoanPlanFormula.sol');
 const DABWallet = artifacts.require('DABWallet.sol');
-const SmartToken = artifacts.require('SmartToken.sol');
-const SmartTokenController = artifacts.require('SmartTokenController.sol');
+const DepositToken = artifacts.require('DepositToken.sol');
+const CreditToken = artifacts.require('CreditToken.sol');
+const SubCreditToken = artifacts.require('SubCreditToken.sol');
+const DiscreditToken = artifacts.require('DiscreditToken.sol');
+const DepositTokenController = artifacts.require('DepositTokenController.sol');
+const CreditTokenController = artifacts.require('CreditTokenController.sol');
+const SubCreditTokenController = artifacts.require('SubCreditTokenController.sol');
+const DiscreditTokenController = artifacts.require('DiscreditTokenController.sol');
 const DABDepositAgent = artifacts.require('DABDepositAgent.sol');
 const DABCreditAgent = artifacts.require('DABCreditAgent.sol');
 const DAB = artifacts.require('DAB.sol');
@@ -83,20 +89,20 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
     loanPlanFormula = await AYearLoanPlanFormula.new();
     loanPlanFormulaAddress = loanPlanFormula.address;
 
-    depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
-    creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
-    subCreditToken = await SmartToken.new('SubCredit Token', 'SCT', 2);
-    discreditToken = await SmartToken.new('Discredit Token', 'DCT', 2);
+    depositToken = await DepositToken.new('Deposit Token', 'DPT', 18);
+    creditToken = await CreditToken.new('Credit Token', 'CDT', 18);
+    subCreditToken = await SubCreditToken.new('SubCredit Token', 'SCT', 18);
+    discreditToken = await DiscreditToken.new('Discredit Token', 'DCT', 18);
 
     depositTokenAddress = depositToken.address;
     creditTokenAddress = creditToken.address;
     subCreditTokenAddress = subCreditToken.address;
     discreditTokenAddress = discreditToken.address;
 
-    depositTokenController = await SmartTokenController.new(depositTokenAddress);
-    creditTokenController = await SmartTokenController.new(creditTokenAddress);
-    subCreditTokenController = await SmartTokenController.new(subCreditTokenAddress);
-    discreditTokenController = await SmartTokenController.new(discreditTokenAddress);
+    depositTokenController = await DepositTokenController.new(depositTokenAddress);
+    creditTokenController = await CreditTokenController.new(creditTokenAddress);
+    subCreditTokenController = await SubCreditTokenController.new(subCreditTokenAddress);
+    discreditTokenController = await DiscreditTokenController.new(discreditTokenAddress);
 
     depositTokenControllerAddress = depositTokenController.address;
     creditTokenControllerAddress = creditTokenController.address;
@@ -156,20 +162,20 @@ contract('DABCreditAgent', (accounts) => {
         loanPlanFormula = await AYearLoanPlanFormula.new();
         loanPlanFormulaAddress = loanPlanFormula.address;
 
-        depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
-        creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
-        subCreditToken = await SmartToken.new('SubCredit Token', 'SCT', 2);
-        discreditToken = await SmartToken.new('Discredit Token', 'DCT', 2);
+        depositToken = await DepositToken.new('Deposit Token', 'DPT', 18);
+        creditToken = await CreditToken.new('Credit Token', 'CDT', 18);
+        subCreditToken = await SubCreditToken.new('SubCredit Token', 'SCT', 18);
+        discreditToken = await DiscreditToken.new('Discredit Token', 'DCT', 18);
 
         depositTokenAddress = depositToken.address;
         creditTokenAddress = creditToken.address;
         subCreditTokenAddress = subCreditToken.address;
         discreditTokenAddress = discreditToken.address;
 
-        depositTokenController = await SmartTokenController.new(depositTokenAddress);
-        creditTokenController = await SmartTokenController.new(creditTokenAddress);
-        subCreditTokenController = await SmartTokenController.new(subCreditTokenAddress);
-        discreditTokenController = await SmartTokenController.new(discreditTokenAddress);
+        depositTokenController = await DepositTokenController.new(depositTokenAddress);
+        creditTokenController = await CreditTokenController.new(creditTokenAddress);
+        subCreditTokenController = await SubCreditTokenController.new(subCreditTokenAddress);
+        discreditTokenController = await DiscreditTokenController.new(discreditTokenAddress);
 
         depositTokenControllerAddress = depositTokenController.address;
         creditTokenControllerAddress = creditTokenController.address;

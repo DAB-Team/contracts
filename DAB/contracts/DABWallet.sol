@@ -31,7 +31,7 @@ contract DABWallet is Owned, SafeMath{
     ISmartToken public subCreditToken;
     ISmartToken public discreditToken;
 
-    event LogTransferWalletOwnership(address _oldUser, address _newUser);
+    event LogUpdateWalletOwnership(address _oldUser, address _newUser);
 
     function DABWallet(
     DAB _dab,
@@ -116,6 +116,7 @@ contract DABWallet is Owned, SafeMath{
     public
     validUser(_oldUser)
     validAddress(_newUser){
+        require(_newUser != user);
         newUser = _newUser;
     }
 
@@ -125,7 +126,7 @@ contract DABWallet is Owned, SafeMath{
         address oldUser = user;
         user = newUser;
         newUser = 0x0;
-        LogTransferWalletOwnership(oldUser, user);
+        LogUpdateWalletOwnership(oldUser, user);
     }
 
     function setLoanPlanFormula(address _user, ILoanPlanFormula _formula)

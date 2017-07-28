@@ -67,23 +67,23 @@ contract EasyDABFormula is IDABFormula, Math {
  TO complete doc
 */
 
-    function deposit(uint256 _dptBalance, uint256 _dptSupply, uint256 _dptCirculation, uint256 _ethAmount)
+    function deposit(uint256 _ethBalance, uint256 _dptSupply, uint256 _dptCirculation, uint256 _ethAmount)
     public
     returns (uint256 token, uint256 remainEther, uint256 fcrr, uint256 dptPrice){
-        _dptBalance = EtherToFloat(_dptBalance);
+        _ethBalance = EtherToFloat(_ethBalance);
         _dptSupply = EtherToFloat(_dptSupply);
         _dptCirculation = EtherToFloat(_dptCirculation);
         _ethAmount = EtherToFloat(_ethAmount);
 
-        require(_dptBalance >= 0);
+        require(_ethBalance >= 0);
         require(_dptSupply >= 0);
         require(_dptCirculation >= 0 && _dptCirculation <= _dptSupply);
         require(_ethAmount > 0);
 
         fcrr = getCRR(_dptCirculation);
-        dptPrice = div(_dptBalance, mul(_dptCirculation, fcrr));
+        dptPrice = div(_ethBalance, mul(_dptCirculation, fcrr));
         token = div(_ethAmount, dptPrice);
-        uint256 maxBalance = add(_dptBalance, _ethAmount);
+        uint256 maxBalance = add(_ethBalance, _ethAmount);
         fcrr = getCRR(add(_dptCirculation, token));
         dptPrice = div(maxBalance, mul(_dptCirculation, fcrr));
         token = div(_ethAmount, dptPrice);

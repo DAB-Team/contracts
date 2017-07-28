@@ -147,7 +147,7 @@ contract DABDepositAgent is DABAgent{
                     depositCurrentCRR = currentCRR;
                     depositPrice = dptPrice;
                 // event
-                    LogDeposit(_user, msg.value, dptAmount);
+                    LogDeposit(_user, safeSub(msg.value, remainEther), dptAmount);
                 }
                 if (remainEther > 0) {
                     assert(issue(_user, remainEther));
