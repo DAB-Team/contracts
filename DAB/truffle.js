@@ -3,7 +3,7 @@ module.exports = {
     rinkeby: {
       host: "localhost",
       port: 8545,
-      network_id: "*",
+      network_id: "4",
       gasPrice: 20000000000
     },
 
@@ -16,7 +16,7 @@ module.exports = {
     dev: {
       host: "localhost",
       port: 8545,
-      network_id: "*"
+      network_id: "1"
     },
 
     testrpc: {
