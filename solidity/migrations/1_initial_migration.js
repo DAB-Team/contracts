@@ -10,7 +10,7 @@ var SmartTokenController = artifacts.require('SmartTokenController.sol');
 var DABOperationManager = artifacts.require('DABOperationManager.sol');
 
 
-module.exports = async (deployer, network) =>{
+module.exports = async (deployer, network) => {
 
   deployer.deploy(Migrations, {gasLimit: 4000000});
 

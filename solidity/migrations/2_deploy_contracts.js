@@ -1,8 +1,8 @@
 
-var EasyDABFormula = artifacts.require("EasyDABFormula.sol");
 var HalfAYearLoanPlanFormula = artifacts.require("HalfAYearLoanPlanFormula.sol");
 var AYearLoanPlanFormula = artifacts.require("AYearLoanPlanFormula.sol");
 var TwoYearLoanPlanFormula = artifacts.require("TwoYearLoanPlanFormula.sol");
+var EasyDABFormula = artifacts.require("EasyDABFormula.sol");
 
 var DepositToken = artifacts.require("DepositToken.sol");
 var CreditToken = artifacts.require("CreditToken.sol");
@@ -29,124 +29,29 @@ let startTimeInProgress = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // 
 
 module.exports =  async (deployer, network) =>{
 
+    deployer.deploy(HalfAYearLoanPlanFormula);
+    deployer.deploy(AYearLoanPlanFormula);
+    deployer.deploy(TwoYearLoanPlanFormula);
     await deployer.deploy(EasyDABFormula);
-    await deployer.deploy(HalfAYearLoanPlanFormula);
-    await deployer.deploy(AYearLoanPlanFormula);
-    await deployer.deploy(TwoYearLoanPlanFormula);
     await deployer.deploy(DepositToken, "Deposit Token", "DPT", 18);
-    await deployer.deploy(CreditToken, "Credit Token", "CDT", 18);
-    await deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 18);
-    await deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 18);
     await deployer.deploy(DepositTokenController, DepositToken.address);
+    await deployer.deploy(CreditToken, "Credit Token", "CDT", 18);
     await deployer.deploy(CreditTokenController, CreditToken.address);
+    await deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 18);
     await deployer.deploy(SubCreditTokenController, SubCreditToken.address);
+    await deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 18);
     await deployer.deploy(DiscreditTokenController, DiscreditToken.address);
     await deployer.deploy(DABCreditAgent, EasyDABFormula.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, beneficiaryAddress);
     await deployer.deploy(DABDepositAgent, DABCreditAgent.address, EasyDABFormula.address, DepositTokenController.address, beneficiaryAddress);
 
-
-  // Configure For Tokens
-    await DepositToken.deployed().then(function(instance) {
-        instance.transferOwnership(DepositTokenController.address);
-    });
-    await CreditToken.deployed().then(function(instance) {
-        instance.transferOwnership(CreditTokenController.address);
-    });
-    await SubCreditToken.deployed().then(function(instance) {
-        instance.transferOwnership(SubCreditTokenController.address);
-    });
-    await DiscreditToken.deployed().then(function(instance) {
-        instance.transferOwnership(DiscreditTokenController.address);
-    });
-
-    DepositTokenController.deployed().then(function(instance) {
-        instance.acceptTokenOwnership();
-    });
-    CreditTokenController.deployed().then(function(instance) {
-        instance.acceptTokenOwnership();
-    });
-    SubCreditTokenController.deployed().then(function(instance) {
-        instance.acceptTokenOwnership();
-    });
-    DiscreditTokenController.deployed().then(function(instance) {
-        instance.acceptTokenOwnership();
-    });
-
-  // Configure For Controllers
-    await DepositTokenController.deployed().then(function(instance) {
-        instance.transferOwnership(DABDepositAgent.address);
-    });
-    await CreditTokenController.deployed().then(function(instance) {
-        instance.transferOwnership(DABCreditAgent.address);
-    });
-    await SubCreditTokenController.deployed().then(function(instance) {
-        instance.transferOwnership(DABCreditAgent.address);
-    });
-    await DiscreditTokenController.deployed().then(function(instance) {
-        instance.transferOwnership(DABCreditAgent.address);
-    });
-
-    DABDepositAgent.deployed().then(function(instance) {
-        instance.acceptDepositTokenControllerOwnership();
-    });
-    DABCreditAgent.deployed().then(function(instance) {
-        instance.acceptCreditTokenControllerOwnership();
-    });
-    DABCreditAgent.deployed().then(function(instance) {
-        instance.acceptSubCreditTokenControllerOwnership();
-    });
-    DABCreditAgent.deployed().then(function(instance) {
-        instance.acceptDiscreditTokenControllerOwnership();
-    });
-
-  // Configure For Agents
-    await DABCreditAgent.deployed().then(function(instance) {
-        instance.setDepositAgent(DABDepositAgent.address);
-    });
-
-  //Main Net
+    // Main Net
     if(network === "live"){
         await deployer.deploy(DAB, DABDepositAgent.address, DABCreditAgent.address, startTime);
-        await DABDepositAgent.deployed().then(function(instance) {
-            instance.transferOwnership(DAB.address);
-        });
-        DAB.deployed().then(function(instance) {
-            instance.acceptDepositAgentOwnership();
-        });
-
-        await DABCreditAgent.deployed().then(function(instance) {
-            instance.transferOwnership(DAB.address);
-        });
-        DAB.deployed().then(function(instance) {
-            instance.acceptCreditAgentOwnership();
-        });
-
-        DAB.deployed().then(function(instance) {
-            instance.activate();
-        });
-
     }
 
-    //Test Net
+    // Test Net
     if(network === "dev" || network === "testrpc" || network === "rinkeby"){
         await deployer.deploy(TestDAB, DABDepositAgent.address, DABCreditAgent.address, startTime, startTimeInProgress);
-        await DABDepositAgent.deployed().then(function(instance) {
-            instance.transferOwnership(TestDAB.address);
-        });
-        TestDAB.deployed().then(function(instance) {
-            instance.acceptDepositAgentOwnership();
-        });
-
-        await DABCreditAgent.deployed().then(function(instance) {
-            instance.transferOwnership(TestDAB.address);
-        });
-        TestDAB.deployed().then(function(instance) {
-            instance.acceptCreditAgentOwnership();
-        });
-
-        TestDAB.deployed().then(function(instance) {
-            instance.activate();
-        });
     }
 
 };

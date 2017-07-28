@@ -86,7 +86,6 @@ contract DABDepositAgent is DABAgent{
     }
 
 
-
 /**
 @dev buys the token by depositing one of its reserve tokens
 
