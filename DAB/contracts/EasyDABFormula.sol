@@ -31,6 +31,10 @@ contract EasyDABFormula is IDABFormula, Math {
 
     uint256 private sctToDCTRate = DecimalToFloat(90000000);      // subCredit token to discredit token ratio
 
+    uint256 public maxETH = mul(div(l, Float(1000)), ip);      // subCredit token to discredit token ratio
+
+    uint256 public maxDPT = mul(div(l, Float(1000)), b);      // subCredit token to discredit token ratio
+
     string public version = '0.1';
 
 
@@ -79,6 +83,9 @@ contract EasyDABFormula is IDABFormula, Math {
         require(_dptSupply >= 0);
         require(_dptCirculation >= 0 && _dptCirculation <= _dptSupply);
         require(_ethAmount > 0);
+    // insure the accuracy of the formula
+        require(_ethAmount <= maxETH);
+
 
         fcrr = getCRR(_dptCirculation);
         dptPrice = div(_ethBalance, mul(_dptCirculation, fcrr));
@@ -116,6 +123,8 @@ contract EasyDABFormula is IDABFormula, Math {
         require( _dptBalance > 0 );
         require(_dptCirculation > 0);
         require(_dptAmount > 0);
+    // insure the accuracy of the formula
+        require(_dptAmount <= maxDPT);
 
         tokenPrice = div(_dptBalance, mul(_dptCirculation, getCRR(_dptCirculation)));
         ethAmount = mul(_dptAmount, tokenPrice);

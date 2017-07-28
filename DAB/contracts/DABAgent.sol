@@ -79,7 +79,7 @@ contract DABAgent is Owned, Math{
 
     @param _formula    address of a bancor formula contract
 */
-    function setFormula(IDABFormula _formula)
+    function setDABFormula(IDABFormula _formula)
     public
     ownerOnly
     notThis(_formula)

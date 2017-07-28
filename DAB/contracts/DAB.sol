@@ -5,6 +5,7 @@ import './DABOperationManager.sol';
 import './DABDepositAgent.sol';
 import './DABCreditAgent.sol';
 import './DABWallet.sol';
+import './interfaces/IDABFormula.sol';
 import './interfaces/ILoanPlanFormula.sol';
 
 
@@ -297,6 +298,7 @@ contract DAB is DABOperationManager{
     validLoanPlanFormula(_loanPlanFormula)
     returns (DABWallet){
         DABWallet wallet = new DABWallet(this, depositAgent, creditAgent, _loanPlanFormula, depositToken, creditToken, subCreditToken, discreditToken, msg.sender);
+        wallet.renewLoanPlan();
         wallets[wallet].isValid = true;
         return wallet;
     }
@@ -311,6 +313,21 @@ contract DAB is DABOperationManager{
     validWallet(_wallet)
     validLoanPlanFormula(_loanPlanFormula){
         _wallet.setLoanPlanFormula(msg.sender, _loanPlanFormula);
+    }
+
+/*
+    @dev allows the owner to update the formula contract address
+
+    @param _formula    address of a bancor formula contract
+*/
+    function setDABFormula(IDABFormula _formula)
+    public
+    ownerOnly
+    notThis(_formula)
+    validAddress(_formula)
+    {
+        depositAgent.setDABFormula(_formula);
+        creditAgent.setDABFormula(_formula);
     }
 
 function() payable

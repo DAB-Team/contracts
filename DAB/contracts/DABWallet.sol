@@ -208,7 +208,6 @@ contract DABWallet is Owned, SafeMath{
 
     function renewLoanPlan()
     public
-    userOnly
     renewable{
         uint256 cdtSupply = creditToken.totalSupply();
         uint256 sctSupply = subCreditToken.totalSupply();
