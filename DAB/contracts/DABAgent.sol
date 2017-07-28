@@ -1,26 +1,23 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.11;
 
 import './Owned.sol';
 import './Math.sol';
 import './interfaces/IDABFormula.sol';
 
 contract DABAgent is Owned, Math{
-    struct Reserve {
-    uint256 balance;
-    }
 
     struct Token {
     uint256 supply;         // total supply = issue - destroy
-    uint256 circulation;    // supply minus those in contract
-    uint256 price;          // price of token
-    uint256 balance;    // virtual balance = (supply-circulation) * price
-    uint256 currentCRR;  // current cash ratio of the token
-    bool isSet;                     // used to tell if the mapping element is defined
+    bool isValid;                     // used to tell if the mapping element is defined
     }
 
     string public version = '0.1';
 
     bool public isActive = false;
+
+    uint256 public balance;
+
+    address public beneficiary = 0x0;              // address to receive all ether contributions
 
     address[] public tokenSet;
 
@@ -28,14 +25,20 @@ contract DABAgent is Owned, Math{
 
     IDABFormula public formula;
 
-    function DABAgent(IDABFormula _formula){
+    function DABAgent(
+    IDABFormula _formula,
+    address _beneficiary)
+    validAddress(_formula)
+    validAddress(_beneficiary){
         formula = _formula;
+        balance = 0;
+        beneficiary = _beneficiary;
     }
 
 
 // validates a token address - verifies that the address belongs to one of the changeable tokens
     modifier validToken(address _address) {
-        require(tokens[_address].isSet);
+        require(tokens[_address].isValid);
         _;
     }
 
@@ -71,13 +74,12 @@ contract DABAgent is Owned, Math{
         _;
     }
 
-
 /*
     @dev allows the owner to update the formula contract address
 
     @param _formula    address of a bancor formula contract
 */
-    function setFormula(IDABFormula _formula)
+    function setDABFormula(IDABFormula _formula)
     public
     ownerOnly
     notThis(_formula)

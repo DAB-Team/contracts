@@ -31,6 +31,10 @@ contract EasyDABFormula is IDABFormula, Math {
 
     uint256 private sctToDCTRate = DecimalToFloat(90000000);      // subCredit token to discredit token ratio
 
+    uint256 public maxETH = mul(div(l, Float(1000)), ip);      // subCredit token to discredit token ratio
+
+    uint256 public maxDPT = mul(div(l, Float(1000)), b);      // subCredit token to discredit token ratio
+
     string public version = '0.1';
 
 
@@ -67,23 +71,26 @@ contract EasyDABFormula is IDABFormula, Math {
  TO complete doc
 */
 
-    function deposit(uint256 _dptBalance, uint256 _dptSupply, uint256 _dptCirculation, uint256 _ethAmount)
+    function deposit(uint256 _ethBalance, uint256 _dptSupply, uint256 _dptCirculation, uint256 _ethAmount)
     public
     returns (uint256 token, uint256 remainEther, uint256 fcrr, uint256 dptPrice){
-        _dptBalance = EtherToFloat(_dptBalance);
+        _ethBalance = EtherToFloat(_ethBalance);
         _dptSupply = EtherToFloat(_dptSupply);
         _dptCirculation = EtherToFloat(_dptCirculation);
         _ethAmount = EtherToFloat(_ethAmount);
 
-        assert(_dptBalance >= 0);
-        assert(_dptSupply >= 0);
-        assert(_dptCirculation >= 0 && _dptCirculation <= _dptSupply);
-        assert(_ethAmount > 0);
+        require(_ethBalance >= 0);
+        require(_dptSupply >= 0);
+        require(_dptCirculation >= 0 && _dptCirculation <= _dptSupply);
+        require(_ethAmount > 0);
+    // insure the accuracy of the formula
+        require(_ethAmount <= maxETH);
+
 
         fcrr = getCRR(_dptCirculation);
-        dptPrice = div(_dptBalance, mul(_dptCirculation, fcrr));
+        dptPrice = div(_ethBalance, mul(_dptCirculation, fcrr));
         token = div(_ethAmount, dptPrice);
-        uint256 maxBalance = add(_dptBalance, _ethAmount);
+        uint256 maxBalance = add(_ethBalance, _ethAmount);
         fcrr = getCRR(add(_dptCirculation, token));
         dptPrice = div(maxBalance, mul(_dptCirculation, fcrr));
         token = div(_ethAmount, dptPrice);
@@ -113,9 +120,11 @@ contract EasyDABFormula is IDABFormula, Math {
         _dptCirculation = EtherToFloat(_dptCirculation);
         _dptAmount = EtherToFloat(_dptAmount);
 
-        assert( _dptBalance > 0 );
-        assert(_dptCirculation > 0);
-        assert(_dptAmount > 0);
+        require( _dptBalance > 0 );
+        require(_dptCirculation > 0);
+        require(_dptAmount > 0);
+    // insure the accuracy of the formula
+        require(_dptAmount <= maxDPT);
 
         tokenPrice = div(_dptBalance, mul(_dptCirculation, getCRR(_dptCirculation)));
         ethAmount = mul(_dptAmount, tokenPrice);
@@ -135,14 +144,14 @@ contract EasyDABFormula is IDABFormula, Math {
         _cdtBalance = EtherToFloat(_cdtBalance);
         _cdtSupply = EtherToFloat(_cdtSupply);
         _cdtAmount = EtherToFloat(_cdtAmount);
-        assert(_cdtBalance > 0);
-        assert(_cdtSupply > 0);
-        assert(_cdtAmount > 0);
+        require(_cdtBalance > 0);
+        require(_cdtSupply > 0);
+        require(_cdtAmount > 0);
 
         cdtPrice = div(_cdtBalance, mul(_cdtSupply, cdt_crr));
         ethAmount = mul(_cdtAmount, cdtPrice);
 
-        assert(ethAmount <= _cdtBalance);
+        require(ethAmount <= _cdtBalance);
 
         uint256 cashFee = mul(ethAmount, cashFeeRate);
         ethAmount = sub(ethAmount, cashFee);
@@ -160,7 +169,9 @@ contract EasyDABFormula is IDABFormula, Math {
     returns (uint256 ethAmount, uint256 dptReserve, uint256 issueCDTAmount, uint256 sctAmount){
         _cdtAmount = EtherToFloat(_cdtAmount);
         _interestRate = DecimalToFloat(_interestRate);
-        assert(_cdtAmount > 0);
+        require(_cdtAmount > 0);
+        require(_interestRate > 0);
+        require(_interestRate < Decimal(1));
 
         ethAmount = mul(_cdtAmount, cdtLoanRate);
         uint256 interest = mul(ethAmount, _interestRate);
@@ -182,8 +193,8 @@ contract EasyDABFormula is IDABFormula, Math {
     returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundSCTAmount){
         _repayETHAmount = EtherToFloat(_repayETHAmount);
         _sctAmount = EtherToFloat(_sctAmount);
-        assert(_repayETHAmount > 0);
-        assert(_sctAmount > 0);
+        require(_repayETHAmount > 0);
+        require(_sctAmount > 0);
 
         uint256 ethAmount = mul(_sctAmount, cdtLoanRate);
         if (_repayETHAmount < ethAmount) {
@@ -208,8 +219,8 @@ contract EasyDABFormula is IDABFormula, Math {
     returns (uint256 refundETHAmount, uint256 cdtAmount, uint256 refundDCTAmount){
         _repayETHAmount = EtherToFloat(_repayETHAmount);
         _dctAmount = EtherToFloat(_dctAmount);
-        assert(_repayETHAmount > 0);
-        assert(_dctAmount > 0);
+        require(_repayETHAmount > 0);
+        require(_dctAmount > 0);
 
         uint256 ethAmount = mul(_dctAmount, cdtLoanRate);
         if (_repayETHAmount < ethAmount) {
@@ -235,9 +246,9 @@ contract EasyDABFormula is IDABFormula, Math {
         _cdtBalance = EtherToFloat(_cdtBalance);
         _supply = EtherToFloat(_supply);
         _sctAmount = EtherToFloat(_sctAmount);
-        assert(_cdtBalance > 0);
-        assert(_supply > 0);
-        assert(_sctAmount > 0);
+        require(_cdtBalance > 0);
+        require(_supply > 0);
+        require(_sctAmount > 0);
 
         cdtPrice = div(_cdtBalance, mul(_supply, cdt_crr));
 

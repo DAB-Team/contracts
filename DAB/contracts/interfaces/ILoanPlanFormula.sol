@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.11;
 
 contract ILoanPlanFormula {
     function getLoanPlan(uint256 _supply, uint256 _circulation)

@@ -4,6 +4,10 @@ pragma solidity ^0.4.11;
 import './DABOperationManager.sol';
 import './DABDepositAgent.sol';
 import './DABCreditAgent.sol';
+import './DABWallet.sol';
+import './interfaces/IDABFormula.sol';
+import './interfaces/ILoanPlanFormula.sol';
+
 
 /*
     DAB v0.1
@@ -14,8 +18,25 @@ contract DAB is DABOperationManager{
     string public version = '0.1';
     bool public isActive = false;
 
+    struct LoanPlanFormula{
+        bool isValid;
+    }
+
+    struct Wallet{
+        bool isValid;
+    }
+
+    mapping (address => LoanPlanFormula) public loanPlanFormulas;
+
+    mapping (address => Wallet) public wallets;
+
     DABDepositAgent public depositAgent;
     DABCreditAgent public creditAgent;
+
+    ISmartToken public depositToken;
+    ISmartToken public creditToken;
+    ISmartToken public subCreditToken;
+    ISmartToken public discreditToken;
 
     function DAB(
     DABDepositAgent _depositAgent,
@@ -27,24 +48,67 @@ contract DAB is DABOperationManager{
     {
         depositAgent = _depositAgent;
         creditAgent = _creditAgent;
+
+        depositToken = depositAgent.depositToken();
+        creditToken = creditAgent.creditToken();
+        subCreditToken = creditAgent.subCreditToken();
+        discreditToken = creditAgent.discreditToken();
     }
 
 // verifies that an amount is greater than zero
     modifier active() {
-        require(isActive == true);
+        assert(isActive == true);
         _;
     }
 
 // verifies that an amount is greater than zero
     modifier inactive() {
-        require(isActive == false);
+        assert(isActive == false);
         _;
+    }
+
+// validates a loan plan formula
+    modifier validLoanPlanFormula(address _address) {
+        require(loanPlanFormulas[_address].isValid);
+        _;
+    }
+
+// validates a DAB wallet
+    modifier validWallet(address _address) {
+        require(wallets[_address].isValid);
+        _;
+    }
+
+/**
+    @dev allows transferring the token agent ownership
+    the new owner still need to accept the transfer
+    can only be called by the contract owner
+
+    @param _newOwner    new token owner
+*/
+    function transferDepositAgentOwnership(address _newOwner)
+    public
+    ownerOnly {
+        depositAgent.transferOwnership(_newOwner);
     }
 
     function acceptDepositAgentOwnership()
     public
     ownerOnly {
         depositAgent.acceptOwnership();
+    }
+
+/**
+    @dev allows transferring the token agent ownership
+    the new owner still need to accept the transfer
+    can only be called by the contract owner
+
+    @param _newOwner    new token owner
+*/
+    function transferCreditAgentOwnership(address _newOwner)
+    public
+    ownerOnly {
+        creditAgent.transferOwnership(_newOwner);
     }
 
     function acceptCreditAgentOwnership()
@@ -70,6 +134,42 @@ contract DAB is DABOperationManager{
     }
 
 /**
+    @dev defines a new loan plan
+    can only be called by the owner
+
+    @param _loanPlanFormula         address of the loan plan
+*/
+
+    function addLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
+    public
+    validAddress(_loanPlanFormula)
+    notThis(_loanPlanFormula)
+    ownerOnly
+    {
+        require(!loanPlanFormulas[_loanPlanFormula].isValid); // validate input
+        loanPlanFormulas[_loanPlanFormula].isValid = true;
+    }
+
+
+/**
+    @dev defines a new loan plan
+    can only be called by the owner
+
+    @param _loanPlanFormula         address of the loan plan
+*/
+
+    function disableLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
+    public
+    validAddress(_loanPlanFormula)
+    notThis(_loanPlanFormula)
+    validLoanPlanFormula(_loanPlanFormula)
+    ownerOnly
+    {
+        loanPlanFormulas[_loanPlanFormula].isValid = false;
+    }
+
+
+/**
     @dev deposit ethereum
 */
     function deposit()
@@ -77,10 +177,13 @@ contract DAB is DABOperationManager{
     payable
     active
     started
-    activeDepositAgent
     validAmount(msg.value) {
-        depositAgent.transfer(msg.value);
-        assert(depositAgent.deposit(msg.sender, msg.value));
+        if(now > depositAgentActivationTime){
+            assert(depositAgent.deposit.value(msg.value)(msg.sender, true));
+        }else{
+            assert(depositAgent.deposit.value(msg.value)(msg.sender, false));
+        }
+
     }
 
 
@@ -113,7 +216,6 @@ contract DAB is DABOperationManager{
     }
 
 
-
 /**
 @dev loan by credit token
 
@@ -121,13 +223,17 @@ contract DAB is DABOperationManager{
 */
 
 
-    function loan(uint256 _loanAmount, ILoanPlanFormula _loanPlanFormula)
+    function loan(uint256 _loanAmount)
     public
     active
     activeCreditAgent
     validAmount(_loanAmount)
+    validWallet(msg.sender)
     {
-        assert(creditAgent.loan(msg.sender, _loanAmount, _loanPlanFormula));
+        DABWallet wallet = DABWallet(msg.sender);
+        ILoanPlanFormula _formula = wallet.formula();
+        require(loanPlanFormulas[_formula].isValid);
+        assert(creditAgent.loan(msg.sender, _loanAmount));
     }
 
 
@@ -137,14 +243,13 @@ contract DAB is DABOperationManager{
 
 */
 
-
     function repay()
     public
     payable
     active
     activeCreditAgent
     validAmount(msg.value){
-        assert(creditAgent.repay(msg.sender, msg.value));
+        assert(creditAgent.repay.value(msg.value)(msg.sender));
     }
 
 
@@ -160,7 +265,7 @@ contract DAB is DABOperationManager{
     active
     activeCreditAgent
     validAmount(msg.value){
-        assert(creditAgent.toCreditToken(msg.sender, msg.value));
+        assert(creditAgent.toCreditToken.value(msg.value)(msg.sender));
     }
 
 
@@ -180,7 +285,53 @@ contract DAB is DABOperationManager{
         assert(creditAgent.toDiscreditToken(msg.sender, _sctAmount));
     }
 
-    function() payable {
+
+/**
+@dev create a new DAB wallet with a loan plan
+
+
+@return success
+*/
+    function newDABWallet(ILoanPlanFormula _loanPlanFormula)
+    public
+    active
+    validLoanPlanFormula(_loanPlanFormula)
+    returns (DABWallet){
+        DABWallet wallet = new DABWallet(this, depositAgent, creditAgent, _loanPlanFormula, depositToken, creditToken, subCreditToken, discreditToken, msg.sender);
+        wallet.renewLoanPlan();
+        wallets[wallet].isValid = true;
+        return wallet;
+    }
+
+/**
+@dev set DAB wallet with a loan plan formula
+
+*/
+    function setWalletLoanPlanFormula(DABWallet _wallet, ILoanPlanFormula _loanPlanFormula)
+    public
+    active
+    validWallet(_wallet)
+    validLoanPlanFormula(_loanPlanFormula){
+        _wallet.setLoanPlanFormula(msg.sender, _loanPlanFormula);
+    }
+
+/*
+    @dev allows the owner to update the formula contract address
+
+    @param _formula    address of a bancor formula contract
+*/
+    function setDABFormula(IDABFormula _formula)
+    public
+    ownerOnly
+    notThis(_formula)
+    validAddress(_formula)
+    {
+        depositAgent.setDABFormula(_formula);
+        creditAgent.setDABFormula(_formula);
+    }
+
+function() payable
+    validAmount(msg.value){
         throw;
     }
 }

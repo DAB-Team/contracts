@@ -17,5 +17,8 @@ contract TestDAB is DAB {
     {
         startTime = _startTimeOverride;
         endTime = startTime + DURATION;
+        depositAgentActivationTime = endTime;
+        creditAgentActivationTime = depositAgentActivationTime + CDT_AGENT_ACTIVATION_LAG;
     }
+
 }

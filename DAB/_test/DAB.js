@@ -3,6 +3,8 @@
 
 
 const EasyDABFormula = artifacts.require('EasyDABFormula.sol');
+const AYearLoanPlanFormula = artifacts.require('AYearLoanPlanFormula.sol');
+const DABWallet = artifacts.require('DABWallet.sol');
 const SmartToken = artifacts.require('SmartToken.sol');
 const SmartTokenController = artifacts.require('SmartTokenController.sol');
 const DABDepositAgent = artifacts.require('DABDepositAgent.sol');
@@ -30,6 +32,9 @@ let discreditTokenController;
 let easyDABFormula;
 let easyDABFormulaAddress;
 
+let loanPlanFormula;
+let loanPlanFormulaAddress;
+
 let depositTokenControllerAddress;
 let creditTokenControllerAddress;
 let subCreditTokenControllerAddress;
@@ -50,7 +55,7 @@ let dabAddress;
 let beneficiaryAddress = '0x69aa30b306805bd17488ce957d03e3c0213ee9e6';
 
 let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale hasn't started
-let startTimeInProgress = Math.floor(Date.now() / 1000) - 12 * 60 * 60; // ongoing crowdsale
+let startTimeInProgress = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 let startTimeFinished = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 
 
@@ -75,6 +80,8 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
     easyDABFormula = await EasyDABFormula.new();
     easyDABFormulaAddress = easyDABFormula.address;
 
+    loanPlanFormula = await AYearLoanPlanFormula.new();
+    loanPlanFormulaAddress = loanPlanFormula.address;
 
     depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
     creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
@@ -96,7 +103,7 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
     subCreditTokenControllerAddress = subCreditTokenController.address;
     discreditTokenControllerAddress = discreditTokenController.address;
 
-    creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+    creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress);
 
     creditAgentAddress = creditAgent.address;
 
@@ -127,7 +134,7 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
         await discreditTokenController.transferOwnership(creditAgent.address);
         await creditAgent.acceptDiscreditTokenControllerOwnership();
 
-        creditAgent.setDepositAgent(depositAgentAddress);
+        await creditAgent.setDepositAgent(depositAgentAddress);
 
         await depositAgent.transferOwnership(dabAddress);
         await dab.acceptDepositAgentOwnership();
@@ -146,6 +153,8 @@ contract('DAB', (accounts) => {
         easyDABFormula = await EasyDABFormula.new();
         easyDABFormulaAddress = easyDABFormula.address;
 
+        loanPlanFormula = await AYearLoanPlanFormula.new();
+        loanPlanFormulaAddress = loanPlanFormula.address;
 
         depositToken = await SmartToken.new('Deposit Token', 'DPT', 2);
         creditToken = await SmartToken.new('Credit Token', 'CDT', 2);
@@ -177,7 +186,7 @@ contract('DAB', (accounts) => {
         await discreditTokenController.acceptTokenOwnership();
 
 
-        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress);
+        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress);
 
         creditAgentAddress = creditAgent.address;
 
@@ -207,10 +216,5 @@ contract('DAB', (accounts) => {
         assert.equal(creditAgent, creditAgentAddress);
         
     });
-    
-    
-
-
-
 
 });
