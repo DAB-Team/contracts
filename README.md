@@ -1,18 +1,84 @@
 # DAB
 ### Testing
 
-Tests are included and can be run using truffle.
+Tests are included and can be run on using [truffle](https://github.com/trufflesuite/truffle) and [testrpc](https://github.com/ethereumjs/testrpc).
 
 #### Prerequisites
 
-Node.js v8.1.3+
+    Node.js v8.1.3+
+    truffle v3.4.5+
+    testrpc v4.0.1+
 
-truffle v3.4.5+
 
-testrpc v4.0.1+
 
-To run the test, execute the following commands from the project's root folder -
+#### Test and Migration on Different Ethereum Clients
 
-npm start
+##### Testrpc
 
-npm test
+Test in the development period.
+
+To run the test, execute the following commands from the project's root folder.
+
+    npm start
+    npm test
+
+##### Dev(Private Network)
+
+Alpha test on private network.
+
+To deploy, execute the following commands from the project's truffle folder.
+
+    geth --dev --rpc --rpcport 8545 --rpcaddr 127.0.0.1 --rpcapi="eth,net,web3" --unlock <Account> --mine --minerthreads=1
+    truffle migrate --network dev
+
+##### Rinkeby
+
+Beta test on Rinkeby network.
+
+To deploy, execute the following commands from the project's truffle folder.
+
+    geth --rinkeby --rpc --rpcport 8545 --rpcaddr 127.0.0.1 --rpcapi="eth,net,web3" --unlock <Account>
+    truffle migrate --network rinkeby
+
+You can get the Ether from [https://www.rinkeby.io](https://www.rinkeby.io)
+
+##### Live
+
+To operate on the main net of Ethereum.
+
+To deploy, execute the following commands from the project's truffle folder.
+
+    geth --rpc --rpcport 8545 --rpcaddr 127.0.0.1 --rpcapi="eth,net,web3" --unlock <Account>
+    truffle migrate --network live
+
+### Post Migration
+
+Need do some configure works after migration, the logic is like code below.
+
+        // Configure for Tokens
+        await DepositToken.transferOwnership(DepositTokenController.address);
+        await DepositTokenController.acceptTokenOwnership();
+        await CreditToken.transferOwnership(CreditTokenController.address);
+        await CreditTokenController.acceptTokenOwnership();
+        await SubCreditToken.transferOwnership(SubCreditTokenController.address);
+        await SubCreditTokenController.acceptTokenOwnership();
+        await DiscreditToken.transferOwnership(DiscreditTokenController.address);
+        await DiscreditTokenController.acceptTokenOwnership();
+
+        // Configure for Controllers
+        await DepositTokenController.transferOwnership(DABDepositAgent.address);
+        await DABDepositAgent.acceptDepositTokenControllerOwnership();
+        await CreditTokenController.transferOwnership(DABCreditAgent.address);
+        await DABCreditAgent.acceptCreditTokenControllerOwnership();
+        await SubCreditTokenController.transferOwnership(DABCreditAgent.address);
+        await DABCreditAgent.acceptSubCreditTokenControllerOwnership();
+        await DiscreditTokenController.transferOwnership(DABCreditAgent.address);
+        await DABCreditAgent.acceptDiscreditTokenControllerOwnership();
+
+        // Configure for Agents and DAB
+        await DABCreditAgent.setDepositAgent(DABDepositAgent.address);
+        await DABDepositAgent.transferOwnership(DAB.address);
+        await DAB.acceptDepositAgentOwnership();
+        await DABCreditAgent.transferOwnership(DAB.address);
+        await DAB.acceptCreditAgentOwnership();
+        await DAB.activate();

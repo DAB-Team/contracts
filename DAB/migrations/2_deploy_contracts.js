@@ -52,8 +52,8 @@ module.exports =  async (deployer, network) =>{
     await deployer.deploy(DABDepositAgent, DABCreditAgent.address, EasyDABFormula.address, DepositTokenController.address, '0xA86929f2722B1929dcFe935Ad8C3b90ccda411fd');
 
 
-  //Configure For Tokens
-  // await depositToken.transferOwnership(DepositTokenController.address);
+  // Configure For Tokens
+  // await DepositToken.transferOwnership(DepositTokenController.address);
   // await DepositTokenController.acceptTokenOwnership();
   // await CreditToken.transferOwnership(CreditTokenController.address);
   // await CreditTokenController.acceptTokenOwnership();
@@ -61,8 +61,8 @@ module.exports =  async (deployer, network) =>{
   // await SubCreditTokenController.acceptTokenOwnership();
   // await DiscreditToken.transferOwnership(DiscreditTokenController.address);
   // await DiscreditTokenController.acceptTokenOwnership();
-
-  //Configure For Controllers
+  //
+  // Configure For Controllers
   // await DepositTokenController.transferOwnership(DABDepositAgent.address);
   // await DABDepositAgent.acceptDepositTokenControllerOwnership();
   // await CreditTokenController.transferOwnership(DABCreditAgent.address);
@@ -71,8 +71,8 @@ module.exports =  async (deployer, network) =>{
   // await DABCreditAgent.acceptSubCreditTokenControllerOwnership();
   // await DiscreditTokenController.transferOwnership(DABCreditAgent.address);
   // await DABCreditAgent.acceptDiscreditTokenControllerOwnership();
-
-  //Configure For Agents
+  //
+  // Configure For Agents
   // await DABCreditAgent.setDepositAgent(DABDepositAgent.address);
 
   //TODO To Main Net
