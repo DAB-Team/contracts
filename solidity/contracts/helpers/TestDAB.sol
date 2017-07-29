@@ -1,7 +1,9 @@
 pragma solidity ^0.4.11;
-import '../DAB.sol';
 import '../interfaces/IDABFormula.sol';
 import '../SmartTokenController.sol';
+import '../DABDepositAgent.sol';
+import '../DABCreditAgent.sol';
+import '../DABWalletFactory.sol';
 
 /*
     Test operation controller with start time < now < end time

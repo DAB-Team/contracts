@@ -28,9 +28,11 @@ contract DABWallet is Owned, SafeMath{
     address public newUser = 0x0;
 
     DAB public dab;
-    ILoanPlanFormula public formula;
+
     DABDepositAgent public depositAgent;
     DABCreditAgent public creditAgent;
+
+    ILoanPlanFormula public formula;
 
     ISmartToken public depositToken;
     ISmartToken public creditToken;
@@ -164,14 +166,6 @@ contract DABWallet is Owned, SafeMath{
         msg.sender.transfer(_ethAmount);
     }
 
-    function withdrawAllETH()
-    public
-    userOnly {
-        uint256 amountToWithdraw = balance;
-        balance = 0;
-        msg.sender.transfer(amountToWithdraw);
-    }
-
     function deposit(uint256 _ethAmount)
     public
     userOnly
@@ -204,14 +198,6 @@ contract DABWallet is Owned, SafeMath{
     validAmount(_cdtAmount){
         creditBalance = safeSub(creditBalance, _cdtAmount);
         dab.cash(_cdtAmount);
-    }
-
-    function cashAll()
-    public
-    userOnly {
-        uint256 amount = creditBalance;
-        creditBalance = 0;
-        dab.cash(amount);
     }
 
     function renewLoanPlan()
@@ -251,35 +237,12 @@ contract DABWallet is Owned, SafeMath{
         subCreditBalance = subCreditToken.balanceOf(this);
     }
 
-    function repayAll()
-    public
-    userOnly
-    repayBetween {
-        uint256 amount = balance;
-        balance = 0;
-        dab.repay.value(amount)();
-        creditBalance = creditToken.balanceOf(this);
-        subCreditBalance = subCreditToken.balanceOf(this);
-    }
-
     function toDiscreditToken(uint256 _sctAmount)
     public
     userOnly
-    afterRepayEnd
     validAmount(_sctAmount) {
         subCreditBalance = safeSub(subCreditBalance, _sctAmount);
         dab.toDiscreditToken(_sctAmount);
-        subCreditBalance = subCreditToken.balanceOf(this);
-        discreditBalance = discreditToken.balanceOf(this);
-    }
-
-    function toDiscreditTokenAll()
-    public
-    userOnly
-    afterRepayEnd {
-        uint256 amount = subCreditBalance;
-        subCreditBalance = 0;
-        dab.toDiscreditToken(amount);
         subCreditBalance = subCreditToken.balanceOf(this);
         discreditBalance = discreditToken.balanceOf(this);
     }
@@ -294,16 +257,6 @@ contract DABWallet is Owned, SafeMath{
         discreditBalance = discreditToken.balanceOf(this);
     }
 
-    function toCreditTokenAll()
-    public
-    userOnly {
-        uint256 amount = balance;
-        balance = 0;
-        dab.toCreditToken.value(amount)();
-        creditBalance = creditToken.balanceOf(this);
-        discreditBalance = discreditToken.balanceOf(this);
-    }
-
     function withdrawCreditToken(uint256 _cdtAmount)
     public
     userOnly
@@ -312,28 +265,12 @@ contract DABWallet is Owned, SafeMath{
         assert(creditToken.transfer(msg.sender, _cdtAmount));
     }
 
-    function withdrawAllCreditToken()
-    public
-    userOnly {
-        uint256 amount = creditBalance;
-        creditBalance = 0;
-        assert(creditToken.transfer(msg.sender, amount));
-    }
-
     function withdrawDiscreditToken(uint256 _dctAmount)
     public
     userOnly
     validAmount(_dctAmount){
         discreditBalance = safeSub(discreditBalance, _dctAmount);
         assert(discreditToken.transfer(msg.sender, _dctAmount));
-    }
-
-    function withdrawAllDiscreditToken()
-    public
-    userOnly {
-        uint256 amount = discreditBalance;
-        discreditBalance = 0;
-        assert(discreditToken.transfer(msg.sender, amount));
     }
 
     function approve(uint256 _approveAmount)
@@ -368,3 +305,151 @@ contract DABWallet is Owned, SafeMath{
     }
 
 }
+
+contract DABWalletFactory is Owned{
+
+    struct LoanPlanFormula{
+    bool isValid;
+    }
+
+    struct Wallet{
+    bool isValid;
+    }
+
+    bool public isActive = false;
+
+    mapping (address => LoanPlanFormula) public loanPlanFormulas;
+
+    mapping (address => Wallet) public wallets;
+
+    DAB public dab;
+
+    event LogAddLoanPlanFormula(address _formula);
+    event LogDisableLoanPlanFormula(address _formula);
+    event LogNewWallet(address _user, address _wallet);
+
+    function DABWalletFactory(DAB _dab)
+    validAddress(_dab){
+        dab = _dab;
+    }
+
+// verifies that an amount is greater than zero
+    modifier active() {
+        require(isActive == true);
+        _;
+    }
+
+// validates an address - currently only checks that it isn't null
+    modifier validAddress(address _address) {
+        require(_address != 0x0);
+        _;
+    }
+
+// verifies that the address is different than this contract address
+    modifier notThis(address _address) {
+        require(_address != address(this));
+        _;
+    }
+
+// validates a loan plan formula
+    modifier validLoanPlanFormula(address _address) {
+        require(loanPlanFormulas[_address].isValid);
+        _;
+    }
+
+// validates a solidity wallet
+    modifier validWallet(address _address) {
+        require(wallets[_address].isValid);
+        _;
+    }
+
+    function activate()
+    public
+    ownerOnly {
+        isActive = true;
+    }
+
+    function freeze()
+    ownerOnly
+    public{
+        isActive = false;
+    }
+
+/**
+    @dev defines a new loan plan
+    can only be called by the owner
+
+    @param _loanPlanFormula         address of the loan plan
+*/
+
+    function addLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
+    public
+    ownerOnly
+    active
+    validAddress(_loanPlanFormula)
+    notThis(_loanPlanFormula)
+    {
+        require(!loanPlanFormulas[_loanPlanFormula].isValid); // validate input
+        loanPlanFormulas[_loanPlanFormula].isValid = true;
+        LogAddLoanPlanFormula(_loanPlanFormula);
+    }
+
+
+/**
+    @dev defines a new loan plan
+    can only be called by the owner
+
+    @param _loanPlanFormula         address of the loan plan
+*/
+
+    function disableLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
+    public
+    ownerOnly
+    active
+    validAddress(_loanPlanFormula)
+    notThis(_loanPlanFormula)
+    validLoanPlanFormula(_loanPlanFormula)
+    {
+        loanPlanFormulas[_loanPlanFormula].isValid = false;
+        LogDisableLoanPlanFormula(_loanPlanFormula);
+    }
+
+/**
+@dev create a new solidity wallet with a loan plan
+
+
+@return success
+*/
+    function newDABWallet(ILoanPlanFormula _loanPlanFormula)
+    public
+    payable
+    active
+    validLoanPlanFormula(_loanPlanFormula) {
+        address wallet = new DABWallet(dab, _loanPlanFormula, msg.sender);
+        if(msg.value > 0){
+            wallet.transfer(msg.value);
+        }
+        wallets[wallet].isValid = true;
+        LogNewWallet(msg.sender, wallet);
+    }
+
+/**
+@dev set solidity wallet with a loan plan formula
+
+*/
+    function setWalletLoanPlanFormula(DABWallet _wallet, ILoanPlanFormula _loanPlanFormula)
+    public
+    active
+    validWallet(_wallet)
+    validLoanPlanFormula(_loanPlanFormula){
+        _wallet.setLoanPlanFormula(msg.sender, _loanPlanFormula);
+    }
+
+    function isWalletValid(DABWallet _wallet)
+    public
+    returns (bool){
+        return wallets[_wallet].isValid;
+    }
+
+}
+

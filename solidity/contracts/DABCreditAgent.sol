@@ -6,7 +6,7 @@ import './interfaces/ISmartToken.sol';
 import './SmartTokenController.sol';
 import './DABAgent.sol';
 import './Math.sol';
-import './DABWallet.sol';
+import './DABWalletFactory.sol';
 
 contract DABCreditAgent is DABAgent{
 

@@ -14,7 +14,7 @@ var CreditTokenController = artifacts.require('CreditTokenController.sol');
 var SubCreditTokenController = artifacts.require('SubCreditTokenController.sol');
 var DiscreditTokenController = artifacts.require('DiscreditTokenController.sol');
 
-var DABWallet = artifacts.require('DABWallet.sol');
+var DABWalletFactory = artifacts.require('DABWalletFactory.sol');
 
 var DABDepositAgent = artifacts.require('DABDepositAgent.sol');
 var DABCreditAgent = artifacts.require('DABCreditAgent.sol');
@@ -26,37 +26,36 @@ let beneficiaryAddress = '0xa77e2b295209ff3b6723a0becb50477ad51df124';
 let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale hasn't started
 let startTimeInProgress = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 
-let activate = false;
+let activate = true;
 
 
 module.exports =  async (deployer, network, accounts) =>{
 
-    // deployer.deploy(HalfAYearLoanPlanFormula);
-    // deployer.deploy(AYearLoanPlanFormula);
-    // deployer.deploy(TwoYearLoanPlanFormula);
-    // await deployer.deploy(EasyDABFormula);
-    // await deployer.deploy(DepositToken, "Deposit Token", "DPT", 18);
-    // await deployer.deploy(DepositTokenController, DepositToken.address);
-    // await deployer.deploy(CreditToken, "Credit Token", "CDT", 18);
-    // await deployer.deploy(CreditTokenController, CreditToken.address);
-    // await deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 18);
-    // await deployer.deploy(SubCreditTokenController, SubCreditToken.address);
-    // await deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 18);
-    // await deployer.deploy(DiscreditTokenController, DiscreditToken.address);
-    // await deployer.deploy(DABCreditAgent, EasyDABFormula.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, beneficiaryAddress);
-    // await deployer.deploy(DABDepositAgent, DABCreditAgent.address, EasyDABFormula.address, DepositTokenController.address, beneficiaryAddress);
+    deployer.deploy(HalfAYearLoanPlanFormula);
+    deployer.deploy(AYearLoanPlanFormula);
+    deployer.deploy(TwoYearLoanPlanFormula);
+    await deployer.deploy(EasyDABFormula);
+    await deployer.deploy(DepositToken, "Deposit Token", "DPT", 18);
+    await deployer.deploy(DepositTokenController, DepositToken.address);
+    await deployer.deploy(CreditToken, "Credit Token", "CDT", 18);
+    await deployer.deploy(CreditTokenController, CreditToken.address);
+    await deployer.deploy(SubCreditToken, "SubCredit Token", "SCT", 18);
+    await deployer.deploy(SubCreditTokenController, SubCreditToken.address);
+    await deployer.deploy(DiscreditToken, "Discredit Token", "DCT", 18);
+    await deployer.deploy(DiscreditTokenController, DiscreditToken.address);
+    await deployer.deploy(DABCreditAgent, EasyDABFormula.address, CreditTokenController.address, SubCreditTokenController.address, DiscreditTokenController.address, beneficiaryAddress);
+    await deployer.deploy(DABDepositAgent, DABCreditAgent.address, EasyDABFormula.address, DepositTokenController.address, beneficiaryAddress);
 
     // Main Net
     if(network === "live"){
         await deployer.deploy(DAB, DABDepositAgent.address, DABCreditAgent.address, startTime);
-
+        await deployer.deploy(DABWalletFactory, DAB.address);
     }
 
     // Test Net
     if(network === "dev" || network === "testrpc" || network === "rinkeby"){
-        // await deployer.deploy(TestDAB, DABDepositAgent.address, DABCreditAgent.address, startTime, startTimeInProgress);
-        // await deployer.deploy(DABWallet, TestDAB.address, AYearLoanPlanFormula.address, accounts[0]);
-        await deployer.deploy(DABWallet, "0x5c0012ff28c3f6b64cd7f74d5b212e5b2c73239d", "0xe32664fe7855efc2ca338c4afb3b00214655b6c8", accounts[0]);
+        await deployer.deploy(TestDAB, DABDepositAgent.address, DABCreditAgent.address, startTime, startTimeInProgress);
+        await deployer.deploy(DABWalletFactory, TestDAB.address);
     }
 
     if(activate){
@@ -138,11 +137,23 @@ module.exports =  async (deployer, network, accounts) =>{
                 await instance.transferOwnership(DAB.address);
             });
 
+            await DABWalletFactory.deployed().then(async (instance) => {
+                await instance.transferOwnership(DAB.address);
+            });
+
             await DAB.deployed().then(async (instance) => {
                 await instance.acceptDepositAgentOwnership();
             });
             await DAB.deployed().then(async (instance) => {
                 await instance.acceptCreditAgentOwnership();
+            });
+
+            await DAB.deployed().then(async (instance) => {
+                await instance.setDABWalletFactory(DABWalletFactory.address);
+            });
+
+            await DAB.deployed().then(async (instance) => {
+                await instance.acceptDABWalletFactoryOwnership();
             });
 
             await DAB.deployed().then(async (instance) => {
@@ -165,13 +176,26 @@ module.exports =  async (deployer, network, accounts) =>{
                 await instance.transferOwnership(TestDAB.address);
             });
 
+            await DABWalletFactory.deployed().then(async (instance) => {
+                await instance.transferOwnership(TestDAB.address);
+            });
+
             await TestDAB.deployed().then(async (instance) => {
                 await instance.acceptCreditAgentOwnership();
             });
 
             await TestDAB.deployed().then(async (instance) => {
+                await instance.setDABWalletFactory(DABWalletFactory.address);
+            });
+
+            await TestDAB.deployed().then(async (instance) => {
+                await instance.acceptDABWalletFactoryOwnership();
+            });
+
+            await TestDAB.deployed().then(async (instance) => {
                 await instance.activate();
             });
+
         }
     }
 

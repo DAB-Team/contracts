@@ -12,7 +12,7 @@ var DABOperationManager = artifacts.require('DABOperationManager.sol');
 
 module.exports = async (deployer, network) => {
 
-  deployer.deploy(Migrations, {gasLimit: 4000000});
+  deployer.deploy(Migrations, {gasLimit: 4712388});
 
   // For Test
   if(network === "testrpc") {
