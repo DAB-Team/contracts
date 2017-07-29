@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 import './Owned.sol';
-import './Math.sol';
+import './SafeMath.sol';
 
 /*
     Operation v0.1
@@ -11,7 +11,7 @@ import './Math.sol';
     Note that 20% of the contributions are the Bancor token's reserve
 */
 
-contract DABOperationManager is Owned, Math{
+contract DABOperationManager is Owned, SafeMath{
 
     uint256 public constant ACTIVATION_DURATION = 14 days;                 // activation duration
     uint256 public constant CDT_AGENT_ACTIVATION_LAG = 14 days;         // credit token activation lag
@@ -34,9 +34,9 @@ contract DABOperationManager is Owned, Math{
     earlierThan(_startTime)
     {
         activationStartTime = _startTime;
-        activationEndTime = activationStartTime + ACTIVATION_DURATION;
+        activationEndTime = safeAdd(activationStartTime, ACTIVATION_DURATION);
         depositAgentActivationTime = activationEndTime;
-        creditAgentActivationTime = depositAgentActivationTime + CDT_AGENT_ACTIVATION_LAG;
+        creditAgentActivationTime = safeAdd(depositAgentActivationTime, CDT_AGENT_ACTIVATION_LAG);
     }
 
     // ensures that it's earlier than the given time

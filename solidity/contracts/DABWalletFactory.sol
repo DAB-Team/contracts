@@ -100,7 +100,7 @@ contract DABWallet is Owned, SafeMath{
     }
 
     modifier newLoan(){
-        require(now < lastRenew + timeToRenew && needRenew == false);
+        require(now < safeAdd(lastRenew, timeToRenew) && needRenew == false);
         _;
     }
 
@@ -199,8 +199,8 @@ contract DABWallet is Owned, SafeMath{
     newLoan
     validAmount(_cdtAmount){
         needRenew = true;
-        repayStartTime = now + loanDays;
-        repayEndTime = repayStartTime + exemptDays;
+        repayStartTime = safeAdd(now, loanDays);
+        repayEndTime = safeAdd(repayStartTime, exemptDays);
         dab.loan(_cdtAmount);
         require(_cdtAmount <= creditBalance);
         creditBalance = safeSub(creditBalance, _cdtAmount);
@@ -413,13 +413,9 @@ contract DABWalletFactory is Owned{
 */
     function newDABWallet(ILoanPlanFormula _loanPlanFormula)
     public
-    payable
     active
     validLoanPlanFormula(_loanPlanFormula) {
         address wallet = new DABWallet(dab, _loanPlanFormula, msg.sender);
-        if(msg.value > 0){
-            wallet.transfer(msg.value);
-        }
         wallets[wallet].isValid = true;
         LogNewWallet(msg.sender, wallet);
     }

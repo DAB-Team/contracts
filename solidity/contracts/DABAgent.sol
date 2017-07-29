@@ -1,10 +1,10 @@
 pragma solidity ^0.4.11;
 
 import './Owned.sol';
-import './Math.sol';
+import './SafeMath.sol';
 import './interfaces/IDABFormula.sol';
 
-contract DABAgent is Owned, Math{
+contract DABAgent is Owned, SafeMath{
 
     struct Token {
     uint256 supply;         // total supply = issue - destroy
