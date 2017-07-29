@@ -30,6 +30,8 @@ contract DAB is DABOperationManager{
 
     mapping (address => Wallet) public wallets;
 
+    IDABFormula public formula;
+
     DABDepositAgent public depositAgent;
     DABCreditAgent public creditAgent;
 
@@ -37,6 +39,13 @@ contract DAB is DABOperationManager{
     ISmartToken public creditToken;
     ISmartToken public subCreditToken;
     ISmartToken public discreditToken;
+
+    event LogActivation(uint256 _time);
+    event LogFreezing(uint256 _time);
+    event LogUpdateDABFormula(address _old, address _new);
+    event LogAddLoanPlanFormula(address _formula);
+    event LogDisableLoanPlanFormula(address _formula);
+    event LogNewWallet(address _user, address _wallet);
 
     function DAB(
     DABDepositAgent _depositAgent,
@@ -48,6 +57,8 @@ contract DAB is DABOperationManager{
     {
         depositAgent = _depositAgent;
         creditAgent = _creditAgent;
+
+        formula = depositAgent.formula();
 
         depositToken = depositAgent.depositToken();
         creditToken = creditAgent.creditToken();
@@ -123,6 +134,7 @@ contract DAB is DABOperationManager{
         depositAgent.activate();
         creditAgent.activate();
         isActive = true;
+        LogActivation(now);
     }
 
     function freeze()
@@ -131,6 +143,23 @@ contract DAB is DABOperationManager{
         depositAgent.freeze();
         creditAgent.freeze();
         isActive = false;
+        LogFreezing(now);
+    }
+
+/*
+    @dev allows the owner to update the formula contract address
+
+    @param _formula    address of a bancor formula contract
+*/
+    function setDABFormula(IDABFormula _formula)
+    public
+    ownerOnly
+    notThis(_formula)
+    validAddress(_formula)
+    {
+        depositAgent.setDABFormula(_formula);
+        creditAgent.setDABFormula(_formula);
+        LogUpdateDABFormula(formula, _formula);
     }
 
 /**
@@ -148,6 +177,7 @@ contract DAB is DABOperationManager{
     {
         require(!loanPlanFormulas[_loanPlanFormula].isValid); // validate input
         loanPlanFormulas[_loanPlanFormula].isValid = true;
+        LogAddLoanPlanFormula(_loanPlanFormula);
     }
 
 
@@ -166,6 +196,7 @@ contract DAB is DABOperationManager{
     ownerOnly
     {
         loanPlanFormulas[_loanPlanFormula].isValid = false;
+        LogDisableLoanPlanFormula(_loanPlanFormula);
     }
 
 
@@ -294,13 +325,15 @@ contract DAB is DABOperationManager{
 */
     function newDABWallet(ILoanPlanFormula _loanPlanFormula)
     public
+    payable
     active
-    validLoanPlanFormula(_loanPlanFormula)
-    returns (DABWallet){
+    validLoanPlanFormula(_loanPlanFormula) {
         DABWallet wallet = new DABWallet(this, depositAgent, creditAgent, _loanPlanFormula, depositToken, creditToken, subCreditToken, discreditToken, msg.sender);
-        wallet.renewLoanPlan();
+        if(msg.value > 0){
+            wallet.transfer(msg.value);
+        }
         wallets[wallet].isValid = true;
-        return wallet;
+        LogNewWallet(msg.sender, wallet);
     }
 
 /**
@@ -315,20 +348,6 @@ contract DAB is DABOperationManager{
         _wallet.setLoanPlanFormula(msg.sender, _loanPlanFormula);
     }
 
-/*
-    @dev allows the owner to update the formula contract address
-
-    @param _formula    address of a bancor formula contract
-*/
-    function setDABFormula(IDABFormula _formula)
-    public
-    ownerOnly
-    notThis(_formula)
-    validAddress(_formula)
-    {
-        depositAgent.setDABFormula(_formula);
-        creditAgent.setDABFormula(_formula);
-    }
 
 function() payable
     validAmount(msg.value){

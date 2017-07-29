@@ -93,7 +93,7 @@ contract DABWallet is Owned, SafeMath{
 
     modifier renewable(){
         uint256 balanceOfSCT = subCreditToken.balanceOf(this);
-        require(balanceOfSCT == 0);
+        require(balanceOfSCT <= 1 ether);
         _;
     }
 

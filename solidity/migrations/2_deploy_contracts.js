@@ -54,4 +54,118 @@ module.exports =  async (deployer, network) =>{
         await deployer.deploy(TestDAB, DABDepositAgent.address, DABCreditAgent.address, startTime, startTimeInProgress);
     }
 
+    await DepositToken.deployed().then(async (instance) => {
+        await instance.transferOwnership(DepositTokenController.address);
+    });
+
+    await DepositTokenController.deployed().then(async (instance) => {
+        await instance.acceptTokenOwnership();
+    });
+
+    await CreditToken.deployed().then(async (instance) => {
+        await instance.transferOwnership(CreditTokenController.address);
+    });
+
+    await CreditTokenController.deployed().then(async (instance) => {
+        await instance.acceptTokenOwnership();
+    });
+
+    await SubCreditToken.deployed().then(async (instance) => {
+        await instance.transferOwnership(SubCreditTokenController.address);
+    });
+
+    await SubCreditTokenController.deployed().then(async (instance) => {
+        await instance.acceptTokenOwnership();
+    });
+
+    await DiscreditToken.deployed().then(async (instance) => {
+        await instance.transferOwnership(DiscreditTokenController.address);
+    });
+
+    await DiscreditTokenController.deployed().then(async (instance) => {
+        await instance.acceptTokenOwnership();
+    });
+
+    await CreditTokenController.deployed().then(async (instance) => {
+        await instance.transferOwnership(DABCreditAgent.address);
+    });
+
+    await SubCreditTokenController.deployed().then(async (instance) => {
+        await instance.transferOwnership(DABCreditAgent.address);
+    });
+
+    await DiscreditTokenController.deployed().then(async (instance) => {
+        await instance.transferOwnership(DABCreditAgent.address);
+    });
+
+    await DABCreditAgent.deployed().then(async (instance) => {
+        await instance.acceptCreditTokenControllerOwnership();
+    });
+
+    await DABCreditAgent.deployed().then(async (instance) => {
+        await instance.acceptSubCreditTokenControllerOwnership();
+    });
+
+    await DABCreditAgent.deployed().then(async (instance) => {
+        await instance.acceptDiscreditTokenControllerOwnership();
+    });
+
+    await DepositTokenController.deployed().then(async (instance) => {
+        await instance.transferOwnership(DABDepositAgent.address);
+    });
+
+    await DABDepositAgent.deployed().then(async (instance) => {
+        await instance.acceptDepositTokenControllerOwnership();
+    });
+
+    await DABCreditAgent.deployed().then(async (instance) => {
+        await instance.setDepositAgent(DABDepositAgent.address);
+    });
+
+
+    //Main Net
+    if(network === "live"){
+        await DABDepositAgent.deployed().then(async (instance) => {
+            await instance.transferOwnership(DAB.address);
+        });
+        await DABCreditAgent.deployed().then(async (instance) => {
+            await instance.transferOwnership(DAB.address);
+        });
+
+        await DAB.deployed().then(async (instance) => {
+            await instance.acceptDepositAgentOwnership();
+        });
+        await DAB.deployed().then(async (instance) => {
+            await instance.acceptCreditAgentOwnership();
+        });
+
+        await DAB.deployed().then(async (instance) => {
+            await instance.activate();
+        });
+
+    }
+
+    //Test Net
+    if(network === "dev" || network === "testrpc" || network === "rinkeby"){
+        await DABDepositAgent.deployed().then(async (instance) => {
+            await instance.transferOwnership(TestDAB.address);
+        });
+
+        await TestDAB.deployed().then(async (instance) => {
+            await instance.acceptDepositAgentOwnership();
+        });
+
+        await DABCreditAgent.deployed().then(async (instance) => {
+            await instance.transferOwnership(TestDAB.address);
+        });
+
+        await TestDAB.deployed().then(async (instance) => {
+            await instance.acceptCreditAgentOwnership();
+        });
+
+        await TestDAB.deployed().then(async (instance) => {
+            await instance.activate();
+        });
+    }
+
 };
