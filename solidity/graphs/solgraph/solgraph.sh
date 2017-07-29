@@ -1,4 +1,6 @@
 
+rm -rf *.png
+
 for i in $(ls ../../contracts)
 do
 

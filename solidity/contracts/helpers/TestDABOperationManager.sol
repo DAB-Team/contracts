@@ -10,7 +10,7 @@ contract TestDABOperationManager is DABOperationManager{
     uint256 _startTimeOverride)
     DABOperationManager( _startTime)
     {
-        startTime = _startTimeOverride;
-        endTime = startTime + DURATION;
+        activationStartTime = _startTimeOverride;
+        activationEndTime = activationStartTime + ACTIVATION_DURATION;
     }
 }

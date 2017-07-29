@@ -73,27 +73,6 @@ contract DABWallet is Owned, SafeMath{
         _;
     }
 
-    modifier beforeRepayStart(){
-        require(now < repayStartTime);
-        _;
-    }
-
-    modifier beforeRepayEnd(){
-        require(now < repayEndTime);
-        _;
-    }
-
-
-    modifier afterRepayStart(){
-        require(now >= repayStartTime);
-        _;
-    }
-
-    modifier afterRepayEnd(){
-        require(now >= repayEndTime);
-        _;
-    }
-
     modifier validAmount(uint256 _amount){
         require(_amount > 0);
         _;

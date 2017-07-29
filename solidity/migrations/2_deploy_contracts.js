@@ -160,6 +160,18 @@ module.exports =  async (deployer, network, accounts) =>{
                 await instance.activate();
             });
 
+            await DAB.deployed().then(async (instance) => {
+                await instance.addLoanPlanFormula(HalfAYearLoanPlanFormula.address);
+            });
+
+            await DAB.deployed().then(async (instance) => {
+                await instance.addLoanPlanFormula(AYearLoanPlanFormula.address);
+            });
+
+            await DAB.deployed().then(async (instance) => {
+                await instance.addLoanPlanFormula(TwoYearLoanPlanFormula.address);
+            });
+
         }
 
         //Test Net
@@ -194,6 +206,18 @@ module.exports =  async (deployer, network, accounts) =>{
 
             await TestDAB.deployed().then(async (instance) => {
                 await instance.activate();
+            });
+
+            await TestDAB.deployed().then(async (instance) => {
+                await instance.addLoanPlanFormula(HalfAYearLoanPlanFormula.address);
+            });
+
+            await TestDAB.deployed().then(async (instance) => {
+                await instance.addLoanPlanFormula(AYearLoanPlanFormula.address);
+            });
+
+            await TestDAB.deployed().then(async (instance) => {
+                await instance.addLoanPlanFormula(TwoYearLoanPlanFormula.address);
             });
 
         }

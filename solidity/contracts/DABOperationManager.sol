@@ -13,13 +13,13 @@ import './Math.sol';
 
 contract DABOperationManager is Owned, Math{
 
-    uint256 public constant DURATION = 14 days;                 // activation duration
+    uint256 public constant ACTIVATION_DURATION = 14 days;                 // activation duration
     uint256 public constant CDT_AGENT_ACTIVATION_LAG = 14 days;         // credit token activation lag
 
     string public version = '0.1';
 
-    uint256 public startTime = 0;                   // activation start time (in seconds)
-    uint256 public endTime = 0;                     // activation end time (in seconds)
+    uint256 public activationStartTime = 0;                   // activation start time (in seconds)
+    uint256 public activationEndTime = 0;                     // activation end time (in seconds)
     uint256 public depositAgentActivationTime = 0;                     // activation time of deposit token (in seconds)
     uint256 public creditAgentActivationTime = 0;                     // activation time of credit token (in seconds)
 
@@ -33,9 +33,9 @@ contract DABOperationManager is Owned, Math{
     uint256 _startTime)
     earlierThan(_startTime)
     {
-        startTime = _startTime;
-        endTime = startTime + DURATION;
-        depositAgentActivationTime = endTime;
+        activationStartTime = _startTime;
+        activationEndTime = activationStartTime + ACTIVATION_DURATION;
+        depositAgentActivationTime = activationEndTime;
         creditAgentActivationTime = depositAgentActivationTime + CDT_AGENT_ACTIVATION_LAG;
     }
 
@@ -60,7 +60,7 @@ contract DABOperationManager is Owned, Math{
 
     // ensures that deposit contract activated
     modifier started() {
-        require(now > startTime);
+        require(now > activationStartTime);
         _;
     }
 
