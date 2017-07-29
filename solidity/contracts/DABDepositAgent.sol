@@ -180,7 +180,7 @@ contract DABDepositAgent is DABAgent{
         assert(depositToken.transferFrom(_user, this, _withdrawAmount));
         _user.transfer(ethAmount);
 
-        depositBalance = depositToken.balanceOf(this);
+        depositBalance = safeAdd(depositBalance, _withdrawAmount);
         depositCurrentCRR = currentCRR;
         depositPrice = dptPrice;
     // event

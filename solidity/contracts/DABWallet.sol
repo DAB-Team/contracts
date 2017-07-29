@@ -10,6 +10,11 @@ import './DABCreditAgent.sol';
 
 contract DABWallet is Owned, SafeMath{
     uint256 public balance;
+    uint256 public depositBalance;
+    uint256 public creditBalance;
+    uint256 public subCreditBalance;
+    uint256 public discreditBalance;
+    uint256 public maxApprove = 1000000 ether;
     uint256 public repayStartTime;
     uint256 public repayEndTime;
     uint256 public interestRate;
@@ -17,15 +22,16 @@ contract DABWallet is Owned, SafeMath{
     uint256 public exemptDays;
     bool public needRenew;
     uint256 public lastRenew;
-    uint256 public timeToRenew = 3 days;
+    uint256 public timeToRenew = 1 days;
 
-    address user;
-    address newUser = 0x0;
+    address public user;
+    address public newUser = 0x0;
 
     DAB public dab;
     ILoanPlanFormula public formula;
     DABDepositAgent public depositAgent;
     DABCreditAgent public creditAgent;
+
     ISmartToken public depositToken;
     ISmartToken public creditToken;
     ISmartToken public subCreditToken;
@@ -35,23 +41,28 @@ contract DABWallet is Owned, SafeMath{
 
     function DABWallet(
     DAB _dab,
-    DABDepositAgent _depositAgent,
-    DABCreditAgent _creditAgent,
     ILoanPlanFormula _formula,
-    ISmartToken _depositToken,
-    ISmartToken _creditToken,
-    ISmartToken _subCreditToken,
-    ISmartToken _discreditToken,
-    address _user){
+    address _user)
+    validAddress(_dab)
+    validAddress(_formula)
+    validAddress(_user)
+    {
         dab = _dab;
-        depositAgent = _depositAgent;
-        creditAgent = _creditAgent;
         formula = _formula;
-        depositToken = _depositToken;
-        creditToken = _creditToken;
-        subCreditToken = _subCreditToken;
-        discreditToken = _discreditToken;
         user = _user;
+
+        depositBalance = 0;
+        creditBalance = 0;
+        subCreditBalance = 0;
+        discreditBalance = 0;
+
+        depositAgent = _dab.depositAgent();
+        creditAgent = _dab.creditAgent();
+        depositToken = _dab.depositToken();
+        creditToken = _dab.creditToken();
+        subCreditToken = _dab.subCreditToken();
+        discreditToken = _dab.discreditToken();
+
         needRenew = true;
     }
 
@@ -112,9 +123,9 @@ contract DABWallet is Owned, SafeMath{
         _;
     }
 
-    function transferWalletOwnership(address _oldUser, address _newUser)
+    function transferWalletOwnership(address _newUser)
     public
-    validUser(_oldUser)
+    userOnly
     validAddress(_newUser){
         require(_newUser != user);
         newUser = _newUser;
@@ -145,12 +156,12 @@ contract DABWallet is Owned, SafeMath{
         balance = safeAdd(balance, msg.value);
     }
 
-    function withdrawETH(uint256 _amount)
+    function withdrawETH(uint256 _ethAmount)
     public
     userOnly
-    validAmount(_amount){
-        balance = safeSub(balance, _amount);
-        msg.sender.transfer(_amount);
+    validAmount(_ethAmount){
+        balance = safeSub(balance, _ethAmount);
+        msg.sender.transfer(_ethAmount);
     }
 
     function withdrawAllETH()
@@ -161,49 +172,46 @@ contract DABWallet is Owned, SafeMath{
         msg.sender.transfer(amountToWithdraw);
     }
 
-    function deposit(uint256 _amount)
+    function deposit(uint256 _ethAmount)
     public
     userOnly
-    validAmount(_amount){
-        balance = safeSub(balance, _amount);
-        dab.deposit.value(_amount)();
+    validAmount(_ethAmount){
+        balance = safeSub(balance, _ethAmount);
+        dab.deposit.value(_ethAmount)();
+        depositBalance = depositToken.balanceOf(this);
+        creditBalance = creditToken.balanceOf(this);
     }
 
-    function withdraw(uint256 _amount)
+    function withdraw(uint256 _dptAmount)
     public
     userOnly
-    validAmount(_amount){
-        uint256 balancOfDPT = depositToken.balanceOf(this);
-        require(balancOfDPT >= _amount);
-        approve();
-        dab.withdraw(_amount);
+    validAmount(_dptAmount){
+        depositBalance = safeSub(depositBalance, _dptAmount);
+        dab.withdraw(_dptAmount);
     }
 
-    function withdrawDPT(uint256 _amount)
+    function withdrawDepositToken(uint256 _dptAmount)
     public
     userOnly
-    validAmount(_amount){
-        uint256 balancOfDPT = depositToken.balanceOf(this);
-        require(balancOfDPT >= _amount);
-        assert(depositToken.transfer(msg.sender, _amount));
+    validAmount(_dptAmount){
+        depositBalance = safeSub(depositBalance, _dptAmount);
+        assert(depositToken.transfer(msg.sender, _dptAmount));
     }
 
-    function cash(uint256 _amount)
+    function cash(uint256 _cdtAmount)
     public
     userOnly
-    validAmount(_amount){
-        uint256 balancOfCDT = creditToken.balanceOf(this);
-        require(balancOfCDT >= _amount);
-        approve();
-        dab.cash(_amount);
+    validAmount(_cdtAmount){
+        creditBalance = safeSub(creditBalance, _cdtAmount);
+        dab.cash(_cdtAmount);
     }
 
     function cashAll()
     public
     userOnly {
-        uint256 balancOfCDT = creditToken.balanceOf(this);
-        approve();
-        dab.cash(balancOfCDT);
+        uint256 amount = creditBalance;
+        creditBalance = 0;
+        dab.cash(amount);
     }
 
     function renewLoanPlan()
@@ -219,86 +227,140 @@ contract DABWallet is Owned, SafeMath{
         lastRenew = now;
     }
 
-    function loan(uint256 _loanAmount)
+    function loan(uint256 _cdtAmount)
     public
     userOnly
     newLoan
-    validAmount(_loanAmount){
-        uint256 balanceOfCDT = creditToken.balanceOf(this);
-        require(_loanAmount <= balanceOfCDT);
+    validAmount(_cdtAmount){
         needRenew = true;
         repayStartTime = now + loanDays;
         repayEndTime = repayStartTime + exemptDays;
-        approve();
-        dab.loan(_loanAmount);
+        dab.loan(_cdtAmount);
+        require(_cdtAmount <= creditBalance);
+        creditBalance = safeSub(creditBalance, _cdtAmount);
     }
 
-    function repay(uint256 _amount)
+    function repay(uint256 _ethAmount)
     public
     userOnly
     repayBetween
-    validAmount(_amount) {
-        balance = safeSub(balance, _amount);
-        approve();
-        dab.repay.value(_amount)();
+    validAmount(_ethAmount) {
+        balance = safeSub(balance, _ethAmount);
+        dab.repay.value(_ethAmount)();
+        creditBalance = creditToken.balanceOf(this);
+        subCreditBalance = subCreditToken.balanceOf(this);
     }
 
     function repayAll()
     public
     userOnly
     repayBetween {
-        uint256 amountToRepay = balance;
+        uint256 amount = balance;
         balance = 0;
-        approve();
-        dab.repay.value(amountToRepay)();
+        dab.repay.value(amount)();
+        creditBalance = creditToken.balanceOf(this);
+        subCreditBalance = subCreditToken.balanceOf(this);
+    }
+
+    function toDiscreditToken(uint256 _sctAmount)
+    public
+    userOnly
+    afterRepayEnd
+    validAmount(_sctAmount) {
+        subCreditBalance = safeSub(subCreditBalance, _sctAmount);
+        dab.toDiscreditToken(_sctAmount);
+        subCreditBalance = subCreditToken.balanceOf(this);
+        discreditBalance = discreditToken.balanceOf(this);
     }
 
     function toDiscreditTokenAll()
     public
     userOnly
     afterRepayEnd {
-        uint256 balanceOfSCT = subCreditToken.balanceOf(this);
-        approve();
-        dab.toDiscreditToken(balanceOfSCT);
+        uint256 amount = subCreditBalance;
+        subCreditBalance = 0;
+        dab.toDiscreditToken(amount);
+        subCreditBalance = subCreditToken.balanceOf(this);
+        discreditBalance = discreditToken.balanceOf(this);
+    }
+
+    function toCreditToken(uint256 _ethAmount)
+    public
+    userOnly
+    validAmount(_ethAmount){
+        balance = safeSub(balance, _ethAmount);
+        dab.toCreditToken.value(_ethAmount)();
+        creditBalance = creditToken.balanceOf(this);
+        discreditBalance = discreditToken.balanceOf(this);
     }
 
     function toCreditTokenAll()
     public
     userOnly {
-        uint256 amountToCredit = balance;
+        uint256 amount = balance;
         balance = 0;
-        approve();
-        dab.toCreditToken.value(amountToCredit)();
+        dab.toCreditToken.value(amount)();
+        creditBalance = creditToken.balanceOf(this);
+        discreditBalance = discreditToken.balanceOf(this);
+    }
+
+    function withdrawCreditToken(uint256 _cdtAmount)
+    public
+    userOnly
+    validAmount(_cdtAmount){
+        creditBalance = safeSub(creditBalance, _cdtAmount);
+        assert(creditToken.transfer(msg.sender, _cdtAmount));
     }
 
     function withdrawAllCreditToken()
     public
     userOnly {
-        uint256 balanceOfCDT = creditToken.balanceOf(this);
-        assert(creditToken.transfer(msg.sender, balanceOfCDT));
+        uint256 amount = creditBalance;
+        creditBalance = 0;
+        assert(creditToken.transfer(msg.sender, amount));
+    }
+
+    function withdrawDiscreditToken(uint256 _dctAmount)
+    public
+    userOnly
+    validAmount(_dctAmount){
+        discreditBalance = safeSub(discreditBalance, _dctAmount);
+        assert(discreditToken.transfer(msg.sender, _dctAmount));
     }
 
     function withdrawAllDiscreditToken()
     public
     userOnly {
-        uint256 balanceOfDCT = discreditToken.balanceOf(this);
-        assert(discreditToken.transfer(msg.sender, balanceOfDCT));
+        uint256 amount = discreditBalance;
+        discreditBalance = 0;
+        assert(discreditToken.transfer(msg.sender, amount));
     }
 
-    function approve()
-    private {
+    function approve(uint256 _approveAmount)
+    public {
+        require(_approveAmount >= 0);
         depositToken.approve(depositAgent, 0);
         creditToken.approve(creditAgent, 0);
         subCreditToken.approve(creditAgent, 0);
         discreditToken.approve(creditAgent, 0);
-        uint256 balanceOfDPT = depositToken.balanceOf(this);
-        uint256 balanceOfCDT = creditToken.balanceOf(this);
-        uint256 balanceOfSCT = subCreditToken.balanceOf(this);
-        uint256 balanceOfDCT = discreditToken.balanceOf(this);
-        depositToken.approve(depositAgent, balanceOfDPT);
-        creditToken.approve(creditAgent, balanceOfCDT);
-        subCreditToken.approve(creditAgent, balanceOfSCT);
-        discreditToken.approve(creditAgent, balanceOfDCT);
+        if(_approveAmount != 0){
+            depositToken.approve(depositAgent, _approveAmount);
+            creditToken.approve(creditAgent, _approveAmount);
+            subCreditToken.approve(creditAgent, _approveAmount);
+            discreditToken.approve(creditAgent, _approveAmount);
+        }
+    }
+
+    function approveMax()
+    public {
+        depositToken.approve(depositAgent, 0);
+        creditToken.approve(creditAgent, 0);
+        subCreditToken.approve(creditAgent, 0);
+        discreditToken.approve(creditAgent, 0);
+        depositToken.approve(depositAgent, maxApprove);
+        creditToken.approve(creditAgent, maxApprove);
+        subCreditToken.approve(creditAgent, maxApprove);
+        discreditToken.approve(creditAgent, maxApprove);
     }
 
     function() payable{

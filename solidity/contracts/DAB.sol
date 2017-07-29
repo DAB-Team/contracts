@@ -328,13 +328,14 @@ contract DAB is DABOperationManager{
     payable
     active
     validLoanPlanFormula(_loanPlanFormula) {
-        DABWallet wallet = new DABWallet(this, depositAgent, creditAgent, _loanPlanFormula, depositToken, creditToken, subCreditToken, discreditToken, msg.sender);
+        address wallet = new DABWallet(this, _loanPlanFormula, msg.sender);
         if(msg.value > 0){
             wallet.transfer(msg.value);
         }
         wallets[wallet].isValid = true;
         LogNewWallet(msg.sender, wallet);
     }
+
 
 /**
 @dev set solidity wallet with a loan plan formula
