@@ -85,8 +85,8 @@ contract DABCreditAgent is DABAgent{
     }
 
     function activate()
-    ownerOnly
-    public {
+    public
+    ownerOnly {
         creditBalance = creditToken.balanceOf(this);
 
         tokens[creditToken].supply = creditToken.totalSupply();
@@ -100,8 +100,8 @@ contract DABCreditAgent is DABAgent{
     }
 
     function freeze()
-    ownerOnly
-    public{
+    public
+    ownerOnly {
         creditTokenController.disableTokenTransfers(true);
         subCreditTokenController.disableTokenTransfers(true);
         discreditTokenController.disableTokenTransfers(true);
@@ -114,10 +114,11 @@ add doc
 
 */
 
-    function setDepositAgent(address _depositAgent) public
+    function setDepositAgent(address _depositAgent)
+    public
+    ownerOnly
     validAddress(_depositAgent)
     notThis(_depositAgent)
-    ownerOnly
     {
         require(_depositAgent != depositAgent);
         depositAgent = _depositAgent;
@@ -131,7 +132,8 @@ add doc
 
     @param _newOwner    new token owner
 */
-    function transferCreditTokenControllerOwnership(address _newOwner) public
+    function transferCreditTokenControllerOwnership(address _newOwner)
+    public
     ownerOnly {
         creditTokenController.transferOwnership(_newOwner);
     }
@@ -140,7 +142,8 @@ add doc
     @dev used by a new owner to accept a token controller ownership transfer
     can only be called by the contract owner
 */
-    function acceptCreditTokenControllerOwnership() public
+    function acceptCreditTokenControllerOwnership()
+    public
     ownerOnly {
         creditTokenController.acceptOwnership();
     }
@@ -153,7 +156,8 @@ add doc
 
     @param _newOwner    new token owner
 */
-    function transferSubCreditTokenControllerOwnership(address _newOwner) public
+    function transferSubCreditTokenControllerOwnership(address _newOwner)
+    public
     ownerOnly {
         subCreditTokenController.transferOwnership(_newOwner);
     }
@@ -162,7 +166,8 @@ add doc
     @dev used by a new owner to accept a token controller ownership transfer
     can only be called by the contract owner
 */
-    function acceptSubCreditTokenControllerOwnership() public
+    function acceptSubCreditTokenControllerOwnership()
+    public
     ownerOnly {
         subCreditTokenController.acceptOwnership();
     }
@@ -174,7 +179,8 @@ add doc
 
     @param _newOwner    new token owner
 */
-    function transferDiscreditTokenControllerOwnership(address _newOwner) public
+    function transferDiscreditTokenControllerOwnership(address _newOwner)
+    public
     ownerOnly {
         discreditTokenController.transferOwnership(_newOwner);
     }
@@ -183,7 +189,8 @@ add doc
     @dev used by a new owner to accept a token controller ownership transfer
     can only be called by the contract owner
 */
-    function acceptDiscreditTokenControllerOwnership() public
+    function acceptDiscreditTokenControllerOwnership()
+    public
     ownerOnly {
         discreditTokenController.acceptOwnership();
     }
@@ -226,48 +233,48 @@ add doc
 /**
     @dev cash out credit token
 
-    @param _cashAmount amount to cash (in credit token)
+    @param _cdtAmount amount to cash (in credit token)
 
     @return success
 */
-    function cash(address _user, uint256 _cashAmount)
+    function cash(address _user, uint256 _cdtAmount)
     public
     ownerOnly
     active
     validAddress(_user)
-    validAmount(_cashAmount)
+    validAmount(_cdtAmount)
     returns (bool success){
         Token storage credit = tokens[creditToken];
-        var (ethAmount, cdtPrice) = formula.cash(balance, safeSub(credit.supply, creditBalance), _cashAmount);
-        creditTokenController.destroyTokens(_user, _cashAmount);
+        var (ethAmount, cdtPrice) = formula.cash(balance, safeSub(credit.supply, creditBalance), _cdtAmount);
+        creditTokenController.destroyTokens(_user, _cdtAmount);
         _user.transfer(ethAmount);
 
         balance = safeSub(balance, ethAmount);
-        credit.supply = safeSub(credit.supply, _cashAmount);
+        credit.supply = safeSub(credit.supply, _cdtAmount);
         creditPrice = cdtPrice;
 
     // event
-        LogCash(_user, _cashAmount, ethAmount);
+        LogCash(_user, _cdtAmount, ethAmount);
         return true;
     }
 
-    function loan(address _wallet, uint256 _loanAmount)
+    function loan(address _wallet, uint256 _cdtAmount)
     public
     ownerOnly
     active
-    validAmount(_loanAmount)
+    validAmount(_cdtAmount)
     returns (bool success){
         DABWallet wallet = DABWallet(_wallet);
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
         uint256 interestRate = wallet.interestRate();
 
-        var (ethAmount, dptReserve, cdtAmount, sctAmount) = formula.loan(_loanAmount, interestRate);
+        var (ethAmount, dptReserve, cdtAmount, sctAmount) = formula.loan(_cdtAmount, interestRate);
 
         balance = safeSub(balance, ethAmount);
         balance = safeSub(balance, dptReserve);
 
-        assert(creditToken.transferFrom(wallet, this, _loanAmount));
+        assert(creditToken.transferFrom(wallet, this, _cdtAmount));
         creditTokenController.issueTokens(wallet, cdtAmount);
         subCreditTokenController.issueTokens(wallet, sctAmount);
         depositAgent.transfer(dptReserve);
@@ -276,7 +283,7 @@ add doc
         credit.supply = safeAdd(credit.supply, cdtAmount);
         subCredit.supply = safeAdd(subCredit.supply, sctAmount);
     // event
-        LogLoan(wallet, _loanAmount, ethAmount, cdtAmount, sctAmount);
+        LogLoan(wallet, _cdtAmount, ethAmount, cdtAmount, sctAmount);
         return true;
     }
 

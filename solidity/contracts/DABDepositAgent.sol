@@ -48,8 +48,8 @@ contract DABDepositAgent is DABAgent{
     }
 
     function activate()
-    ownerOnly
-    public{
+    public
+    ownerOnly {
         depositBalance = depositToken.balanceOf(this);
         tokens[depositToken].supply = depositToken.totalSupply();
 
@@ -58,8 +58,9 @@ contract DABDepositAgent is DABAgent{
     }
 
     function freeze()
+    public
     ownerOnly
-    public{
+    {
         depositTokenController.disableTokenTransfers(true);
         isActive = false;
     }
@@ -71,7 +72,8 @@ contract DABDepositAgent is DABAgent{
 
     @param _newOwner    new token owner
 */
-    function transferDepositTokenControllerOwnership(address _newOwner) public
+    function transferDepositTokenControllerOwnership(address _newOwner)
+    public
     ownerOnly {
         depositTokenController.transferOwnership(_newOwner);
     }
@@ -80,7 +82,8 @@ contract DABDepositAgent is DABAgent{
     @dev used by a new owner to accept a token controller ownership transfer
     can only be called by the contract owner
 */
-    function acceptDepositTokenControllerOwnership() public
+    function acceptDepositTokenControllerOwnership()
+    public
     ownerOnly {
         depositTokenController.acceptOwnership();
     }
@@ -162,31 +165,30 @@ contract DABDepositAgent is DABAgent{
 /**
     @dev withdraw ethereum
 
-    @param _withdrawAmount amount to withdraw (in deposit token)
+    @param _dptAmount amount to withdraw (in deposit token)
 */
-    function withdraw(address _user, uint256 _withdrawAmount)
+    function withdraw(address _user, uint256 _dptAmount)
     public
     ownerOnly
     active
     validAddress(_user)
-    validAmount(_withdrawAmount)
+    validAmount(_dptAmount)
     returns (bool success){
         Token storage deposit = tokens[depositToken];
-        var (ethAmount, currentCRR, dptPrice) = formula.withdraw(balance, safeSub(deposit.supply, depositBalance), _withdrawAmount);
+        var (ethAmount, currentCRR, dptPrice) = formula.withdraw(balance, safeSub(deposit.supply, depositBalance), _dptAmount);
         assert(ethAmount > 0);
 
         balance = safeSub(balance, ethAmount);
 
-        assert(depositToken.transferFrom(_user, this, _withdrawAmount));
+        assert(depositToken.transferFrom(_user, this, _dptAmount));
         _user.transfer(ethAmount);
 
-        depositBalance = safeAdd(depositBalance, _withdrawAmount);
+        depositBalance = safeAdd(depositBalance, _dptAmount);
         depositCurrentCRR = currentCRR;
         depositPrice = dptPrice;
     // event
-        LogWithdraw(_user, _withdrawAmount, ethAmount);
+        LogWithdraw(_user, _dptAmount, ethAmount);
         return true;
-
     }
 
 

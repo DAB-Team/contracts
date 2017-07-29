@@ -113,24 +113,24 @@ contract EasyDABFormula is IDABFormula, Math {
  TO complete doc
 */
 
-    function withdraw(uint256 _dptBalance, uint256 _dptCirculation, uint256 _dptAmount)
+    function withdraw(uint256 _ethBalance, uint256 _dptCirculation, uint256 _dptAmount)
     public
     returns (uint256 ethAmount, uint256 CRR, uint256 tokenPrice){
-        _dptBalance = EtherToFloat(_dptBalance);
+        _ethBalance = EtherToFloat(_ethBalance);
         _dptCirculation = EtherToFloat(_dptCirculation);
         _dptAmount = EtherToFloat(_dptAmount);
 
-        require( _dptBalance > 0 );
+        require( _ethBalance > 0 );
         require(_dptCirculation > 0);
         require(_dptAmount > 0);
     // insure the accuracy of the formula
         require(_dptAmount <= maxDPT);
 
-        tokenPrice = div(_dptBalance, mul(_dptCirculation, getCRR(_dptCirculation)));
+        tokenPrice = div(_ethBalance, mul(_dptCirculation, getCRR(_dptCirculation)));
         ethAmount = mul(_dptAmount, tokenPrice);
 
         uint256 maxcrr = getCRR(sub(_dptCirculation, _dptAmount));
-        tokenPrice = div(sub(_dptBalance, ethAmount), mul(_dptCirculation, maxcrr));
+        tokenPrice = div(sub(_ethBalance, ethAmount), mul(_dptCirculation, maxcrr));
         uint256 actualEther = mul(_dptAmount, tokenPrice);
         return (FloatToEther(actualEther), FloatToDecimal(maxcrr), FloatToDecimal(tokenPrice));
     }

@@ -126,6 +126,7 @@ contract DABWallet is Owned, SafeMath{
     ownerOnly
     validUser(_user)
     validAddress(_formula) {
+        require(_formula != formula);
         formula = _formula;
     }
 
@@ -253,7 +254,8 @@ contract DABWallet is Owned, SafeMath{
     }
 
     function approve(uint256 _approveAmount)
-    public {
+    public
+    userOnly{
         require(_approveAmount >= 0);
         depositToken.approve(depositAgent, 0);
         creditToken.approve(creditAgent, 0);
@@ -268,7 +270,8 @@ contract DABWallet is Owned, SafeMath{
     }
 
     function approveMax()
-    public {
+    public
+    userOnly {
         depositToken.approve(depositAgent, 0);
         creditToken.approve(creditAgent, 0);
         subCreditToken.approve(creditAgent, 0);
@@ -277,6 +280,15 @@ contract DABWallet is Owned, SafeMath{
         creditToken.approve(creditAgent, maxApprove);
         subCreditToken.approve(creditAgent, maxApprove);
         discreditToken.approve(creditAgent, maxApprove);
+    }
+
+    function updateTokenBalance()
+    public
+    userOnly {
+        depositBalance = depositToken.balanceOf(this);
+        creditBalance = creditToken.balanceOf(this);
+        subCreditBalance = subCreditToken.balanceOf(this);
+        discreditBalance = discreditToken.balanceOf(this);
     }
 
     function() payable{
