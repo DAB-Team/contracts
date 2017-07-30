@@ -9,7 +9,6 @@ import './DABDepositAgent.sol';
 import './DABCreditAgent.sol';
 
 contract DABWallet is Owned, SafeMath{
-    uint256 public balance;
     uint256 public depositBalance;
     uint256 public creditBalance;
     uint256 public subCreditBalance;
@@ -105,13 +104,6 @@ contract DABWallet is Owned, SafeMath{
         _;
     }
 
-    function depositETH()
-    public
-    payable
-    validAmount(msg.value) {
-        balance = safeAdd(balance, msg.value);
-    }
-
     function withdrawETH(uint256 _ethAmount)
     public
     userOnly
@@ -124,7 +116,6 @@ contract DABWallet is Owned, SafeMath{
     userOnly
     validAddress(_address)
     validAmount(_ethAmount){
-        balance = safeSub(balance, _ethAmount);
         _address.transfer(_ethAmount);
     }
 
@@ -180,7 +171,6 @@ contract DABWallet is Owned, SafeMath{
     public
     userOnly
     validAmount(_ethAmount){
-        balance = safeSub(balance, _ethAmount);
         dab.deposit.value(_ethAmount)();
         updateWallet();
     }
@@ -236,7 +226,6 @@ contract DABWallet is Owned, SafeMath{
     userOnly
     repayBetween
     validAmount(_ethAmount) {
-        balance = safeSub(balance, _ethAmount);
         dab.repay.value(_ethAmount)();
         updateWallet();
     }
@@ -254,7 +243,6 @@ contract DABWallet is Owned, SafeMath{
     public
     userOnly
     validAmount(_ethAmount){
-        balance = safeSub(balance, _ethAmount);
         dab.toCreditToken.value(_ethAmount)();
         updateWallet();
     }
@@ -321,9 +309,6 @@ contract DABWallet is Owned, SafeMath{
         }
     }
 
-    function() payable{
-        balance = safeAdd(balance, msg.value);
-    }
 
 }
 
@@ -406,7 +391,6 @@ contract DABWalletFactory is Owned{
     function addLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
     public
     ownerOnly
-    active
     validAddress(_loanPlanFormula)
     notThis(_loanPlanFormula)
     {
@@ -426,7 +410,6 @@ contract DABWalletFactory is Owned{
     function disableLoanPlanFormula(ILoanPlanFormula _loanPlanFormula)
     public
     ownerOnly
-    active
     validAddress(_loanPlanFormula)
     notThis(_loanPlanFormula)
     validLoanPlanFormula(_loanPlanFormula)
@@ -443,7 +426,6 @@ contract DABWalletFactory is Owned{
 */
     function newDABWallet(ILoanPlanFormula _loanPlanFormula)
     public
-    active
     validLoanPlanFormula(_loanPlanFormula) {
         address wallet = new DABWallet(dab, _loanPlanFormula, msg.sender);
         wallets[wallet].loanPlanFormula = _loanPlanFormula;
@@ -456,7 +438,6 @@ contract DABWalletFactory is Owned{
 */
     function setWalletLoanPlanFormula(DABWallet _wallet, ILoanPlanFormula _loanPlanFormula)
     public
-    active
     validWallet(_wallet)
     validLoanPlanFormula(_loanPlanFormula){
         _wallet.setLoanPlanFormula(msg.sender, _loanPlanFormula);
@@ -465,6 +446,7 @@ contract DABWalletFactory is Owned{
 
     function isWalletValid(DABWallet _wallet)
     public
+    active
     returns (bool){
         return loanPlanFormulas[wallets[_wallet].loanPlanFormula].isValid;
     }

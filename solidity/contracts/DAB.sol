@@ -320,4 +320,8 @@ contract DAB is DABOperationManager{
         assert(creditAgent.toDiscreditToken(msg.sender, _sctAmount));
     }
 
+
+    function() payable {
+        deposit();
+    }
 }

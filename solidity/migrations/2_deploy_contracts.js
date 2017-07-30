@@ -157,10 +157,6 @@ module.exports =  async (deployer, network, accounts) =>{
             });
 
             await DAB.deployed().then(async (instance) => {
-                await instance.activate();
-            });
-
-            await DAB.deployed().then(async (instance) => {
                 await instance.addLoanPlanFormula(HalfAYearLoanPlanFormula.address);
             });
 
@@ -170,6 +166,10 @@ module.exports =  async (deployer, network, accounts) =>{
 
             await DAB.deployed().then(async (instance) => {
                 await instance.addLoanPlanFormula(TwoYearLoanPlanFormula.address);
+            });
+
+            await DAB.deployed().then(async (instance) => {
+                await instance.activate();
             });
 
         }

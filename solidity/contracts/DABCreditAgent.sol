@@ -5,6 +5,7 @@ import './interfaces/IDABFormula.sol';
 import './interfaces/ISmartToken.sol';
 import './SmartTokenController.sol';
 import './DABAgent.sol';
+import './DABDepositAgent.sol';
 import './DABWalletFactory.sol';
 
 contract DABCreditAgent is DABAgent{
@@ -13,7 +14,7 @@ contract DABCreditAgent is DABAgent{
 
     uint256 public creditPrice;
 
-    address public depositAgent= 0x0;
+    DABDepositAgent public depositAgent;
 
     ISmartToken public creditToken;
 
@@ -77,9 +78,9 @@ contract DABCreditAgent is DABAgent{
 
     }
 
-// validates an address - currently only checks that it isn't null
-    modifier DepositAgentOnly() {
-        assert(msg.sender == depositAgent);
+    // validates msg sender is deposit agent
+    modifier depositAgentOnly() {
+        assert(msg.sender == address(depositAgent));
         _;
     }
 
@@ -113,13 +114,15 @@ add doc
 
 */
 
-    function setDepositAgent(address _depositAgent)
+    function setDepositAgent(address _address)
     public
     ownerOnly
-    validAddress(_depositAgent)
-    notThis(_depositAgent)
+    validAddress(_address)
+    notThis(_address)
     {
-        require(_depositAgent != depositAgent);
+
+        require(address(depositAgent) != _address);
+        DABDepositAgent _depositAgent = DABDepositAgent(_address);
         depositAgent = _depositAgent;
 
     }
@@ -207,7 +210,7 @@ add doc
     function issue(address _user, uint256 _uCDTAmount, uint256 _fCDTAmount)
     public
     payable
-    DepositAgentOnly
+    depositAgentOnly
     active
     validAddress(_user)
     validAmount(_uCDTAmount)
@@ -245,6 +248,7 @@ add doc
     returns (bool success){
         Token storage credit = tokens[creditToken];
         var (ethAmount, cdtPrice) = formula.cash(balance, safeSub(credit.supply, creditBalance), _cdtAmount);
+        assert(ethAmount > 0);
         creditTokenController.destroyTokens(_user, _cdtAmount);
         _user.transfer(ethAmount);
 
@@ -268,21 +272,26 @@ add doc
         Token storage subCredit = tokens[subCreditToken];
         uint256 interestRate = wallet.interestRate();
 
-        var (ethAmount, dptReserve, cdtAmount, sctAmount) = formula.loan(_cdtAmount, interestRate);
+        var (ethAmount, ethInterest, cdtIssuanceAmount, sctAmount) = formula.loan(_cdtAmount, interestRate);
+        assert(ethAmount > 0);
+        assert(ethInterest > 0);
+        assert(sctAmount > 0);
 
         balance = safeSub(balance, ethAmount);
-        balance = safeSub(balance, dptReserve);
+        balance = safeSub(balance, ethInterest);
 
         assert(creditToken.transferFrom(wallet, this, _cdtAmount));
-        creditTokenController.issueTokens(wallet, cdtAmount);
+        creditTokenController.issueTokens(wallet, cdtIssuanceAmount);
         subCreditTokenController.issueTokens(wallet, sctAmount);
-        depositAgent.transfer(dptReserve);
+
+        depositAgent.depositInterest.value(ethInterest)();
+
         wallet.transfer(ethAmount);
 
-        credit.supply = safeAdd(credit.supply, cdtAmount);
+        credit.supply = safeAdd(credit.supply, cdtIssuanceAmount);
         subCredit.supply = safeAdd(subCredit.supply, sctAmount);
     // event
-        LogLoan(wallet, _cdtAmount, ethAmount, cdtAmount, sctAmount);
+        LogLoan(wallet, _cdtAmount, ethAmount, cdtIssuanceAmount, sctAmount);
         return true;
     }
 
@@ -302,35 +311,36 @@ add doc
         Token storage subCredit = tokens[subCreditToken];
 
         uint256 sctAmount = subCreditToken.balanceOf(_user);
-        var (refundETHAmount, cdtAmount, refundSCTAmount) = formula.repay(msg.value, sctAmount);
+        var (ethRefundAmount, cdtAmount, sctRefundAmount) = formula.repay(msg.value, sctAmount);
+        assert(cdtAmount > 0);
 
-        if (refundETHAmount > 0) {
-            assert(refundSCTAmount == 0);
+        if (ethRefundAmount > 0) {
+            assert(sctRefundAmount == 0);
 
             subCreditTokenController.destroyTokens(_user, sctAmount);
-            _user.transfer(refundETHAmount);
+            _user.transfer(ethRefundAmount);
             assert(creditToken.transfer(_user, cdtAmount));
 
-            balance = safeAdd(balance, safeSub(msg.value, refundETHAmount));
+            balance = safeAdd(balance, safeSub(msg.value, ethRefundAmount));
             creditBalance = safeSub(creditBalance, cdtAmount);
             subCredit.supply = safeSub(subCredit.supply, sctAmount);
 
         // event
-            LogRepay(_user, safeSub(msg.value, refundETHAmount), sctAmount, cdtAmount);
+            LogRepay(_user, safeSub(msg.value, ethRefundAmount), sctAmount, cdtAmount);
             return true;
         }
         else {
-            assert(refundSCTAmount >= 0);
+            assert(sctRefundAmount >= 0);
 
-            subCreditTokenController.destroyTokens(_user, safeSub(sctAmount, refundSCTAmount));
+            subCreditTokenController.destroyTokens(_user, safeSub(sctAmount, sctRefundAmount));
             assert(creditToken.transfer(_user, cdtAmount));
 
             balance = safeAdd(balance, msg.value);
             creditBalance = safeSub(creditBalance, cdtAmount);
-            subCredit.supply = safeSub(subCredit.supply, safeSub(sctAmount, refundSCTAmount));
+            subCredit.supply = safeSub(subCredit.supply, safeSub(sctAmount, sctRefundAmount));
 
         // event
-            LogRepay(_user, msg.value, safeSub(sctAmount, refundSCTAmount), cdtAmount);
+            LogRepay(_user, msg.value, safeSub(sctAmount, sctRefundAmount), cdtAmount);
             return true;
         }
 
@@ -355,35 +365,36 @@ add doc
         Token storage discredit = tokens[discreditToken];
 
         uint256 dctAmount = discreditToken.balanceOf(_user);
-        var (refundETHAmount, cdtAmount, refundDCTAmount) = formula.toCreditToken(msg.value, dctAmount);
+        var (ethRefundAmount, cdtAmount, dctRefundAmount) = formula.toCreditToken(msg.value, dctAmount);
+        assert(cdtAmount > 0);
 
-        if (refundETHAmount > 0) {
-            assert(refundDCTAmount == 0);
+        if (ethRefundAmount > 0) {
+            assert(dctRefundAmount == 0);
 
-            _user.transfer(refundETHAmount);
+            _user.transfer(ethRefundAmount);
             discreditTokenController.destroyTokens(_user, dctAmount);
             assert(creditToken.transfer(_user, cdtAmount));
 
-            balance = safeAdd(balance, safeSub(msg.value, refundETHAmount));
+            balance = safeAdd(balance, safeSub(msg.value, ethRefundAmount));
             creditBalance = safeSub(creditBalance, cdtAmount);
             discredit.supply = safeSub(discredit.supply, dctAmount);
 
         // event
-            LogToCreditToken(_user, safeSub(msg.value, refundETHAmount), dctAmount, cdtAmount);
+            LogToCreditToken(_user, safeSub(msg.value, ethRefundAmount), dctAmount, cdtAmount);
             return true;
         }
         else {
-            assert(refundDCTAmount >= 0);
+            assert(dctRefundAmount >= 0);
 
-            discreditTokenController.destroyTokens(_user, safeSub(dctAmount, refundDCTAmount));
+            discreditTokenController.destroyTokens(_user, safeSub(dctAmount, dctRefundAmount));
             assert(creditToken.transfer(_user, cdtAmount));
 
             balance = safeAdd(balance, msg.value);
             creditBalance = safeSub(creditBalance, cdtAmount);
-            discredit.supply = safeSub(discredit.supply, safeSub(dctAmount, refundDCTAmount));
+            discredit.supply = safeSub(discredit.supply, safeSub(dctAmount, dctRefundAmount));
 
         // event
-            LogToCreditToken(_user, msg.value, safeSub(dctAmount, refundDCTAmount), cdtAmount);
+            LogToCreditToken(_user, msg.value, safeSub(dctAmount, dctRefundAmount), cdtAmount);
             return true;
         }
 
@@ -410,6 +421,7 @@ add doc
         Token storage discredit = tokens[discreditToken];
 
         var (dctAmount, cdtPrice) = formula.toDiscreditToken(balance, credit.supply, _sctAmount);
+        assert(dctAmount > 0);
 
         subCreditTokenController.destroyTokens(_user, _sctAmount);
         discreditTokenController.issueTokens(_user, dctAmount);
