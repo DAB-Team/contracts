@@ -50,4 +50,8 @@ contract TokenHolder is ITokenHolder, Owned {
         require(_to != 0x0);
         assert(_token.transfer(_to, _amount));
     }
+
+    function() payable {
+        require(false);
+    }
 }

@@ -28,7 +28,7 @@ Alpha test on private network.
 
 To deploy, execute the following commands from the project's truffle folder.
 
-    geth --dev --rpc --rpcport 8545 --rpcaddr 127.0.0.1 --rpcapi="eth,net,web3" --unlock <Account> --mine --minerthreads=1
+    geth --dev --rpc --rpcport 8545 --rpcaddr 127.0.0.1 --rpcapi="eth,net,web3" --mine --minerthreads=1 --unlock <Account>
     truffle migrate --network dev
 
 ##### Rinkeby
@@ -51,9 +51,9 @@ To deploy, execute the following commands from the project's truffle folder.
     geth --rpc --rpcport 8545 --rpcaddr 127.0.0.1 --rpcapi="eth,net,web3" --unlock <Account>
     truffle migrate --network live
 
-### Post Migration
+### Configuration
 
-Need do some configure works after migration, the logic is like code below.
+The deployer does some configurations after migration, the logic is like codes below.
 
         // Configure for Tokens
         await DepositToken.transferOwnership(DepositTokenController.address);
@@ -75,10 +75,16 @@ Need do some configure works after migration, the logic is like code below.
         await DiscreditTokenController.transferOwnership(DABCreditAgent.address);
         await DABCreditAgent.acceptDiscreditTokenControllerOwnership();
 
-        // Configure for Agents and DAB
+        // Configure for Agents, WalletFactory and DAB
         await DABCreditAgent.setDepositAgent(DABDepositAgent.address);
         await DABDepositAgent.transferOwnership(DAB.address);
         await DAB.acceptDepositAgentOwnership();
         await DABCreditAgent.transferOwnership(DAB.address);
         await DAB.acceptCreditAgentOwnership();
+        await DABWalletFactory.transferOwnership(DAB.address);
+        await DAB.setDABWalletFactory(DABWalletFactory.address);
+        await DAB.acceptDABWalletFactoryOwnership();
+        await DAB.addLoanPlanFormula(HalfAYearLoanPlanFormula.address);
+        await DAB.addLoanPlanFormula(AYearLoanPlanFormula.address);
+        await DAB.addLoanPlanFormula(TwoYearLoanPlanFormula.address);
         await DAB.activate();

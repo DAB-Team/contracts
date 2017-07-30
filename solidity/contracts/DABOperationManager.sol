@@ -95,4 +95,7 @@ contract DABOperationManager is Owned, SafeMath{
         _;
     }
 
+    function() payable {
+    require(false);
+    }
 }

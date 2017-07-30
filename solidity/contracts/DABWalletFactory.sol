@@ -182,7 +182,7 @@ contract DABWallet is Owned, SafeMath{
     validAmount(_ethAmount){
         balance = safeSub(balance, _ethAmount);
         dab.deposit.value(_ethAmount)();
-        updateTokenBalance();
+        updateWallet();
     }
 
     function withdraw(uint256 _dptAmount)
@@ -191,7 +191,7 @@ contract DABWallet is Owned, SafeMath{
     validAmount(_dptAmount){
         depositBalance = safeSub(depositBalance, _dptAmount);
         dab.withdraw(_dptAmount);
-        updateTokenBalance();
+        updateWallet();
     }
 
 
@@ -201,7 +201,7 @@ contract DABWallet is Owned, SafeMath{
     validAmount(_cdtAmount){
         creditBalance = safeSub(creditBalance, _cdtAmount);
         dab.cash(_cdtAmount);
-        updateTokenBalance();
+        updateWallet();
     }
 
     function renewLoanPlan()
@@ -228,7 +228,7 @@ contract DABWallet is Owned, SafeMath{
         repayEndTime = safeAdd(repayStartTime, exemptDays);
         require(_cdtAmount <= creditBalance);
         dab.loan(_cdtAmount);
-        updateTokenBalance();
+        updateWallet();
     }
 
     function repay(uint256 _ethAmount)
@@ -238,7 +238,7 @@ contract DABWallet is Owned, SafeMath{
     validAmount(_ethAmount) {
         balance = safeSub(balance, _ethAmount);
         dab.repay.value(_ethAmount)();
-        updateTokenBalance();
+        updateWallet();
     }
 
     function toDiscreditToken(uint256 _sctAmount)
@@ -247,7 +247,7 @@ contract DABWallet is Owned, SafeMath{
     validAmount(_sctAmount) {
         subCreditBalance = safeSub(subCreditBalance, _sctAmount);
         dab.toDiscreditToken(_sctAmount);
-        updateTokenBalance();
+        updateWallet();
     }
 
     function toCreditToken(uint256 _ethAmount)
@@ -256,7 +256,7 @@ contract DABWallet is Owned, SafeMath{
     validAmount(_ethAmount){
         balance = safeSub(balance, _ethAmount);
         dab.toCreditToken.value(_ethAmount)();
-        updateTokenBalance();
+        updateWallet();
     }
 
     function transferWalletOwnership(address _newUser)
@@ -309,13 +309,16 @@ contract DABWallet is Owned, SafeMath{
         approve(maxApprove);
     }
 
-    function updateTokenBalance()
+    function updateWallet()
     public
     userOnly {
         depositBalance = depositToken.balanceOf(this);
         creditBalance = creditToken.balanceOf(this);
         subCreditBalance = subCreditToken.balanceOf(this);
         discreditBalance = discreditToken.balanceOf(this);
+        if(subCreditBalance == 0 && now < safeAdd(lastRenew, timeToRenew)){
+            needRenew = true;
+        }
     }
 
     function() payable{
@@ -466,5 +469,8 @@ contract DABWalletFactory is Owned{
         return loanPlanFormulas[wallets[_wallet].loanPlanFormula].isValid;
     }
 
+    function() payable {
+        require(false);
+    }
 }
 
