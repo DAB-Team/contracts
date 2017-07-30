@@ -5,17 +5,12 @@ import './Math.sol';
 
 contract AYearLoanPlanFormula is ILoanPlanFormula, Math {
 
-    uint256 public highRate;
-    uint256 public lowRate;
-    uint256 public loanDays;
-    uint256 public exemptDays;
+    uint256 public highRate = DecimalToFloat(25000000);
+    uint256 public lowRate = DecimalToFloat(6000000);
+    uint256 public loanDays = 1 years;
+    uint256 public exemptDays = 20 days;
 
     function AYearLoanPlanFormula(){
-    // init loanPlan
-        highRate = DecimalToFloat(25000000);
-        lowRate = DecimalToFloat(6000000);
-        loanDays = 365 days;
-        exemptDays = 20 days;
     }
 
 

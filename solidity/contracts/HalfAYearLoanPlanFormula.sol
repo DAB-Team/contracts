@@ -5,19 +5,14 @@ import './Math.sol';
 
 contract HalfAYearLoanPlanFormula is ILoanPlanFormula, Math {
 
-    uint256 public highRate;
-    uint256 public lowRate;
-    uint256 public loanDays;
-    uint256 public exemptDays;
+    uint256 public highRate = DecimalToFloat(15000000);
+    uint256 public lowRate = DecimalToFloat(3000000);
+    uint256 public loanDays = 180 days;
+    uint256 public exemptDays = 15 days;
 
 
 
     function HalfAYearLoanPlanFormula(){
-    // init loanPlan
-        highRate = DecimalToFloat(15000000);
-        lowRate = DecimalToFloat(3000000);
-        loanDays = 180 days;
-        exemptDays = 15 days;
     }
 
 

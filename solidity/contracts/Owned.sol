@@ -23,7 +23,7 @@ contract Owned is IOwned {
 
 // allows execution by the owner only
     modifier ownerOnly {
-        assert(msg.sender == owner);
+        require(msg.sender == owner);
         _;
     }
 

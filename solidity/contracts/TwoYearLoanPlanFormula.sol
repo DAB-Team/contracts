@@ -5,17 +5,12 @@ import './Math.sol';
 
 contract TwoYearLoanPlanFormula is ILoanPlanFormula, Math {
 
-    uint256 public highRate;
-    uint256 public lowRate;
-    uint256 public loanDays;
-    uint256 public exemptDays;
+    uint256 public highRate = DecimalToFloat(45000000);
+    uint256 public lowRate = DecimalToFloat(12000000);
+    uint256 public loanDays = 2 years;
+    uint256 public exemptDays = 25 days;
 
     function TwoYearLoanPlanFormula(){
-    // init loanPlan
-        highRate = DecimalToFloat(45000000);
-        lowRate = DecimalToFloat(12000000);
-        loanDays = 730 days;
-        exemptDays = 25 days;
     }
 
 
