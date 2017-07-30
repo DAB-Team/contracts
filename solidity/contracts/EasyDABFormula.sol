@@ -75,7 +75,7 @@ contract EasyDABFormula is IDABFormula, Math {
         require(_dptSupply >= 0);
         require(_dptCirculation >= 0 && _dptCirculation <= _dptSupply);
         require(_ethAmount > 0);
-        // insure the accuracy of the formula
+    // insure the accuracy of the formula
         require(_ethAmount <= maxETH);
 
         uint256 fCRR = getCRR(_dptCirculation);
@@ -114,7 +114,7 @@ contract EasyDABFormula is IDABFormula, Math {
         require( _ethBalance > 0 );
         require(_dptCirculation > 0);
         require(_dptAmount > 0);
-        // insure the accuracy of the formula
+    // insure the accuracy of the formula
         require(_dptAmount <= maxDPT);
 
         dptPrice = div(_ethBalance, mul(_dptCirculation, getCRR(_dptCirculation)));

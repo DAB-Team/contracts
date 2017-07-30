@@ -314,8 +314,9 @@ contract DABWallet is Owned, SafeMath{
         }
     }
 
-    function() payable
-    validAmount(msg.value){}
+    function() payable {
+        depositETH();
+    }
 }
 
 contract DABWalletFactory is Owned{
@@ -345,7 +346,7 @@ contract DABWalletFactory is Owned{
         dab = _dab;
     }
 
-// verifies that an amount is greater than zero
+    // verifies that an amount is greater than zero
     modifier active() {
         require(isActive == true);
         _;

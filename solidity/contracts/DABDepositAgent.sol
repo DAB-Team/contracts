@@ -47,7 +47,7 @@ contract DABDepositAgent is DABAgent{
         tokenSet.push(depositToken);
     }
 
-    // validates msg sender is credit agent
+// validates msg sender is credit agent
     modifier creditAgentOnly() {
         assert(msg.sender == address(creditAgent));
         _;
@@ -110,14 +110,23 @@ contract DABDepositAgent is DABAgent{
 
         var (uDPTAmount, uCDTAmount, fDPTAmount, fCDTAmount, ethDeposit, dCRR) = formula.issue(safeSub(deposit.supply, depositBalance), _ethAmount);
 
-        depositTokenController.issueTokens(_user, uDPTAmount);
-        depositTokenController.issueTokens(beneficiary, fDPTAmount);
-        deposit.supply = safeAdd(deposit.supply, uDPTAmount);
-        deposit.supply = safeAdd(deposit.supply, fDPTAmount);
+        assert(_ethAmount > ethDeposit);
+        assert(uCDTAmount > 0);
+        assert(fDPTAmount > 0);
+        assert(fCDTAmount > 0);
+        assert(ethDeposit > 0);
+        assert(ethDeposit > 0);
+
         depositCurrentCRR = dCRR;
-        balance = safeSub(balance, safeSub(_ethAmount, ethDeposit));
+
+        depositTokenController.issueTokens(_user, uDPTAmount);
+        deposit.supply = safeAdd(deposit.supply, uDPTAmount);
+
+        depositTokenController.issueTokens(beneficiary, fDPTAmount);
+        deposit.supply = safeAdd(deposit.supply, fDPTAmount);
 
         assert(creditAgent.issue.value(safeSub(_ethAmount, ethDeposit))(_user, uCDTAmount, fCDTAmount));
+        balance = safeAdd(balance, ethDeposit);
 
     // event
         LogDPTIssue(_user, ethDeposit, uDPTAmount);
@@ -139,20 +148,26 @@ contract DABDepositAgent is DABAgent{
     validAddress(_user)
     validAmount(msg.value)
     returns (bool success){
-        balance = safeAdd(balance, msg.value);
         if(_dptActive){
             Token storage deposit = tokens[depositToken];
+
             if(depositBalance == 0){
                 assert(issue(_user, msg.value));
                 return true;
             }else{
                 var (dptAmount, ethRemain, dCRR, dptPrice) = formula.deposit(balance, deposit.supply, safeSub(deposit.supply, depositBalance), msg.value);
+
                 assert((dptAmount == 0 && ethRemain == msg.value) || (dptAmount > 0 && ethRemain < msg.value));
+
                 if (dptAmount > 0) {
-                    assert(depositToken.transfer(_user, dptAmount));
-                    depositBalance = safeSub(depositBalance, dptAmount);
                     depositCurrentCRR = dCRR;
                     depositPrice = dptPrice;
+
+                    assert(depositToken.transfer(_user, dptAmount));
+                    depositBalance = safeSub(depositBalance, dptAmount);
+
+                    balance = safeAdd(balance, safeSub(msg.value, ethRemain));
+
                 // event
                     LogDeposit(_user, safeSub(msg.value, ethRemain), dptAmount);
                 }
@@ -182,17 +197,20 @@ contract DABDepositAgent is DABAgent{
     validAmount(_dptAmount)
     returns (bool success){
         Token storage deposit = tokens[depositToken];
+
         var (ethAmount, dCRR, dptPrice) = formula.withdraw(balance, safeSub(deposit.supply, depositBalance), _dptAmount);
+
         assert(ethAmount > 0);
 
-        balance = safeSub(balance, ethAmount);
-
-        assert(depositToken.transferFrom(_user, this, _dptAmount));
-        _user.transfer(ethAmount);
-
-        depositBalance = safeAdd(depositBalance, _dptAmount);
         depositCurrentCRR = dCRR;
         depositPrice = dptPrice;
+
+        assert(depositToken.transferFrom(_user, this, _dptAmount));
+        depositBalance = safeAdd(depositBalance, _dptAmount);
+
+        _user.transfer(ethAmount);
+        balance = safeSub(balance, ethAmount);
+
     // event
         LogWithdraw(_user, _dptAmount, ethAmount);
         return true;

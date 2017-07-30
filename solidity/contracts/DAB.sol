@@ -270,7 +270,7 @@ contract DAB is DABOperationManager{
         DABWallet wallet = DABWallet(msg.sender);
         bool isWalletValid = walletFactory.isWalletValid(wallet);
         require(isWalletValid);
-        assert(creditAgent.loan(msg.sender, _cdtAmount));
+        assert(creditAgent.loan(wallet, _cdtAmount));
     }
 
 
@@ -321,8 +321,7 @@ contract DAB is DABOperationManager{
     }
 
 
-    function() payable
-    validAmount(msg.value){
+    function() payable {
         deposit();
     }
 }
