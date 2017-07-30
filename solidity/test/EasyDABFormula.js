@@ -28,7 +28,7 @@ function num(numeric_string){
 }
 contract('EasyDABFormula', function(accounts){
 
-
+/*
     it("handles legal input ranges (fixedExp)", function(){
         return EasyDABFormula.deployed().then(function(instance){
         var ok = _hex('0x386bfdba29');
@@ -47,6 +47,7 @@ contract('EasyDABFormula', function(accounts){
         assert(false,"was supposed to throw but didn't.");
         }).catch(expectedThrow);
     });
+    */
 
     var udptIssueExpectTest = function(k){
         var [circulation, ethamount, udpt, ucdt, fdpt, fcdt, ethdpt, crr] = k;
@@ -697,9 +698,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var ethamountLoanExpectTest = function(k){
-        var [cdtamount, interestrate, ethamount,  issuecdtamount, sctamount] = k;
+        var [cdtamount, interestrate, ethamount, interest, issuecdtamount, sctamount] = k;
 
-        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
+        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount);
+        interest = num(interest), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
 
         it("Should get correct expect ether amount for loan", function(){
             return EasyDABFormula.deployed().then(
@@ -707,7 +709,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.loan.call(cdtamount, interestrate);
                 }).then(function(retval){
-                var [ethamountr,  issuecdtamountr, sctamountr] = retval;
+                var [ethamountr, interestr, issuecdtamountr, sctamountr] = retval;
                 ethamount = (ethamount/1).toPrecision(eprecision);
                 ethamountr = (ethamountr/1).toPrecision(eprecision);
                 assert(ethamountr == ethamount,"ether amount return "+ethamountr+" should be =="+ethamount+". [cdtamount, interestrate] "+[cdtamount, interestrate]);
@@ -720,9 +722,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var ethamountLoanExactTest = function(k){
-        var [cdtamount, interestrate, ethamount,  issuecdtamount, sctamount] = k;
+        var [cdtamount, interestrate, ethamount, interest, issuecdtamount, sctamount] = k;
 
-        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount), sctamount = num(sctamount);
+        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount);
+        interest = num(interest), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
 
         it("Should get correct exact ether amount for loan", function(){
             return EasyDABFormula.deployed().then(
@@ -730,7 +733,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.loan.call(cdtamount, interestrate);
                 }).then(function(retval){
-                var [ethamountr,  issuecdtamountr, sctamountr] = retval;
+                var [ethamountr, interestr, issuecdtamountr, sctamountr] = retval;
                 ethamount = (ethamount/1).toPrecision(dprecision);
                 ethamountr = (ethamountr/1).toPrecision(dprecision);
                 assert(ethamountr == ethamount,"ether amount return "+ethamountr+" should be =="+ethamount+". [cdtamount, interestrate] "+[cdtamount, interestrate]);
@@ -741,12 +744,57 @@ contract('EasyDABFormula', function(accounts){
     };
 
 
+    var interestLoanExpectTest = function(k){
+        var [cdtamount, interestrate, ethamount, interest, issuecdtamount, sctamount] = k;
+
+        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount);
+        interest = num(interest), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
+
+        it("Should get correct expect interest ether amount for loan", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.loan.call(cdtamount, interestrate);
+                }).then(function(retval){
+                var [ethamountr, interestr, issuecdtamountr, sctamountr] = retval;
+                interest = (interest/1).toPrecision(eprecision);
+                interestr = (interestr/1).toPrecision(eprecision);
+                assert(interestr == interest,"interest ether amount return "+interestr+" should be =="+interest+". [cdtamount, interestrate] "+[cdtamount, interestrate]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
+
+
+    var interestLoanExactTest = function(k){
+        var [cdtamount, interestrate, ethamount, interest, issuecdtamount, sctamount] = k;
+
+        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount);
+        interest = num(interest), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
+
+        it("Should get correct exact interest ether amount for loan", function(){
+            return EasyDABFormula.deployed().then(
+                function(f)
+                {
+                    return f.loan.call(cdtamount, interestrate);
+                }).then(function(retval){
+                var [ethamountr, interestr, issuecdtamountr, sctamountr] = retval;
+                interest = (interest/1).toPrecision(eprecision);
+                interestr = (interestr/1).toPrecision(eprecision);
+                assert(interestr == interest,"interest ether amount return "+interestr+" should be =="+interest+". [cdtamount, interestrate] "+[cdtamount, interestrate]);
+            }).catch(function(error){
+                assert(false, error.toString());
+            });
+        });
+    };
 
 
     var issuecdtamountLoanExpectTest = function(k){
-        var [cdtamount, interestrate, ethamount,  issuecdtamount, sctamount] = k;
+        var [cdtamount, interestrate, ethamount, interest, issuecdtamount, sctamount] = k;
 
-        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
+        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount);
+        interest = num(interest), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
 
         it("Should get correct expect issued credit token for loan", function(){
             return EasyDABFormula.deployed().then(
@@ -754,7 +802,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.loan.call(cdtamount, interestrate);
                 }).then(function(retval){
-                var [ethamountr,  issuecdtamountr, sctamountr] = retval;
+                var [ethamountr, interestr, issuecdtamountr, sctamountr] = retval;
                 issuecdtamount = (issuecdtamount/1).toPrecision(eprecision);
                 issuecdtamountr = (issuecdtamountr/1).toPrecision(eprecision);
                 assert(issuecdtamountr == issuecdtamount,"issued credit token amount return "+issuecdtamountr+" should be =="+issuecdtamount+". [cdtamount, interestrate] "+[cdtamount, interestrate]);
@@ -767,9 +815,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var issuecdtamountLoanExactTest = function(k){
-        var [cdtamount, interestrate, ethamount,  issuecdtamount, sctamount] = k;
+        var [cdtamount, interestrate, ethamount, interest, issuecdtamount, sctamount] = k;
 
-        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount), sctamount = num(sctamount);
+        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount);
+        interest = num(interest), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
 
         it("Should get correct exact issued credit token for loan", function(){
             return EasyDABFormula.deployed().then(
@@ -777,7 +826,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.loan.call(cdtamount, interestrate);
                 }).then(function(retval){
-                var [ethamountr,  issuecdtamountr, sctamountr] = retval;
+                var [ethamountr, interestr, issuecdtamountr, sctamountr] = retval;
                 issuecdtamount = (issuecdtamount/1).toPrecision(dprecision);
                 issuecdtamountr = (issuecdtamountr/1).toPrecision(dprecision);
                 assert(issuecdtamountr == issuecdtamount,"issued credit token amount return "+issuecdtamountr+" should be =="+issuecdtamount+". [cdtamount, interestrate] "+[cdtamount, interestrate]);
@@ -790,9 +839,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var sctamountLoanExpectTest = function(k){
-        var [cdtamount, interestrate, ethamount,  issuecdtamount, sctamount] = k;
+        var [cdtamount, interestrate, ethamount, interest, issuecdtamount, sctamount] = k;
 
-        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
+        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount);
+        interest = num(interest), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
 
         it("Should get correct expect subCredit token amount for loan", function(){
             return EasyDABFormula.deployed().then(
@@ -800,7 +850,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.loan.call(cdtamount, interestrate);
                 }).then(function(retval){
-                var [ethamountr,  issuecdtamountr, sctamountr] = retval;
+                var [ethamountr, interestr, issuecdtamountr, sctamountr] = retval;
                 sctamount = (sctamount/1).toPrecision(eprecision);
                 sctamountr = (sctamountr/1).toPrecision(eprecision);
                 assert(sctamountr == sctamount,"subCredit token amount return "+sctamountr+" should be =="+sctamount+". [cdtamount, interestrate] "+[cdtamount, interestrate]);
@@ -813,9 +863,10 @@ contract('EasyDABFormula', function(accounts){
 
 
     var sctmountLoanExactTest = function(k){
-        var [cdtamount, interestrate, ethamount,  issuecdtamount, sctamount] = k;
+        var [cdtamount, interestrate, ethamount, interest, issuecdtamount, sctamount] = k;
 
-        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
+        cdtamount = num(cdtamount), interestrate = num(interestrate), ethamount = num(ethamount);
+        interest = num(interest), issuecdtamount = num(issuecdtamount), sctamount = num(sctamount);
 
         it("Should get correct exact subCredit token amount for loan", function(){
             return EasyDABFormula.deployed().then(
@@ -823,7 +874,7 @@ contract('EasyDABFormula', function(accounts){
                 {
                     return f.loan.call(cdtamount, interestrate);
                 }).then(function(retval){
-                var [ethamountr,  issuecdtamountr, sctamountr] = retval;
+                var [ethamountr, interestr, issuecdtamountr, sctamountr] = retval;
                 sctamount = (sctamount/1).toPrecision(eprecision);
                 sctamountr = (sctamountr/1).toPrecision(eprecision);
                 assert(sctamountr == sctamount,"subCredit token amount return "+sctamountr+" should be =="+sctamount+". [cdtamount, interestrate] "+[cdtamount, interestrate]);
@@ -1284,19 +1335,23 @@ contract('EasyDABFormula', function(accounts){
 
     // Test for Random and Basic loan Function
     testdata.getRandomExpectLoan.forEach(ethamountLoanExpectTest);
+    testdata.getRandomExpectLoan.forEach(interestLoanExpectTest);
     testdata.getRandomExpectLoan.forEach(issuecdtamountLoanExpectTest);
     testdata.getRandomExpectLoan.forEach(sctamountLoanExpectTest);
 
     testdata.getRandomExactLoan.forEach(ethamountLoanExactTest);
+    testdata.getRandomExactLoan.forEach(interestLoanExactTest);
     testdata.getRandomExactLoan.forEach(issuecdtamountLoanExactTest);
     testdata.getRandomExactLoan.forEach(sctmountLoanExactTest);
 
 
     testdata.getBasicExpectLoan.forEach(ethamountLoanExpectTest);
+    testdata.getBasicExpectLoan.forEach(interestLoanExpectTest);
     testdata.getBasicExpectLoan.forEach(issuecdtamountLoanExpectTest);
     testdata.getBasicExpectLoan.forEach(sctamountLoanExpectTest);
 
     testdata.getBasicExactLoan.forEach(ethamountLoanExactTest);
+    testdata.getBasicExactLoan.forEach(interestLoanExactTest);
     testdata.getBasicExactLoan.forEach(issuecdtamountLoanExactTest);
     testdata.getBasicExactLoan.forEach(sctmountLoanExactTest);
 

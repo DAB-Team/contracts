@@ -7,8 +7,8 @@ import './interfaces/IDABFormula.sol';
 contract DABAgent is Owned, SafeMath{
 
     struct Token {
-    uint256 supply;         // total supply = issue - destroy
-    bool isValid;                     // used to tell if the mapping element is defined
+    uint256 supply;                              // total supply = issue - destroy
+    bool isValid;                                // used to tell if the mapping element is defined
     }
 
     string public version = '0.1';
@@ -17,7 +17,7 @@ contract DABAgent is Owned, SafeMath{
 
     uint256 public balance;
 
-    address public beneficiary = 0x0;              // address to receive all ether contributions
+    address public beneficiary = 0x0;           // address to receive all ether contributions
 
     address[] public tokenSet;
 
@@ -82,6 +82,7 @@ contract DABAgent is Owned, SafeMath{
     function setDABFormula(IDABFormula _formula)
     public
     ownerOnly
+    inactive
     notThis(_formula)
     validAddress(_formula)
     {

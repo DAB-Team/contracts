@@ -34,10 +34,10 @@ contract('DABOperationManager', (accounts) => {
     it('verifies the base storage values after construction', async () => {
         let controller = await generateDefaultController();
 
-        let start = await controller.startTime.call();
+        let start = await controller.activationStartTime.call();
         assert.equal(start.toNumber(), startTime);
-        let endTime = await controller.endTime.call();
-        let duration = await controller.DURATION.call();
+        let endTime = await controller.activationEndTime.call();
+        let duration = await controller.ACTIVATION_DURATION.call();
         assert.equal(endTime.toNumber(), startTime + duration.toNumber());
 
     });

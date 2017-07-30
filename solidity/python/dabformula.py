@@ -62,6 +62,10 @@ class EasyDABFormula(object):
         self.ether = 10 ** 18 * 1.0
         self.decimal = 10 ** 8 * 1.0
 
+        self.max_deposit = self.l / 1000 * self.DPTIP   # Maximum Deposit Amount in Ether, to Avoid Big Changes on CRR
+        self.max_withdraw = self.l / 1000 * self.b   # Maximum Withdraw Amount in DPT, to Avoid Big Changes on CRR
+
+
     def get_crr(self, circulation):
         return sigmoid(self.a, self.b, self.l, self.d, circulation)
 
@@ -264,11 +268,13 @@ class EasyDABFormula(object):
         ethamount = cdtamount * self.CDTL
         # calculate the interest
         earn = ethamount * interestrate
-        issuecdtamount = earn * self.CDT_RESERVE / 2.0 / self.CDTIP
+        cdtreserve = earn * self.CDT_RESERVE
+        interest = earn - cdtreserve
+        issuecdtamount = cdtreserve / 2.0 / self.CDTIP
         # calculate the new issue CDT to prize loaned user using the interest
         ethamount = ethamount - earn
         sctamount = cdtamount
-        return ethamount * self.ether, issuecdtamount * self.ether, sctamount * self.ether
+        return ethamount * self.ether, interest * self.ether, issuecdtamount * self.ether, sctamount * self.ether
 
 
     def _loan(self, cdtamount, interestrate):
@@ -282,11 +288,13 @@ class EasyDABFormula(object):
         ethamount = math.mul(cdtamount,  math.decimaltofloat(self.CDTL * self.decimal))
         # calculate the interest
         earn = math.mul(ethamount, interestrate)
-        issuecdtamount = math.div(math.mul(earn, math.decimaltofloat(self.CDT_RESERVE * self.decimal)), math.mul(math.decimaltofloat(self.CDTIP * self.decimal), math.float(2)))
+        cdtreserve = math.mul(earn, math.decimaltofloat(self.CDT_RESERVE * self.decimal))
+        interest = math.sub(earn, cdtreserve)
+        issuecdtamount = math.div(cdtreserve, math.mul(math.decimaltofloat(self.CDTIP * self.decimal), math.float(2)))
         # calculate the new issue CDT to prize loaned user using the interest
         ethamount = math.sub(ethamount, earn)
         sctamount = cdtamount
-        return math.floattoether(ethamount), math.floattoether(issuecdtamount), math.floattoether(sctamount)
+        return math.floattoether(ethamount), math.floattoether(interest), math.floattoether(issuecdtamount), math.floattoether(sctamount)
 
     def repay(self, repayethamount, sctamount):
         # change unit

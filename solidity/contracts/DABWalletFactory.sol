@@ -19,14 +19,15 @@ contract DABWallet is Owned, SafeMath{
     uint256 public interestRate;
     uint256 public loanDays;
     uint256 public exemptDays;
-    bool public needRenew;
     uint256 public lastRenew;
     uint256 public timeToRenew = 1 days;
+    bool public needRenew;
 
     address public user;
     address public newUser = 0x0;
 
     DAB public dab;
+    DABWalletFactory public walletFactory;
 
     DABDepositAgent public depositAgent;
     DABCreditAgent public creditAgent;
@@ -58,6 +59,7 @@ contract DABWallet is Owned, SafeMath{
         subCreditBalance = 0;
         discreditBalance = 0;
 
+        walletFactory = dab.walletFactory();
         depositAgent = _dab.depositAgent();
         creditAgent = _dab.creditAgent();
         depositToken = _dab.depositToken();
@@ -331,6 +333,8 @@ contract DABWalletFactory is Owned{
 
     bool public isActive = false;
 
+    address[] public loanPlanFormulasList;
+
     mapping (address => LoanPlanFormula) public loanPlanFormulas;
 
     mapping (address => Wallet) public wallets;
@@ -402,6 +406,7 @@ contract DABWalletFactory is Owned{
     notThis(_loanPlanFormula)
     {
         require(!loanPlanFormulas[_loanPlanFormula].isValid); // validate input
+        loanPlanFormulasList.push(_loanPlanFormula);
         loanPlanFormulas[_loanPlanFormula].isValid = true;
         LogAddLoanPlanFormula(_loanPlanFormula);
     }

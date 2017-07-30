@@ -16,10 +16,18 @@ import './interfaces/ILoanPlanFormula.sol';
 */
 contract DAB is DABOperationManager{
 
+    struct Status{
+        bool isValid;
+    }
+
     string public version = '0.1';
     bool public isActive = false;
 
+    mapping (address => Status) public loanPlanFormulaStatus;
+
     IDABFormula public formula;
+
+    address[] public loanPlanFormulas;
 
     DABDepositAgent public depositAgent;
     DABCreditAgent public creditAgent;
@@ -66,6 +74,20 @@ contract DAB is DABOperationManager{
         _;
     }
 
+/*
+    @dev allows the owner to update the formula contract address
+
+    @param _formula    address of a bancor formula contract
+*/
+    function setDABWalletFactory(DABWalletFactory _walletFactory)
+    public
+    ownerOnly
+    inactive
+    notThis(_walletFactory)
+    validAddress(_walletFactory)
+    {
+        walletFactory = _walletFactory;
+    }
 
 /**
     @dev allows transferring the token agent ownership
@@ -76,13 +98,15 @@ contract DAB is DABOperationManager{
 */
     function transferDepositAgentOwnership(address _newOwner)
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         depositAgent.transferOwnership(_newOwner);
     }
 
     function acceptDepositAgentOwnership()
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         depositAgent.acceptOwnership();
     }
 
@@ -95,13 +119,15 @@ contract DAB is DABOperationManager{
 */
     function transferCreditAgentOwnership(address _newOwner)
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         creditAgent.transferOwnership(_newOwner);
     }
 
     function acceptCreditAgentOwnership()
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         creditAgent.acceptOwnership();
     }
 
@@ -114,13 +140,15 @@ contract DAB is DABOperationManager{
 */
     function transferDABWalletFactoryOwnership(address _newOwner)
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         walletFactory.transferOwnership(_newOwner);
     }
 
     function acceptDABWalletFactoryOwnership()
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         walletFactory.acceptOwnership();
     }
 
@@ -135,8 +163,8 @@ contract DAB is DABOperationManager{
     }
 
     function freeze()
-    ownerOnly
-    public{
+    public
+    ownerOnly {
         depositAgent.freeze();
         creditAgent.freeze();
         walletFactory.freeze();
@@ -152,6 +180,7 @@ contract DAB is DABOperationManager{
     function setDABFormula(IDABFormula _formula)
     public
     ownerOnly
+    inactive
     notThis(_formula)
     validAddress(_formula)
     {
@@ -174,6 +203,8 @@ contract DAB is DABOperationManager{
     ownerOnly
     {
         walletFactory.addLoanPlanFormula(_loanPlanFormula);
+        loanPlanFormulas.push(_loanPlanFormula);
+        loanPlanFormulaStatus[_loanPlanFormula].isValid = true;
     }
 
 
@@ -191,21 +222,9 @@ contract DAB is DABOperationManager{
     ownerOnly
     {
         walletFactory.disableLoanPlanFormula(_loanPlanFormula);
+        loanPlanFormulaStatus[_loanPlanFormula].isValid = false;
     }
 
-/*
-    @dev allows the owner to update the formula contract address
-
-    @param _formula    address of a bancor formula contract
-*/
-    function setDABWalletFactory(DABWalletFactory _walletFactory)
-    public
-    ownerOnly
-    notThis(_walletFactory)
-    validAddress(_walletFactory)
-    {
-        walletFactory = _walletFactory;
-    }
 
 /**
     @dev deposit ethereum
@@ -267,10 +286,12 @@ contract DAB is DABOperationManager{
     activeCreditAgent
     validAmount(_cdtAmount)
     {
-        DABWallet wallet = DABWallet(msg.sender);
-        bool isWalletValid = walletFactory.isWalletValid(wallet);
-        require(isWalletValid);
-        assert(creditAgent.loan(wallet, _cdtAmount));
+    // TODO The lines below need to be revised, test only. msg.sender should be validate.
+        assert(creditAgent.loan(msg.sender, _cdtAmount));
+//        DABWallet wallet = DABWallet(msg.sender);
+//        bool isWalletValid = walletFactory.isWalletValid(wallet);
+//        require(isWalletValid);
+//        assert(creditAgent.loan(wallet, _cdtAmount));
     }
 
 

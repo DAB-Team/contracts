@@ -3,12 +3,16 @@
 
 Tests are included and can be run on using [truffle](https://github.com/trufflesuite/truffle) and [testrpc](https://github.com/ethereumjs/testrpc).
 
+    brew install npm
+    npm install -g truffle
+    npm install -g ethereumjs-testrpc
+
 #### Prerequisites
 
-    Node.js v8.1.3+
+    node v8.1.3+
+    npm v5.3.0+
     truffle v3.4.5+
     testrpc v4.0.1+
-
 
 
 #### Test and Migration on Different Ethereum Clients

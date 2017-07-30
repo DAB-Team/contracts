@@ -80,7 +80,8 @@ contract DABDepositAgent is DABAgent{
 */
     function transferDepositTokenControllerOwnership(address _newOwner)
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         depositTokenController.transferOwnership(_newOwner);
     }
 
@@ -90,7 +91,8 @@ contract DABDepositAgent is DABAgent{
 */
     function acceptDepositTokenControllerOwnership()
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         depositTokenController.acceptOwnership();
     }
 

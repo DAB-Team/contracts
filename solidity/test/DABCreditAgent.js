@@ -15,6 +15,7 @@ const SubCreditTokenController = artifacts.require('SubCreditTokenController.sol
 const DiscreditTokenController = artifacts.require('DiscreditTokenController.sol');
 const DABDepositAgent = artifacts.require('DABDepositAgent.sol');
 const DABCreditAgent = artifacts.require('DABCreditAgent.sol');
+const DABWalletFactory = artifacts.require('DABWalletFactory.sol');
 const DAB = artifacts.require('DAB.sol');
 const TestDAB= artifacts.require('./helpers/TestDAB.sol');
 const utils = require('./helpers/Utils');
@@ -50,9 +51,13 @@ let depositAgent;
 
 let creditAgent;
 
+let walletFactory;
+
 let depositAgentAddress;
 
 let creditAgentAddress;
+
+let walletFactoryAddress;
 
 let dab;
 
@@ -63,22 +68,6 @@ let beneficiaryAddress = '0x69aa30b306805bd17488ce957d03e3c0213ee9e6';
 let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale hasn't started
 let startTimeInProgress = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 let startTimeFinished = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
-
-
-
-async function generateDefaultDAB() {
-    dab =  await DAB.new(depositAgentAddress, creditAgentAddress, startTime);
-
-    dabAddress = dab.address;
-
-    await depositAgent.transferOwnership(dabAddress);
-    await dab.acceptDepositAgentOwnership();
-    await creditAgent.transferOwnership(dabAddress);
-    await dab.acceptCreditAgentOwnership();
-    await dab.activate();
-
-    return dab;
-}
 
 
 // used by contribution tests, creates a controller that's already in progress
@@ -117,9 +106,13 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
 
     depositAgentAddress = depositAgent.address;
 
-    let dab = await TestDAB.new(depositAgentAddress, creditAgentAddress, startTime, startTimeOverride);
+    dab = await TestDAB.new(depositAgentAddress, creditAgentAddress, startTime, startTimeOverride);
 
     dabAddress = dab.address;
+
+    walletFactory = await DABWalletFactory.new(dabAddress);
+    walletFactoryAddress = walletFactory.address;
+
 
     if (activate) {
         await depositToken.transferOwnership(depositTokenController.address);
@@ -147,6 +140,10 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
         await creditAgent.transferOwnership(dabAddress);
         await dab.acceptCreditAgentOwnership();
 
+        await walletFactory.transferOwnership(dabAddress);
+        await dab.setDABWalletFactory(walletFactoryAddress);
+        await dab.acceptDABWalletFactoryOwnership();
+
         await dab.activate();
     }
 
@@ -155,66 +152,9 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
 
 
 contract('DABCreditAgent', (accounts) => {
-    before(async() => {
-        easyDABFormula = await EasyDABFormula.new();
-        easyDABFormulaAddress = easyDABFormula.address;
-
-        loanPlanFormula = await AYearLoanPlanFormula.new();
-        loanPlanFormulaAddress = loanPlanFormula.address;
-
-        depositToken = await DepositToken.new('Deposit Token', 'DPT', 18);
-        creditToken = await CreditToken.new('Credit Token', 'CDT', 18);
-        subCreditToken = await SubCreditToken.new('SubCredit Token', 'SCT', 18);
-        discreditToken = await DiscreditToken.new('Discredit Token', 'DCT', 18);
-
-        depositTokenAddress = depositToken.address;
-        creditTokenAddress = creditToken.address;
-        subCreditTokenAddress = subCreditToken.address;
-        discreditTokenAddress = discreditToken.address;
-
-        depositTokenController = await DepositTokenController.new(depositTokenAddress);
-        creditTokenController = await CreditTokenController.new(creditTokenAddress);
-        subCreditTokenController = await SubCreditTokenController.new(subCreditTokenAddress);
-        discreditTokenController = await DiscreditTokenController.new(discreditTokenAddress);
-
-        depositTokenControllerAddress = depositTokenController.address;
-        creditTokenControllerAddress = creditTokenController.address;
-        subCreditTokenControllerAddress = subCreditTokenController.address;
-        discreditTokenControllerAddress = discreditTokenController.address;
-
-        await depositToken.transferOwnership(depositTokenController.address);
-        await depositTokenController.acceptTokenOwnership();
-        await creditToken.transferOwnership(creditTokenController.address);
-        await creditTokenController.acceptTokenOwnership();
-        await subCreditToken.transferOwnership(subCreditTokenController.address);
-        await subCreditTokenController.acceptTokenOwnership();
-        await discreditToken.transferOwnership(discreditTokenController.address);
-        await discreditTokenController.acceptTokenOwnership();
-
-
-        creditAgent =await DABCreditAgent.new(easyDABFormulaAddress, creditTokenControllerAddress, subCreditTokenControllerAddress, discreditTokenControllerAddress, beneficiaryAddress);
-
-        creditAgentAddress = creditAgent.address;
-
-        depositAgent =await DABDepositAgent.new(creditAgentAddress, easyDABFormulaAddress, depositTokenControllerAddress, beneficiaryAddress);
-
-        depositAgentAddress = depositAgent.address;
-
-        await depositTokenController.transferOwnership(depositAgent.address);
-        await depositAgent.acceptDepositTokenControllerOwnership();
-        await creditTokenController.transferOwnership(creditAgent.address);
-        await creditAgent.acceptCreditTokenControllerOwnership();
-        await subCreditTokenController.transferOwnership(creditAgent.address);
-        await creditAgent.acceptSubCreditTokenControllerOwnership();
-        await discreditTokenController.transferOwnership(creditAgent.address);
-        await creditAgent.acceptDiscreditTokenControllerOwnership();
-
-        creditAgent.setDepositAgent(depositAgentAddress);
-
-    });
 
     it('verifies the base storage values after construction', async () => {
-        let dab = await generateDefaultDAB();
+        let dab = await initDAB(accounts, true);
         let depositAgent = await dab.depositAgent.call();
         assert.equal(depositAgent, depositAgentAddress);
 
@@ -321,15 +261,5 @@ contract('DABCreditAgent', (accounts) => {
         await dab.cash(100000000000000000000, {from: web3.eth.accounts[0]});
     });
 
-    it('verifies loan the correct amount of credit token', async () => {
-        let dab = await initDAB(accounts, true);
-        for(var i=0; i<10; i++){
-            await dab.deposit({from: web3.eth.accounts[0], value:56200000000000000000});
-        }
-        let dabWallet = await dab.newDABWallet();
-        console.log(dabWallet);
-        // await creditToken.transfer(dabWallet.address, 100000000000000000000);
-        // await dabWallet.cash(100000000000000000000);
-    });
 
 });

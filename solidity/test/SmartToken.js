@@ -185,16 +185,6 @@ contract('SmartToken', (accounts) => {
         }
     });
 
-    it('verifies that a transfer to the token address destroys tokens', async () => {
-        let token = await SmartToken.new('Token1', 'TKN1', 2);
-        await token.issue(accounts[0], 10000);
-        await token.transfer(token.address, 500);
-        let balance = await token.balanceOf.call(token.address);
-        assert.equal(balance, 0);
-        let totalSupply = await token.totalSupply.call();
-        assert.equal(totalSupply, 9500);
-    });
-
     it('verifies the allowance after an approval', async () => {
         let token = await SmartToken.new('Token1', 'TKN1', 2);
         await token.issue(accounts[0], 10000);
@@ -225,14 +215,4 @@ contract('SmartToken', (accounts) => {
         }
     });
 
-    it('verifies that a transfer from to the token address destroys tokens', async () => {
-        let token = await SmartToken.new('Token1', 'TKN1', 2);
-        await token.issue(accounts[0], 10000);
-        await token.approve(accounts[1], 500);
-        await token.transferFrom(accounts[0], token.address, 100, { from: accounts[1] });
-        let balance = await token.balanceOf.call(token.address);
-        assert.equal(balance, 0);
-        let totalSupply = await token.totalSupply.call();
-        assert.equal(totalSupply, 9900);
-    });
 });

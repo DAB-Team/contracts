@@ -117,6 +117,7 @@ add doc
     function setDepositAgent(address _address)
     public
     ownerOnly
+    inactive
     validAddress(_address)
     notThis(_address)
     {
@@ -136,7 +137,8 @@ add doc
 */
     function transferCreditTokenControllerOwnership(address _newOwner)
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         creditTokenController.transferOwnership(_newOwner);
     }
 
@@ -146,7 +148,8 @@ add doc
 */
     function acceptCreditTokenControllerOwnership()
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         creditTokenController.acceptOwnership();
     }
 
@@ -160,7 +163,8 @@ add doc
 */
     function transferSubCreditTokenControllerOwnership(address _newOwner)
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         subCreditTokenController.transferOwnership(_newOwner);
     }
 
@@ -170,7 +174,8 @@ add doc
 */
     function acceptSubCreditTokenControllerOwnership()
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         subCreditTokenController.acceptOwnership();
     }
 
@@ -183,7 +188,8 @@ add doc
 */
     function transferDiscreditTokenControllerOwnership(address _newOwner)
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         discreditTokenController.transferOwnership(_newOwner);
     }
 
@@ -193,7 +199,8 @@ add doc
 */
     function acceptDiscreditTokenControllerOwnership()
     public
-    ownerOnly {
+    ownerOnly
+    inactive {
         discreditTokenController.acceptOwnership();
     }
 
@@ -250,6 +257,10 @@ add doc
     returns (bool success){
         Token storage credit = tokens[creditToken];
 
+        uint256 cdtBalance = creditToken.balanceOf(_user);
+
+        require(cdtBalance >= _cdtAmount);
+
         var (ethAmount, cdtPrice) = formula.cash(balance, safeSub(credit.supply, creditBalance), _cdtAmount);
 
         assert(ethAmount > 0);
@@ -267,7 +278,8 @@ add doc
         return true;
     }
 
-    function loan(DABWallet _wallet, uint256 _cdtAmount)
+// TODO The line below need to be revised, test only. _wallet should be DABWallet type.
+    function loan(address _wallet, uint256 _cdtAmount)
     public
     ownerOnly
     active
@@ -277,7 +289,11 @@ add doc
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
 
-        uint256 interestRate = _wallet.interestRate();
+    // TODO The lines below need to be revised, test only.
+        uint256 interestRate = 12593544;
+//        uint256 interestRate = _wallet.interestRate();
+
+        require(interestRate > 0);
 
         var (ethAmount, ethInterest, cdtIssuanceAmount, sctAmount) = formula.loan(_cdtAmount, interestRate);
 
@@ -321,6 +337,8 @@ add doc
         Token storage subCredit = tokens[subCreditToken];
 
         uint256 sctAmount = subCreditToken.balanceOf(_user);
+
+        require(sctAmount > 0);
 
         var (ethRefundAmount, cdtAmount, sctRefundAmount) = formula.repay(msg.value, sctAmount);
 
@@ -380,6 +398,8 @@ add doc
 
         uint256 dctAmount = discreditToken.balanceOf(_user);
 
+        require(dctAmount > 0);
+
         var (ethRefundAmount, cdtAmount, dctRefundAmount) = formula.toCreditToken(msg.value, dctAmount);
         assert(cdtAmount > 0);
 
@@ -436,6 +456,10 @@ add doc
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
         Token storage discredit = tokens[discreditToken];
+
+        uint256 sctBalance = subCreditToken.balanceOf(_user);
+
+        require(sctBalance >= _sctAmount);
 
         var (dctAmount, cdtPrice) = formula.toDiscreditToken(balance, credit.supply, _sctAmount);
         assert(dctAmount > 0);

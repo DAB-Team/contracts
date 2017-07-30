@@ -24,7 +24,7 @@ contract EasyDABFormula is IDABFormula, Math {
     uint256 private F = DecimalToFloat(35000000);                        // F = 0.35 for founders
     uint256 private U = sub(FLOAT_ONE, F);                               // U = 0.65  for users
     uint256 private cdtCashFeeRate = DecimalToFloat(10000000);              // fee rate = 0.1
-    uint256 private cdtLoanRate = cdt_ip / 2;                            // credit token to ether ratio
+    uint256 private cdtLoanRate = ip;                            // credit token to ether ratio
     uint256 private cdtReserveRate = DecimalToFloat(10000000);           // credit token reserve the rate of interest to expand itself
     uint256 private sctToDCTRate = DecimalToFloat(90000000);             // subCredit token to discredit token ratio
     uint256 public maxETH = mul(div(l, Float(1000)), ip);                // subCredit token to discredit token ratio
@@ -47,6 +47,7 @@ contract EasyDABFormula is IDABFormula, Math {
     returns (uint256, uint256, uint256, uint256, uint256, uint256){
         _dptCirculation = EtherToFloat(_dptCirculation);
         _ethAmount = EtherToFloat(_ethAmount);
+
         require(_dptCirculation >= 0);
         require(_ethAmount > 0);
 
@@ -135,6 +136,7 @@ contract EasyDABFormula is IDABFormula, Math {
         _cdtBalance = EtherToFloat(_cdtBalance);
         _cdtSupply = EtherToFloat(_cdtSupply);
         _cdtAmount = EtherToFloat(_cdtAmount);
+
         require(_cdtBalance > 0);
         require(_cdtSupply > 0);
         require(_cdtAmount > 0);
@@ -160,9 +162,10 @@ contract EasyDABFormula is IDABFormula, Math {
     returns (uint256 ethAmount, uint256 ethInterest, uint256 cdtIssuanceAmount, uint256 sctAmount){
         _cdtAmount = EtherToFloat(_cdtAmount);
         _interestRate = DecimalToFloat(_interestRate);
+
         require(_cdtAmount > 0);
         require(_interestRate > 0);
-        require(_interestRate < Decimal(1));
+        require(_interestRate < Float(1));
 
         ethAmount = mul(_cdtAmount, cdtLoanRate);
         uint256 interest = mul(ethAmount, _interestRate);
@@ -172,7 +175,7 @@ contract EasyDABFormula is IDABFormula, Math {
         ethAmount = sub(ethAmount, interest);
         sctAmount = _cdtAmount;
 
-        return (FloatToEther(ethAmount),FloatToEther(ethInterest), FloatToEther(cdtIssuanceAmount), FloatToEther(sctAmount));
+        return (FloatToEther(ethAmount), FloatToEther(ethInterest), FloatToEther(cdtIssuanceAmount), FloatToEther(sctAmount));
     }
 
 /*
@@ -184,6 +187,7 @@ contract EasyDABFormula is IDABFormula, Math {
     returns (uint256 ethRefundAmount, uint256 cdtAmount, uint256 sctRefundAmount){
         _ethRepayAmount = EtherToFloat(_ethRepayAmount);
         _sctAmount = EtherToFloat(_sctAmount);
+
         require(_ethRepayAmount > 0);
         require(_sctAmount > 0);
 
@@ -210,6 +214,7 @@ contract EasyDABFormula is IDABFormula, Math {
     returns (uint256 ethRefundAmount, uint256 cdtAmount, uint256 dctRefundAmount){
         _ethCreditAmount = EtherToFloat(_ethCreditAmount);
         _dctAmount = EtherToFloat(_dctAmount);
+
         require(_ethCreditAmount > 0);
         require(_dctAmount > 0);
 
@@ -237,6 +242,7 @@ contract EasyDABFormula is IDABFormula, Math {
         _ethBalance = EtherToFloat(_ethBalance);
         _cdtSupply = EtherToFloat(_cdtSupply);
         _sctAmount = EtherToFloat(_sctAmount);
+
         require(_ethBalance > 0);
         require(_cdtSupply > 0);
         require(_sctAmount > 0);

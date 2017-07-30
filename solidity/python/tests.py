@@ -19,16 +19,19 @@ test_repay = []
 test_to_credit = []
 test_to_discredit = []
 
+
 test_round = 100000
 test_num = 2
+fluctuate = 10
 max_balance = 1000000
 max_supply = 100000000
 max_circulation = max_supply
 max_ethamount = 100
-max_dptamount = 15000
+max_dptamount = formula.max_withdraw - 1
 max_cdtamount = 50000
 
-fluctuate = 100
+
+
 
 
 def generateTestData(outp):
@@ -48,7 +51,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d','%d','%d','%d'],\n" % (
             int(supply), int(circulation), int(interestrate_expect), int(loandays_expect), int(exemptdays_expect), int(interestrate_exact), int(loandays_exact), int(exemptdays_exact)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             raise err
@@ -70,7 +73,7 @@ def generateTestData(outp):
         int(circulation), int(ethamount), int(udpt_exact), int(ucdt_exact), int(fdpt_exact), int(fcdt_exact), int(ethdpt_exact),
         int(crr_exact)))
         num += 1
-        if num > test_num:
+        if num >= test_num:
             break
     outp.write("];\n\n\n")
 
@@ -88,7 +91,7 @@ def generateTestData(outp):
             int(circulation), int(ethamount), int(udpt_expect), int(ucdt_expect), int(fdpt_expect), int(fcdt_expect), int(ethdpt_expect),
             int(crr_expect)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -107,7 +110,7 @@ def generateTestData(outp):
         int(circulation), int(ethamount), int(udpt_exact), int(ucdt_exact), int(fdpt_exact), int(fcdt_exact), int(ethdpt_exact),
         int(crr_exact)))
         num += 1
-        if num > test_num:
+        if num >= test_num:
             break
     outp.write("];\n\n\n")
 
@@ -125,7 +128,7 @@ def generateTestData(outp):
             int(circulation), int(ethamount), int(udpt_expect), int(ucdt_expect), int(fdpt_expect), int(fcdt_expect), int(ethdpt_expect),
             int(crr_expect)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -152,7 +155,7 @@ def generateTestData(outp):
             int(balance), int(supply), int(circulation), int(ethamount), int(token_expect), int(remainethamount_expect),
             int(crr_expect), int(dptprice_expect)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -178,7 +181,7 @@ def generateTestData(outp):
             int(balance), int(supply), int(circulation), int(ethamount), int(token_expect), int(remainethamount_exact),
             int(crr_exact), int(dptprice_exact)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -203,7 +206,7 @@ def generateTestData(outp):
             int(balance), int(supply), int(circulation), int(ethamount), int(token_expect), int(remainethamount_expect),
             int(crr_expect), int(dptprice_expect)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -228,7 +231,7 @@ def generateTestData(outp):
             int(balance), int(supply), int(circulation), int(ethamount), int(token_exact), int(remainethamount_exact),
             int(crr_exact), int(dptprice_exact)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -248,12 +251,11 @@ def generateTestData(outp):
         circulation *= formula.ether
         dptamount *= formula.ether
         try:
-            ethamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation,
-                                                                                                dptamount)
+            ethamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation, dptamount)
             outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
             int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(crr_expect), int(dptprice_expect)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -277,7 +279,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
             int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(crr_expect), int(dptprice_expect)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -289,18 +291,17 @@ def generateTestData(outp):
     for i in range(1, test_round):
         balance = max_balance / test_num * (num + 1) + random.randrange(1, fluctuate) + max_ethamount
         circulation = max_circulation / test_num * (num + 1) + random.randrange(1, fluctuate)
-        dptamount = max_dptamount / test_num * (num + 1) + random.randrange(1, fluctuate)
+        dptamount = max_dptamount / test_num * (num + 1)
 
         balance *= formula.ether
         circulation *= formula.ether
         dptamount *= formula.ether
         try:
-            ethamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation,
-                                                                                                dptamount)
+            ethamount_expect, crr_expect, dptprice_expect = formula._withdraw(balance, circulation, dptamount)
             outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
             int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(crr_expect), int(dptprice_expect)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -312,7 +313,7 @@ def generateTestData(outp):
     for i in range(1, test_round):
         balance = max_balance / test_num * (num + 1) + random.randrange(1, fluctuate) + max_ethamount
         circulation = max_circulation / test_num * (num + 1) + random.randrange(1, fluctuate)
-        dptamount = max_dptamount / test_num * (num + 1) + random.randrange(1, fluctuate)
+        dptamount = max_dptamount / test_num * (num + 1)
 
         balance *= formula.ether
         circulation *= formula.ether
@@ -322,7 +323,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
             int(balance), int(circulation), int(dptamount), int(ethamount_expect), int(crr_expect), int(dptprice_expect)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -345,7 +346,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(cdtbalance), int(cdtsupply), int(cdtamount), int(ethamount), int(cdtprice)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -368,7 +369,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(cdtbalance), int(cdtsupply), int(cdtamount), int(ethamount), int(cdtprice)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -391,7 +392,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(cdtbalance), int(cdtsupply), int(cdtamount), int(ethamount), int(cdtprice)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -414,7 +415,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(cdtbalance), int(cdtsupply), int(cdtamount), int(ethamount), int(cdtprice)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -439,11 +440,11 @@ def generateTestData(outp):
 
         cdtamount *= formula.ether
         try:
-            ethamount, issuecdtamount, sctamount = formula._loan(cdtamount, interestrate_exact)
-            outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
-            int(cdtamount), int(interestrate_exact), int(ethamount), int(issuecdtamount), int(sctamount)))
+            ethamount, interest, issuecdtamount, sctamount = formula._loan(cdtamount, interestrate_exact)
+            outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
+            int(cdtamount), int(interestrate_exact), int(ethamount), int(interest), int(issuecdtamount), int(sctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -469,11 +470,11 @@ def generateTestData(outp):
 
         cdtamount *= formula.ether
         try:
-            ethamount, issuecdtamount, sctamount = formula.loan(cdtamount, interestrate_exact)
-            outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
-            int(cdtamount), int(interestrate_exact), int(ethamount), int(issuecdtamount), int(sctamount)))
+            ethamount, interest, issuecdtamount, sctamount = formula._loan(cdtamount, interestrate_exact)
+            outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
+                int(cdtamount), int(interestrate_exact), int(ethamount), int(interest), int(issuecdtamount), int(sctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -498,11 +499,11 @@ def generateTestData(outp):
 
         cdtamount *= formula.ether
         try:
-            ethamount, issuecdtamount, sctamount = formula._loan(cdtamount, interestrate_exact)
-            outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
-            int(cdtamount), int(interestrate_exact), int(ethamount), int(issuecdtamount), int(sctamount)))
+            ethamount, interest, issuecdtamount, sctamount = formula._loan(cdtamount, interestrate_exact)
+            outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
+                int(cdtamount), int(interestrate_exact), int(ethamount), int(interest), int(issuecdtamount), int(sctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -527,11 +528,11 @@ def generateTestData(outp):
 
         cdtamount *= formula.ether
         try:
-            ethamount, issuecdtamount, sctamount = formula.loan(cdtamount, interestrate_exact)
-            outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
-            int(cdtamount), int(interestrate_exact), int(ethamount), int(issuecdtamount), int(sctamount)))
+            ethamount, interest, issuecdtamount, sctamount = formula._loan(cdtamount, interestrate_exact)
+            outp.write("\t['%d','%d','%d','%d','%d','%d'],\n" % (
+                int(cdtamount), int(interestrate_exact), int(ethamount), int(interest), int(issuecdtamount), int(sctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             continue
@@ -553,7 +554,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(repayethamount), int(sctamount), int(refundethamount), int(cdtamount), int(refundsctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -576,7 +577,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(repayethamount), int(sctamount), int(refundethamount), int(cdtamount), int(refundsctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -599,7 +600,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(repayethamount), int(sctamount), int(refundethamount), int(cdtamount), int(refundsctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -622,7 +623,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(repayethamount), int(sctamount), int(refundethamount), int(cdtamount), int(refundsctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -645,7 +646,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(repayethamount), int(dctamount), int(refundethamount), int(cdtamount), int(refunddctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -668,7 +669,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(repayethamount), int(dctamount), int(refundethamount), int(cdtamount), int(refunddctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -691,7 +692,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(repayethamount), int(dctamount), int(refundethamount), int(cdtamount), int(refunddctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -714,7 +715,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(repayethamount), int(dctamount), int(refundethamount), int(cdtamount), int(refunddctamount)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -738,7 +739,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(cdtbalance), int(supply), int(sctamount), int(dctamount), int(cdtprice)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -762,7 +763,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(cdtbalance), int(supply), int(sctamount), int(dctamount), int(cdtprice)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             raise err
@@ -785,7 +786,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(cdtbalance), int(supply), int(sctamount), int(dctamount), int(cdtprice)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
@@ -809,7 +810,7 @@ def generateTestData(outp):
             outp.write("\t['%d','%d','%d','%d','%d'],\n" % (
             int(cdtbalance), int(supply), int(sctamount), int(dctamount), int(cdtprice)))
             num += 1
-            if num > test_num:
+            if num >= test_num:
                 break
         except AssertionError as err:
             # raise err
