@@ -321,7 +321,8 @@ contract DAB is DABOperationManager{
     }
 
 
-    function() payable {
+    function() payable
+    validAmount(msg.value){
         deposit();
     }
 }

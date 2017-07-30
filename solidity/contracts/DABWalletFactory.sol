@@ -104,6 +104,11 @@ contract DABWallet is Owned, SafeMath{
         _;
     }
 
+    function depositETH()
+    public
+    payable
+    validAmount(msg.value){}
+
     function withdrawETH(uint256 _ethAmount)
     public
     userOnly
@@ -309,7 +314,8 @@ contract DABWallet is Owned, SafeMath{
         }
     }
 
-
+    function() payable
+    validAmount(msg.value){}
 }
 
 contract DABWalletFactory is Owned{
@@ -451,8 +457,5 @@ contract DABWalletFactory is Owned{
         return loanPlanFormulas[wallets[_wallet].loanPlanFormula].isValid;
     }
 
-    function() payable {
-        require(false);
-    }
 }
 

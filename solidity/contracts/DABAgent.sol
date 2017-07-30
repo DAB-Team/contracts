@@ -89,8 +89,4 @@ contract DABAgent is Owned, SafeMath{
         formula = _formula;
     }
 
-    function() payable {
-        require(false);
-    }
-
 }

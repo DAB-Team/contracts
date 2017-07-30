@@ -207,6 +207,4 @@ contract DABDepositAgent is DABAgent{
         balance = safeAdd(balance, msg.value);
     }
 
-
-
 }

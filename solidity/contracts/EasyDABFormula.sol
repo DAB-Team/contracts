@@ -23,7 +23,7 @@ contract EasyDABFormula is IDABFormula, Math {
     uint256 private cdt_crr = Float(3);                                  // cdt_crr = 3
     uint256 private F = DecimalToFloat(35000000);                        // F = 0.35 for founders
     uint256 private U = sub(FLOAT_ONE, F);                               // U = 0.65  for users
-    uint256 private cashFeeRate = DecimalToFloat(10000000);              // fee rate = 0.1
+    uint256 private cdtCashFeeRate = DecimalToFloat(10000000);              // fee rate = 0.1
     uint256 private cdtLoanRate = cdt_ip / 2;                            // credit token to ether ratio
     uint256 private cdtReserveRate = DecimalToFloat(10000000);           // credit token reserve the rate of interest to expand itself
     uint256 private sctToDCTRate = DecimalToFloat(90000000);             // subCredit token to discredit token ratio
@@ -75,9 +75,8 @@ contract EasyDABFormula is IDABFormula, Math {
         require(_dptSupply >= 0);
         require(_dptCirculation >= 0 && _dptCirculation <= _dptSupply);
         require(_ethAmount > 0);
-    // insure the accuracy of the formula
+        // insure the accuracy of the formula
         require(_ethAmount <= maxETH);
-
 
         uint256 fCRR = getCRR(_dptCirculation);
         dptPrice = div(_ethBalance, mul(_dptCirculation, fCRR));
@@ -115,7 +114,7 @@ contract EasyDABFormula is IDABFormula, Math {
         require( _ethBalance > 0 );
         require(_dptCirculation > 0);
         require(_dptAmount > 0);
-    // insure the accuracy of the formula
+        // insure the accuracy of the formula
         require(_dptAmount <= maxDPT);
 
         dptPrice = div(_ethBalance, mul(_dptCirculation, getCRR(_dptCirculation)));
@@ -145,7 +144,7 @@ contract EasyDABFormula is IDABFormula, Math {
 
         require(ethAmount <= _cdtBalance);
 
-        uint256 cashFee = mul(ethAmount, cashFeeRate);
+        uint256 cashFee = mul(ethAmount, cdtCashFeeRate);
         ethAmount = sub(ethAmount, cashFee);
         _cdtBalance = sub(_cdtBalance, ethAmount);
         cdtPrice = div(_cdtBalance, mul(_cdtSupply, cdt_crr));
