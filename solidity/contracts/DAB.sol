@@ -228,14 +228,14 @@ contract DAB is DABOperationManager{
 /**
     @dev withdraw ethereum
 
-    @param _withdrawAmount amount to withdraw (in deposit token)
+    @param _dptAmount amount to withdraw (in deposit token)
 */
-    function withdraw(uint256 _withdrawAmount)
+    function withdraw(uint256 _dptAmount)
     public
     active
     activeDepositAgent
-    validAmount(_withdrawAmount) {
-        assert(depositAgent.withdraw(msg.sender, _withdrawAmount));
+    validAmount(_dptAmount) {
+        assert(depositAgent.withdraw(msg.sender, _dptAmount));
     }
 
 
@@ -243,34 +243,34 @@ contract DAB is DABOperationManager{
 /**
     @dev cash out credit token
 
-    @param _cashAmount amount to cash (in credit token)
+    @param _cdtAmount amount to cash (in credit token)
 */
-    function cash(uint256 _cashAmount)
+    function cash(uint256 _cdtAmount)
     public
     active
     activeCreditAgent
-    validAmount(_cashAmount) {
-        assert(creditAgent.cash(msg.sender, _cashAmount));
+    validAmount(_cdtAmount) {
+        assert(creditAgent.cash(msg.sender, _cdtAmount));
     }
 
 
 /**
 @dev loan by credit token
 
-@param _loanAmount amount to loan (in credit token)
+@param _cdtAmount amount to loan (in credit token)
 */
 
 
-    function loan(uint256 _loanAmount)
+    function loan(uint256 _cdtAmount)
     public
     active
     activeCreditAgent
-    validAmount(_loanAmount)
+    validAmount(_cdtAmount)
     {
         DABWallet wallet = DABWallet(msg.sender);
         bool isWalletValid = walletFactory.isWalletValid(wallet);
         require(isWalletValid);
-        assert(creditAgent.loan(msg.sender, _loanAmount));
+        assert(creditAgent.loan(msg.sender, _cdtAmount));
     }
 
 

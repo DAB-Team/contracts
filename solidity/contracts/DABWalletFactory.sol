@@ -300,11 +300,11 @@ contract DABWallet is Owned, SafeMath{
 contract DABWalletFactory is Owned{
 
     struct LoanPlanFormula{
-    bool isValid;
+        bool isValid;
     }
 
     struct Wallet{
-    bool isValid;
+        address loanPlanFormula;
     }
 
     bool public isActive = false;
@@ -343,14 +343,14 @@ contract DABWalletFactory is Owned{
     }
 
 // validates a loan plan formula
-    modifier validLoanPlanFormula(address _address) {
-        require(loanPlanFormulas[_address].isValid);
+    modifier validLoanPlanFormula(address _formula) {
+        require(loanPlanFormulas[_formula].isValid);
         _;
     }
 
 // validates a solidity wallet
-    modifier validWallet(address _address) {
-        require(wallets[_address].isValid);
+    modifier validWallet(address _wallet) {
+        require(loanPlanFormulas[wallets[_wallet].loanPlanFormula].isValid);
         _;
     }
 
@@ -416,7 +416,7 @@ contract DABWalletFactory is Owned{
     active
     validLoanPlanFormula(_loanPlanFormula) {
         address wallet = new DABWallet(dab, _loanPlanFormula, msg.sender);
-        wallets[wallet].isValid = true;
+        wallets[wallet].loanPlanFormula = _loanPlanFormula;
         LogNewWallet(msg.sender, wallet);
     }
 
@@ -430,12 +430,13 @@ contract DABWalletFactory is Owned{
     validWallet(_wallet)
     validLoanPlanFormula(_loanPlanFormula){
         _wallet.setLoanPlanFormula(msg.sender, _loanPlanFormula);
+        wallets[_wallet].loanPlanFormula = _loanPlanFormula;
     }
 
     function isWalletValid(DABWallet _wallet)
     public
     returns (bool){
-        return wallets[_wallet].isValid;
+        return loanPlanFormulas[wallets[_wallet].loanPlanFormula].isValid;
     }
 
 }
