@@ -29,10 +29,12 @@ let beneficiaryAddress = '0xa77e2b295209ff3b6723a0becb50477ad51df124';
 let startTime = Math.floor(Date.now() / 1000) + 15 * 24 * 60 * 60; // crowdsale hasn't started
 let startTimeInProgress = Math.floor(Date.now() / 1000) - 50 * 24 * 60 * 60; // ongoing crowdsale
 
+let approveAmount = Math.pow(10, 25);
+
 let activate = true;
 
 
-module.exports =  async (deployer, network, accounts) =>{
+module.exports =  async (deployer, network) =>{
 
     deployer.deploy(HalfAYearLoanPlanFormula);
     deployer.deploy(AYearLoanPlanFormula);
@@ -178,6 +180,42 @@ module.exports =  async (deployer, network, accounts) =>{
         await DAB.deployed().then(async (instance) => {
             await instance.activate();
         });
+
+
+        // for basic test
+        if(network === "dev" || network === "testrpc" || network === "rinkeby"){
+            await DepositToken.deployed().then(async (instance) => {
+                await instance.approve(DABDepositAgent.address, approveAmount);
+            });
+
+            await CreditToken.deployed().then(async (instance) => {
+                await instance.approve(DABCreditAgent.address, approveAmount);
+            });
+
+            await SubCreditToken.deployed().then(async (instance) => {
+                await instance.approve(DABCreditAgent.address, approveAmount);
+            });
+
+            await DiscreditToken.deployed().then(async (instance) => {
+                await instance.approve(DABCreditAgent.address, approveAmount);
+            });
+
+
+            await DAB.deployed().then(async (instance) => {
+                await instance.deposit({value: Math.pow(10, 20)});
+                await instance.deposit({value: Math.pow(10, 20)});
+                await instance.deposit({value: Math.pow(10, 20)});
+
+                await instance.withdraw(Math.pow(10, 20));
+                await instance.cash(Math.pow(10, 20));
+
+            });
+
+            await DABWalletFactory.deployed().then(async (instance) => {
+                await instance.newDABWallet(TestLoanPlanFormula.address);
+            });
+
+        }
 
     }
 

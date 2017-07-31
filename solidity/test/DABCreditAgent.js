@@ -65,13 +65,14 @@ let dabAddress;
 
 let beneficiaryAddress = '0x69aa30b306805bd17488ce957d03e3c0213ee9e6';
 
+let tokenAmount = Math.pow(10, 21); // crowdsale hasn't started
 let startTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // crowdsale hasn't started
 let startTimeInProgress = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 let startTimeFinished = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60; // ongoing crowdsale
 
 
 // used by contribution tests, creates a controller that's already in progress
-async function initDAB(accounts, activate, startTimeOverride = startTimeInProgress) {
+async function initDAB(accounts, activate, _tokenAmount = 0, startTimeOverride = startTimeInProgress) {
     easyDABFormula = await EasyDABFormula.new();
     easyDABFormulaAddress = easyDABFormula.address;
 
@@ -123,6 +124,18 @@ async function initDAB(accounts, activate, startTimeOverride = startTimeInProgre
         await subCreditTokenController.acceptTokenOwnership();
         await discreditToken.transferOwnership(discreditTokenController.address);
         await discreditTokenController.acceptTokenOwnership();
+
+        if(tokenAmount > 0){
+            await depositTokenController.issueTokens(accounts[0], _tokenAmount);
+            await creditTokenController.issueTokens(accounts[0], _tokenAmount);
+            await subCreditTokenController.issueTokens(accounts[0], _tokenAmount);
+            await discreditTokenController.issueTokens(accounts[0], _tokenAmount);
+        }
+
+        await depositToken.approve(depositAgentAddress, tokenAmount);
+        await creditToken.approve(creditAgentAddress, tokenAmount);
+        await subCreditToken.approve(creditAgentAddress, tokenAmount);
+        await discreditToken.approve(creditAgentAddress, tokenAmount);
 
         await depositTokenController.transferOwnership(depositAgent.address);
         await depositAgent.acceptDepositTokenControllerOwnership();
@@ -202,7 +215,7 @@ contract('DABCreditAgent', (accounts) => {
     });
 
     it('should throw when a non owner attempts to cash', async () => {
-        let dab = await initDAB(accounts, true);
+        let dab = await initDAB(accounts, true, tokenAmount);
 
         try {
             await creditAgent.cash(accounts[3], 100000000000, { from: accounts[1] });
@@ -215,7 +228,7 @@ contract('DABCreditAgent', (accounts) => {
 
 
     it('should throw when a non owner attempts to repay', async () => {
-        let dab = await initDAB(accounts, true);
+        let dab = await initDAB(accounts, true, tokenAmount);
 
         try {
             await creditAgent.repay(accounts[3], 100000000000, { from: accounts[1] });
@@ -228,7 +241,7 @@ contract('DABCreditAgent', (accounts) => {
 
 
     it('should throw when a non owner attempts to convert to creditToken', async () => {
-        let dab = await initDAB(accounts, true);
+        let dab = await initDAB(accounts, true, tokenAmount);
 
         try {
             await creditAgent.toCreditToken(accounts[3], 100000000000, { from: accounts[1] });
@@ -241,7 +254,7 @@ contract('DABCreditAgent', (accounts) => {
 
 
     it('should throw when a non owner attempts to convert to discreditToken', async () => {
-        let dab = await initDAB(accounts, true);
+        let dab = await initDAB(accounts, true, tokenAmount);
 
         try {
             await creditAgent.toDiscreditToken(accounts[3], 100000000000, { from: accounts[1] });
@@ -253,13 +266,47 @@ contract('DABCreditAgent', (accounts) => {
     });
 
 
-    it('verifies cash the correct amount of credit token', async () => {
-        let dab = await initDAB(accounts, true);
+    it('verifies cashing the correct amount of credit token', async () => {
+        let dab = await initDAB(accounts, true, tokenAmount);
         for(var i=0; i<10; i++){
-            await dab.deposit({from: web3.eth.accounts[0], value:56200000000000000000});
+            await dab.deposit({from: web3.eth.accounts[0], value: Math.pow(10, 20)});
         }
-        await dab.cash(100000000000000000000, {from: web3.eth.accounts[0]});
+        await dab.cash(Math.pow(10, 19));
     });
 
+    it('verifies loaning the correct amount of credit token', async () => {
+        let dab = await initDAB(accounts, true, tokenAmount);
+        for(var i=0; i<10; i++){
+            await dab.deposit({value: Math.pow(10, 20)});
+        }
+        await dab.loan(Math.pow(10, 19));
+    });
+
+    it('verifies repaying the correct amount of subCredit token', async () => {
+        let dab = await initDAB(accounts, true);
+        for(var i=0; i<10; i++){
+            await dab.deposit({from: web3.eth.accounts[0], value: Math.pow(10, 20)});
+        }
+        await dab.loan(Math.pow(10, 20));
+        await dab.repay({value: Math.pow(10, 18)});
+    });
+
+    it('verifies converting the correct amount of subCredit token to credit token', async () => {
+        let dab = await initDAB(accounts, true);
+        for(var i=0; i<10; i++){
+            await dab.deposit({value: Math.pow(10, 20)});
+        }
+        await dab.loan(Math.pow(10, 20));
+        await dab.toDiscreditToken(Math.pow(10, 20));
+        await dab.toCreditToken({value: Math.pow(10, 18)});
+    });
+
+    it('verifies converting the correct amount of subCredit token to discredit token', async () => {
+        let dab = await initDAB(accounts, true, tokenAmount);
+        for(var i=0; i<10; i++){
+            await dab.deposit({value: Math.pow(10, 20)});
+        }
+        await dab.toDiscreditToken(Math.pow(10, 19));
+    });
 
 });

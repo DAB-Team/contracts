@@ -278,8 +278,7 @@ add doc
         return true;
     }
 
-// TODO The line below need to be revised, test only. _wallet should be DABWallet type.
-    function loan(address _wallet, uint256 _cdtAmount)
+    function loan(DABWallet _wallet, uint256 _cdtAmount)
     public
     ownerOnly
     active
@@ -289,9 +288,7 @@ add doc
         Token storage credit = tokens[creditToken];
         Token storage subCredit = tokens[subCreditToken];
 
-    // TODO The lines below need to be revised, test only.
-        uint256 interestRate = 12593544;
-//        uint256 interestRate = _wallet.interestRate();
+        uint256 interestRate = _wallet.interestRate();
 
         require(interestRate > 0);
 
@@ -310,7 +307,8 @@ add doc
         _wallet.transfer(ethAmount);
         balance = safeSub(balance, ethAmount);
 
-        depositAgent.depositInterest.value(ethInterest)();
+    // TODO The lines below need to be revised, test only.
+        depositAgent.depositInterest.gas(250000).value(ethInterest)();
         balance = safeSub(balance, ethInterest);
 
         creditTokenController.issueTokens(_wallet, cdtIssuanceAmount);
@@ -343,6 +341,8 @@ add doc
         var (ethRefundAmount, cdtAmount, sctRefundAmount) = formula.repay(msg.value, sctAmount);
 
         assert(cdtAmount > 0);
+        assert(msg.value >= ethRefundAmount);
+        assert(sctAmount >= sctRefundAmount);
 
         if (ethRefundAmount > 0) {
             assert(sctRefundAmount == 0);
@@ -356,11 +356,10 @@ add doc
             _user.transfer(ethRefundAmount);
             balance = safeAdd(balance, safeSub(msg.value, ethRefundAmount));
 
-        // event
+//         event
             LogRepay(_user, safeSub(msg.value, ethRefundAmount), sctAmount, cdtAmount);
             return true;
-        }
-        else {
+        } else {
             assert(sctRefundAmount >= 0);
 
             subCreditTokenController.destroyTokens(_user, safeSub(sctAmount, sctRefundAmount));
@@ -401,7 +400,10 @@ add doc
         require(dctAmount > 0);
 
         var (ethRefundAmount, cdtAmount, dctRefundAmount) = formula.toCreditToken(msg.value, dctAmount);
+
         assert(cdtAmount > 0);
+        assert(msg.value >= ethRefundAmount);
+        assert(dctAmount >= dctRefundAmount);
 
         if (ethRefundAmount > 0) {
             assert(dctRefundAmount == 0);
@@ -418,8 +420,7 @@ add doc
         // event
             LogToCreditToken(_user, safeSub(msg.value, ethRefundAmount), dctAmount, cdtAmount);
             return true;
-        }
-        else {
+        } else {
             assert(dctRefundAmount >= 0);
 
             discreditTokenController.destroyTokens(_user, safeSub(dctAmount, dctRefundAmount));

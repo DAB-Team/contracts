@@ -286,12 +286,10 @@ contract DAB is DABOperationManager{
     activeCreditAgent
     validAmount(_cdtAmount)
     {
-    // TODO The lines below need to be revised, test only. msg.sender should be validate.
-        assert(creditAgent.loan(msg.sender, _cdtAmount));
-//        DABWallet wallet = DABWallet(msg.sender);
-//        bool isWalletValid = walletFactory.isWalletValid(wallet);
-//        require(isWalletValid);
-//        assert(creditAgent.loan(wallet, _cdtAmount));
+        DABWallet wallet = DABWallet(msg.sender);
+        bool isWalletValid = walletFactory.isWalletValid(wallet);
+        require(isWalletValid);
+        assert(creditAgent.loan(wallet, _cdtAmount));
     }
 
 

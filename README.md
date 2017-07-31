@@ -34,6 +34,7 @@ To deploy, execute the following commands from the project's truffle folder.
 
     geth --dev --rpc --rpcport 8545 --rpcaddr 127.0.0.1 --rpcapi="eth,net,web3" --mine --minerthreads=1 --unlock <Account>
     truffle migrate --network dev
+    /Applications/Ethereum\ Wallet.app/Contents/MacOS/Ethereum\ Wallet --rpc http://localhost:8545
 
 ##### Rinkeby
 
