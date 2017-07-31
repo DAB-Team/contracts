@@ -8,4 +8,4 @@
 node_modules/
 _mac
 inspection/
-solidity/build/
+# solidity/build/
