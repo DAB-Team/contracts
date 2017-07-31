@@ -1,0 +1,904 @@
+{
+  "contract_name": "TestDABCreditAgent",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferCreditTokenControllerOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "activate",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "subCreditToken",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "acceptSubCreditTokenControllerOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_wallet",
+          "type": "address"
+        },
+        {
+          "name": "_cdtAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "loan",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "setDepositAgent",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isActive",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+        }
+      ],
+      "name": "toCreditToken",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": true,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "beneficiary",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "acceptDiscreditTokenControllerOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "formula",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "version",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "creditBalance",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "freeze",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "subCreditTokenController",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "acceptOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferDiscreditTokenControllerOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "creditToken",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+        },
+        {
+          "name": "_sctAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "toDiscreditToken",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+        }
+      ],
+      "name": "repay",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": true,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "balance",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "acceptCreditTokenControllerOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenSet",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "creditTokenController",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferSubCreditTokenControllerOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "creditPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "discreditToken",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "newOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+        },
+        {
+          "name": "_cdtAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "cash",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_user",
+          "type": "address"
+        },
+        {
+          "name": "_uCDTAmount",
+          "type": "uint256"
+        },
+        {
+          "name": "_fCDTAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "issue",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": true,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "depositAgent",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "tokens",
+      "outputs": [
+        {
+          "name": "supply",
+          "type": "uint256"
+        },
+        {
+          "name": "isValid",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_wallet",
+          "type": "address"
+        },
+        {
+          "name": "_cdtAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "loanTest",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "discreditTokenController",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_formula",
+          "type": "address"
+        }
+      ],
+      "name": "setDABFormula",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_formula",
+          "type": "address"
+        },
+        {
+          "name": "_creditTokenController",
+          "type": "address"
+        },
+        {
+          "name": "_subCreditTokenController",
+          "type": "address"
+        },
+        {
+          "name": "_discreditTokenController",
+          "type": "address"
+        },
+        {
+          "name": "_beneficiary",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfETH",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfCDT",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogCDTIssue",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfCDT",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfETH",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogCash",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_loanAgent",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfCDT",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfETH",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfIssueCDT",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfSCT",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogLoan",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfETH",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfSCT",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfCDT",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogRepay",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfETH",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfDCT",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfCDT",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogToCreditToken",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfSCT",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_amountOfDCT",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogToDiscreditToken",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_prevOwner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnerUpdate",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {
+    "10": {
+      "links": {},
+      "events": {
+        "0x429d2c0786d8d6af1d061d0531739b0c004d955454948fd95038dd5b4baf25b3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfETH",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfCDT",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogCDTIssue",
+          "type": "event"
+        },
+        "0x2267a1f5adb922478d65cd53fe5439dc67279202312017f3ae16024d6e411bae": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfCDT",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfETH",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogCash",
+          "type": "event"
+        },
+        "0x63b8b9ecf8b9bc81c7ee19055e49856d0d1a76106ba1a29b80fa82e74b4f0a4b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_loanAgent",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfCDT",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfETH",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfIssueCDT",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfSCT",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogLoan",
+          "type": "event"
+        },
+        "0x2011254bc3ed273b236b16bbf65a66c94c4d5fac4536f592142c06be71a12f22": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfETH",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfSCT",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfCDT",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogRepay",
+          "type": "event"
+        },
+        "0xafa3dc669b1db190ef9fb35f8bdd1be1a839c6182af695a09b75e1b052ea2058": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfETH",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfDCT",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfCDT",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogToCreditToken",
+          "type": "event"
+        },
+        "0x605d0dd0643afb101636c71a2b56e3f90735fdab8738b9cb9ad1467161d7282e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfSCT",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amountOfDCT",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogToDiscreditToken",
+          "type": "event"
+        },
+        "0x343765429aea5a34b3ff6a3785a98a5abb2597aca87bfbb58632c173d585373a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_prevOwner",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnerUpdate",
+          "type": "event"
+        }
+      },
+      "updated_at": 1501421003824
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1501421003824
+}
